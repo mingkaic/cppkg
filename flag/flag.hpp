@@ -26,15 +26,45 @@ struct FlagSet
 	/// Return true if arguments are successfully parsed according to args_
 	/// --help flag will logs::warn with help message and return false
 	/// Any error will logs::error and return false
-	bool parse(int argc, char** argv);
+	bool parse(int argc, char** argv)
+	{
+		opt::variables_map vm;
+		return parse(argc, argv, vm);
+	}
 
-	/// Boost options
-	/// [FlagSet instance].args_.add_options()
-	///		("[flag name]", flag::opt::value<[flat-type]>([output pointer])->
-	///			default_value([default value]), "[description]")...
+	/// Return true if arguments are successfully parsed according to args_
+	/// Dump parsed variables to vars
+	bool parse(int argc, char** argv, opt::variables_map& vars);
+
+	/// Return boost's options description for flags
 	/// See Boost Documentation for more information:
 	/// https://www.boost.org/doc/libs/1_58_0/doc/html/program_options.html
+	opt::options_description_easy_init add_flags (void)
+	{
+		return flags_.add_options();
+	}
+
+	/// Add positional arguments using boost's options_description_easy_init's
+	/// operator() (const char*, const opt::value_semantic*, const char*)
+	/// signature, in addition to the option's position
+	/// See Boost Documentation for more information:
+	/// https://www.boost.org/doc/libs/1_58_0/doc/html/program_options.html
+	void add_arg (const char* name, const opt::value_semantic* s,
+		const char* description, int maxcount)
+	{
+		args_.add_options()(name, s, description);
+		pos_.add(name, maxcount);
+	}
+
+private:
+	/// Flag options
+	opt::options_description flags_;
+
+	/// Non-flag arguments
 	opt::options_description args_;
+
+	/// Position of non-flag arguments
+	opt::positional_options_description pos_;
 };
 
 }
