@@ -1,16 +1,16 @@
 workspace(name = "com_github_mingkaic_cppkg")
 
-# test dependencies
-
-load("//:gtest.bzl", "get_gtest")
-
-get_gtest(name = "com_google_googletest")
-
 # local dependencies
 
 load("//:cppkg.bzl", "dependencies")
 
 dependencies()
+
+# test dependencies
+
+load("//:gtest.bzl", "gtest_repositoru")
+
+gtest_repository(name = "gtest")
 
 # boost dependencies
 

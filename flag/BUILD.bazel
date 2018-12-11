@@ -37,7 +37,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         "//flag:flag",
-        "@com_google_googletest//:gtest",
+        "@gtest//:gtest",
     ],
     copts = ["-std=c++14"],
 )

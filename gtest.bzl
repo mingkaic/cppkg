@@ -1,11 +1,9 @@
-def _impl(ctx):
-    ctx.download_and_extract(
-        stripPrefix = "googletest-ec44c6c1675c25b9827aacd08c02433cccde7780",
-        url = "https://github.com/google/googletest/archive/ec44c6c1675c25b9827aacd08c02433cccde7780.tar.gz",
-    )
+_URL = "https://github.com/google/googletest/archive/ec44c6c1675c25b9827aacd08c02433cccde7780.tar.gz"
 
-    ctx.file('BUILD', """
-licenses(["notice"])
+_STRIP_PREFIX = "googletest-ec44c6c1675c25b9827aacd08c02433cccde7780"
+
+_BUILD_CONTENT = """licenses(["notice"])
+
 cc_library(
     name = "gtest",
     srcs = [
@@ -26,6 +24,7 @@ cc_library(
     linkopts = ["-pthread"],
     visibility = ["//visibility:public"],
 )
+
 cc_library(
     name = "gtest_main",
     srcs = ["googlemock/src/gmock_main.cc"],
@@ -33,7 +32,24 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = [":gtest"],
 )
-""")
-    ctx.file('WORKSPACE', '')
+"""
 
-get_gtest = repository_rule(implementation = _impl)
+def _impl(ctx):
+    ctx.download_and_extract(
+        stripPrefix = _STRIP_PREFIX,
+        url = _URL,
+    )
+
+    ctx.file(
+        "BUILD.bazel",
+        content = _BUILD_CONTENT,
+        executable = False,
+    )
+
+    ctx.file(
+        "WORKSPACE",
+        content = "",
+        executable = False,
+    )
+
+gtest_repository = repository_rule(implementation = _impl)

@@ -33,7 +33,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         "//logs:logs",
-        "@com_google_googletest//:gtest",
+        "@gtest//:gtest",
     ],
     copts = ["-std=c++14"],
 )
