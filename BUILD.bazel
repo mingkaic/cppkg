@@ -13,3 +13,10 @@ filegroup(
         "BUILD.bazel",
     ],
 )
+
+######### COMMON BASH #########
+
+sh_binary(
+    name = "merge_cov",
+    srcs = ["scripts/merge_cov.sh"],
+)
