@@ -67,3 +67,4 @@ do
         fi
     fi
 done
+echo "done writing to $OUTPATH";

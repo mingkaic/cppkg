@@ -1,4 +1,4 @@
-COVERAGE_INFO_FILE := coverage.info
+COVERAGE_INFO_FILE := /tmp/coverage.info
 
 COVER := bazel coverage --config asan --config gtest
 
@@ -10,7 +10,7 @@ LOGS_TEST := //logs:test
 
 COVERAGE_IGNORE := 'external/*' '**/test/*' 'testutil/*' '**/genfiles/*' 'dbg/*'
 
-COVERAGE_PIPE := bazel run //:merge_cov -- $(COVERAGE_INFO_FILE)
+COVERAGE_PIPE := ./scripts/merge_cov.sh $(COVERAGE_INFO_FILE)
 
 TMP_LOGFILE := /tmp/cppkg-test.log
 
