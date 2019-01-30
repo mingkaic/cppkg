@@ -19,6 +19,8 @@ TEST(DIFF, MyersMinEdit)
 		"ABCABBA", "ABCABBA"));
 	EXPECT_EQ(5, diff::myers_diff_min_edit<std::string>(
 		"ABCABBA", "CBABAC"));
+	EXPECT_EQ(13, diff::myers_diff_min_edit<std::string>(
+		"ABCDEFG", "HIJKLM"));
 }
 
 

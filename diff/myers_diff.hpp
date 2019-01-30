@@ -41,9 +41,11 @@ size_t myers_diff_min_edit (ARR orig, ARR updated)
 	IndexT x, y;
 	size_t ncost = 2 * max_edit + 1;
 	std::vector<IndexT> costs(ncost, 0);
-	for (IndexT iedit = 0; iedit < max_edit; ++iedit)
+	bool cont = true;
+	IndexT min_edits = max_edit;
+	for (IndexT iedit = 0; iedit < max_edit && cont; ++iedit)
 	{
-		for (IndexT k = -iedit; k <= iedit; k += 2)
+		for (IndexT k = -iedit; k <= iedit && cont; k += 2)
 		{
 			IndexT prevk = costs[(ncost + k - 1) % ncost];
 			IndexT nextk = costs[(ncost + k + 1) % ncost];
@@ -69,11 +71,12 @@ size_t myers_diff_min_edit (ARR orig, ARR updated)
 
 			if (x >= n && y >= m)
 			{
-				return iedit;
+				min_edits = iedit;
+				cont = false;
 			}
 		}
 	}
-	return max_edit;
+	return min_edits;
 }
 
 /// Return the diff trace, the flattened representation of 2-D array
@@ -96,10 +99,11 @@ std::vector<IndexT> myers_diff_trace (ARR orig, ARR updated)
 	size_t ncost = 2 * max_edit + 1;
 	std::vector<IndexT> costs(ncost, 0);
 	std::vector<IndexT> trace;
-	for (IndexT iedit = 0; iedit <= max_edit; ++iedit)
+	bool cont = true;
+	for (IndexT iedit = 0; iedit <= max_edit && cont; ++iedit)
 	{
 		trace.insert(trace.end(), costs.begin(), costs.end());
-		for (IndexT k = -iedit; k <= iedit; k += 2)
+		for (IndexT k = -iedit; k <= iedit && cont; k += 2)
 		{
 			IndexT prevk = costs[(ncost + k - 1) % ncost];
 			IndexT nextk = costs[(ncost + k + 1) % ncost];
@@ -122,11 +126,7 @@ std::vector<IndexT> myers_diff_trace (ARR orig, ARR updated)
 			}
 
 			costs[(ncost + k) % ncost] = x;
-
-			if (x >= n && y >= m)
-			{
-				return trace;
-			}
+			cont = x < n || y < m;
 		}
 	}
 	return trace;
