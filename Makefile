@@ -1,4 +1,4 @@
-COVERAGE_INFO_FILE := /tmp/coverage.info
+COVERAGE_INFO_FILE := coverage.info
 
 COVER := bazel coverage --config asan --config gtest
 
