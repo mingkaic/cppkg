@@ -1,3 +1,14 @@
+///
+/// myers_diff.hpp
+/// diff
+///
+/// Purpose:
+/// Define and implement myers diff algorithm
+///
+/// all implementations are based on the tutorial outlined in
+/// https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
+///
+
 #include <cassert>
 #include <utility>
 #include <iterator>
@@ -16,12 +27,11 @@ template <typename ARR>
 using ArrValT = typename std::iterator_traits<
 	typename ARR::iterator>::value_type;
 
-// all based on the tutorial outlined in
-// https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
-
-template <typename ARR>
+/// Return the minimum number of edits between orig and updated arrays
+template <typename ARR, typename COMPARATOR=std::equal_to<ArrValT<ARR>>>
 size_t myers_diff_min_edit (ARR orig, ARR updated)
 {
+	COMPARATOR comparator;
 	auto orig_begin = std::begin(orig);
 	auto updated_begin = std::begin(updated);
 	IndexT n = std::distance(orig_begin, std::end(orig));
@@ -48,8 +58,8 @@ size_t myers_diff_min_edit (ARR orig, ARR updated)
 
 			y = x - k;
 
-			while (x < n && y < m &&
-				*std::next(orig_begin, x) == *std::next(updated_begin, y))
+			while (x < n && y < m && comparator(
+				*std::next(orig_begin, x), *std::next(updated_begin, y)))
 			{
 				++x;
 				++y;
@@ -66,9 +76,16 @@ size_t myers_diff_min_edit (ARR orig, ARR updated)
 	return max_edit;
 }
 
-template <typename ARR>
+/// Return the diff trace, the flattened representation of 2-D array
+/// <2 * (orig.size + updated.size) + 1, min_edits>
+/// each row in the trace matrix are the minimum costs at every step
+/// each row's origin starts at index orig.size + updated.size
+/// zeros in each row represent unreachable states at that step
+/// This function is a helper function for myers_diff, but can use in diagnosis
+template <typename ARR, typename COMPARATOR=std::equal_to<ArrValT<ARR>>>
 std::vector<IndexT> myers_diff_trace (ARR orig, ARR updated)
 {
+	COMPARATOR comparator;
 	auto orig_begin = std::begin(orig);
 	auto updated_begin = std::begin(updated);
 	IndexT n = std::distance(orig_begin, std::end(orig));
@@ -97,8 +114,8 @@ std::vector<IndexT> myers_diff_trace (ARR orig, ARR updated)
 
 			y = x - k;
 
-			while (x < n && y < m &&
-				*std::next(orig_begin, x) == *std::next(updated_begin, y))
+			while (x < n && y < m && comparator(
+				*std::next(orig_begin, x), *std::next(updated_begin, y)))
 			{
 				++x;
 				++y;
@@ -115,7 +132,10 @@ std::vector<IndexT> myers_diff_trace (ARR orig, ARR updated)
 	return trace;
 }
 
-template <typename ARR>
+/// Returns a vector of points (X being orig index and Y being updated index)
+/// These points represent the minimum cost diffs
+/// This function is a helper function for myers_diff, but can use in diagnosis
+template <typename ARR, typename COMPARATOR=std::equal_to<ArrValT<ARR>>>
 std::vector<PointT> myers_diff_backtrace (ARR orig, ARR updated)
 {
 	IndexT x = std::distance(std::begin(orig), std::end(orig));
@@ -123,7 +143,7 @@ std::vector<PointT> myers_diff_backtrace (ARR orig, ARR updated)
 	IndexT ncost = 2 * (x + y) + 1;
 	IndexT prev_x, prev_y, prev_k;
 
-	auto traces = myers_diff_trace(orig, updated);
+	auto traces = myers_diff_trace<ARR,COMPARATOR>(orig, updated);
 
 	std::vector<PointT> points;
 	IndexT ntraces = traces.size() / ncost;
@@ -160,30 +180,40 @@ std::vector<PointT> myers_diff_backtrace (ARR orig, ARR updated)
 	return points;
 }
 
+/// Encode of edit action
 enum Action {
 	EQ = 0,
 	ADD,
 	DEL
 };
 
+/// Diff representation
 template <typename T>
 struct Diff
 {
+	/// Character being edited
 	T val_;
+
+	/// Character position in the original array (-1 if not found in original)
 	IndexT orig_;
+
+	/// Character position in the updated array (-1 if not found in original)
 	IndexT updated_;
+
+	/// Edit action
 	Action action_;
 };
 
 template <typename ARR>
 using DiffArrT = Diff<ArrValT<ARR>>;
 
-template <typename ARR>
+/// Return minimum-cost list of differences between orig and updated arrays
+template <typename ARR, typename COMPARATOR=std::equal_to<ArrValT<ARR>>>
 std::vector<DiffArrT<ARR>> myers_diff (ARR orig, ARR updated)
 {
 	std::vector<DiffArrT<ARR>> diffs;
 	PointT prev{orig.size(), updated.size()};
-	auto points = myers_diff_backtrace(orig, updated);
+	auto points = myers_diff_backtrace<ARR,COMPARATOR>(orig, updated);
 	for (PointT& next : points)
 	{
 		if (next.first == prev.first)
