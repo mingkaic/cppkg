@@ -1,3 +1,11 @@
+///
+/// format.hpp
+/// diff
+///
+/// Purpose:
+/// Define diff structure (defined in myers_diff.hpp) string representation
+///
+
 #include <ostream>
 
 #include "diff/myers_diff.hpp"

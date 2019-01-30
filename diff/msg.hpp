@@ -1,3 +1,11 @@
+///
+/// msg.hpp
+/// diff
+///
+/// Purpose:
+/// Define diff message generators
+///
+
 #include <cstring>
 #include <string>
 #include <sstream>

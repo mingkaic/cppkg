@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tlogger',['tlogger',['../flag_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp'],['../logs_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp']]]
+  ['orig_5f',['orig_',['../structdiff_1_1_diff.html#a752ea946cd7fa952ec4bd5129a23b80b',1,'diff::Diff']]]
 ];

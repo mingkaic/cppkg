@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['logs',['logs',['../namespacelogs.html',1,'']]]
+  ['flag',['flag',['../namespaceflag.html',1,'']]],
+  ['fmts',['fmts',['../namespacefmts.html',1,'']]]
 ];

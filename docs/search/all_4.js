@@ -9,5 +9,6 @@ var searchData=
   ['flagset',['FlagSet',['../structflag_1_1_flag_set.html',1,'flag::FlagSet'],['../structflag_1_1_flag_set.html#abe19ff40609d65a4960b94d168b02fce',1,'flag::FlagSet::FlagSet()']]],
   ['fmts',['fmts',['../namespacefmts.html',1,'']]],
   ['fmts_2ecpp',['fmts.cpp',['../fmts_8cpp.html',1,'']]],
-  ['fmts_2ehpp',['fmts.hpp',['../fmts_8hpp.html',1,'']]]
+  ['fmts_2ehpp',['fmts.hpp',['../fmts_8hpp.html',1,'']]],
+  ['format_2ehpp',['format.hpp',['../format_8hpp.html',1,'']]]
 ];

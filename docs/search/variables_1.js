@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['err_5ftag',['err_tag',['../namespacelogs.html#a2c7b2a0c0aca34ac9a092478eb0aa7bf',1,'logs']]]
+  ['del_5ftoken',['DEL_TOKEN',['../namespacediff.html#a3198fa964b5b74c53bb2357235ca1fa1',1,'diff']]]
 ];
