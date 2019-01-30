@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['flags_5f',['flags_',['../structflag_1_1_flag_set.html#ae187a4e7de7da15b99119ddde4a7e4d4',1,'flag::FlagSet']]]
+  ['err_5ftag',['err_tag',['../namespacelogs.html#a2c7b2a0c0aca34ac9a092478eb0aa7bf',1,'logs']]]
 ];
