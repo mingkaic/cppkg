@@ -38,10 +38,26 @@ void to_stream (std::ostream& s, int8_t c);
 void to_stream (std::ostream& s, uint8_t c);
 
 /// Stream generic value to s
-template <typename T>
+template <typename T, typename std::enable_if<!std::is_array<T>::value>::type* = nullptr>
 void to_stream (std::ostream& s, T val)
 {
 	s << val;
+}
+
+/// Stream values between iterators as an array delimited by delim input
+template <typename Iterator>
+void arr_to_stream (std::ostream& s, Iterator begin, Iterator end,
+	std::string delim = std::string(1, arr_delim))
+{
+	if (begin != end)
+	{
+		to_stream(s, *(begin++));
+		while (begin != end)
+		{
+			s << delim;
+			to_stream(s, *(begin++));
+		}
+	}
 }
 
 /// Stream values between iterators as an array
@@ -49,16 +65,15 @@ template <typename Iterator>
 void to_stream (std::ostream& s, Iterator begin, Iterator end)
 {
 	s << arr_begin;
-	if (begin != end)
-	{
-		to_stream(s, *(begin++));
-		while (begin != end)
-		{
-			s << arr_delim;
-			to_stream(s, *(begin++));
-		}
-	}
+	arr_to_stream(s, begin, end);
 	s << arr_end;
+}
+
+/// Stream generic value to s applied to array types
+template <typename T, typename std::enable_if<std::is_array<T>::value>::type* = nullptr>
+void to_stream (std::ostream& s, T val)
+{
+	to_stream(s, std::begin(val), std::end(val));
 }
 
 /// Return string representation for common arguments
@@ -76,6 +91,15 @@ std::string to_string (Iterator begin, Iterator end)
 {
 	std::stringstream ss;
 	to_stream(ss, begin, end);
+	return ss.str();
+}
+
+/// Stream generic value to s applied to array types
+template <typename Iterator>
+std::string join (std::string delim, Iterator begin, Iterator end)
+{
+	std::stringstream ss;
+	arr_to_stream(ss, begin, end, delim);
 	return ss.str();
 }
 
