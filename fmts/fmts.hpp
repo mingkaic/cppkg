@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #ifndef ERR_STRING_HPP
 #define ERR_STRING_HPP
@@ -112,6 +113,14 @@ std::string sprintf (std::string format, ARGS... args)
 	std::snprintf(buf, n, format.c_str(), args...);
 	return std::string(buf, buf + n - 1);
 }
+
+void ltrim(std::string& s);
+
+void rtrim(std::string& s);
+
+void trim(std::string& s);
+
+std::vector<std::string> split (std::string s, std::string delim);
 
 }
 

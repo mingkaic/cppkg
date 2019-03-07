@@ -4,10 +4,10 @@
 # === ALL TESTS ===
 
 # show all test output, make failures verbose and never cache
-test --test_output=all --verbose_failures --cache_test_results=no
+test --test_output=all --verbose_failures --cache_test_results=no --incompatible_remove_native_http_archive=false
 
 # show all coverage outputs
-coverage --test_output=all --verbose_failures
+coverage --test_output=all --verbose_failures --incompatible_remove_native_http_archive=false
 coverage --instrumentation_filter=
 
 # === MEMORY ANALYSIS ===
