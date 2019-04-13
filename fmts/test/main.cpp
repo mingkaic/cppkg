@@ -24,11 +24,11 @@ TEST(FMTS, StringFmt)
 	EXPECT_STREQ("abcdefghijkl", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, "abcd\\efgh\\ijkl\\");
+	fmts::to_stream(ss, fmts::string("abcd\\efgh\\ijkl\\"));
 	EXPECT_STREQ("abcd\\\\efgh\\\\ijkl\\\\", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, "\\abcd\\efgh\\ijkl");
+	fmts::to_stream(ss, fmts::string("\\abcd\\efgh\\ijkl"));
 	EXPECT_STREQ("\\\\abcd\\\\efgh\\\\ijkl", ss.str().c_str());
 }
 
@@ -54,7 +54,10 @@ TEST(FMTS, StreamIterators)
 	ss.str("");
 
 	std::vector<std::string> svec = {
-		"what's\\up\\mybro", "nothing\\much\\fam", "\\hella\\lit"};
+		fmts::string("what's\\up\\mybro"),
+		fmts::string("nothing\\much\\fam"),
+		fmts::string("\\hella\\lit")
+	};
 	fmts::to_stream(ss, svec.begin(), svec.end());
 	EXPECT_STREQ("[what's\\\\up\\\\mybro\\nothing\\\\much\\\\"
 		"fam\\\\\\hella\\\\lit]", ss.str().c_str());

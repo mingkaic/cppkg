@@ -26,11 +26,40 @@ const char arr_end = ']';
 /// Symbol for the delimter between elements of an array as string
 const char arr_delim = '\\';
 
+struct string final
+{
+	string (const char* cstr) : val_(cstr) {}
+
+	string (const std::string& sstr) : val_(sstr) {}
+
+	operator std::string()
+	{
+		std::string modified = val_;
+		for (size_t i = 0, n = modified.size(); i < n; ++i)
+		{
+			switch (modified[i]) {
+				case arr_begin:
+				case arr_end:
+				case arr_delim:
+					modified.insert(modified.begin() + i, arr_delim);
+					++i;
+					++n;
+			}
+		}
+		return modified;
+	}
+
+	std::string val_;
+};
+
+static std::ostream& operator << (std::ostream& os, string sstr)
+{
+	os << (std::string) sstr;
+	return os;
+}
+
 /// Stream C-style strings to s
 void to_stream (std::ostream& s, const char* str);
-
-/// Stream std::strings to s
-void to_stream (std::ostream& s, std::string str);
 
 /// Stream byte-size integers and display as numbers to s
 void to_stream (std::ostream& s, int8_t c);
