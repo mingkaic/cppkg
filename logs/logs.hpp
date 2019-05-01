@@ -58,7 +58,7 @@ enum LOG_LEVEL
 /// Default implementation of iLogger used in ADE
 struct DefLogger final : public iLogger
 {
-	void log (size_t log_level, std::string msg) const
+	void log (size_t log_level, std::string msg) const override
 	{
 		if (log_level <= log_level_)
 		{
@@ -79,7 +79,7 @@ struct DefLogger final : public iLogger
 		}
 	}
 
-	size_t get_log_level (void) const
+	size_t get_log_level (void) const override
 	{
 		return log_level_;
 	}
