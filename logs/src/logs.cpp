@@ -17,6 +17,21 @@ const iLogger& get_logger (void)
 	return *glogger;
 }
 
+void trace (std::string msg)
+{
+	get_logger().log(TRACE, msg);
+}
+
+void debug (std::string msg)
+{
+	get_logger().log(DEBUG, msg);
+}
+
+void info (std::string msg)
+{
+	get_logger().log(INFO, msg);
+}
+
 void warn (std::string msg)
 {
 	get_logger().warn(msg);

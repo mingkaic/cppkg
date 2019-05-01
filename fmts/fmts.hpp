@@ -52,11 +52,7 @@ struct string final
 	std::string val_;
 };
 
-static std::ostream& operator << (std::ostream& os, string sstr)
-{
-	os << (std::string) sstr;
-	return os;
-}
+std::ostream& operator << (std::ostream& os, string sstr);
 
 /// Stream C-style strings to s
 void to_stream (std::ostream& s, const char* str);

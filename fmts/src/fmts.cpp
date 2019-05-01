@@ -5,6 +5,12 @@
 namespace fmts
 {
 
+std::ostream& operator << (std::ostream& os, string sstr)
+{
+	os << (std::string) sstr;
+	return os;
+}
+
 void to_stream (std::ostream& s, const char* str)
 {
 	s << std::string(str);
