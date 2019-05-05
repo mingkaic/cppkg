@@ -91,6 +91,13 @@ Inheritance diagram for logs::iLogger:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aecca2715a205b8b0ce5cffafb2e246f2"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1i_logger.html#aecca2715a205b8b0ce5cffafb2e246f2">~iLogger</a> (void)=default</td></tr>
 <tr class="separator:aecca2715a205b8b0ce5cffafb2e246f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e8039bf321e426f1a20954d60201cdb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1i_logger.html#a7e8039bf321e426f1a20954d60201cdb">log</a> (size_t msg_level, std::string msg) const =0</td></tr>
+<tr class="memdesc:a7e8039bf321e426f1a20954d60201cdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log message at any specified level of verbosity.  <a href="#a7e8039bf321e426f1a20954d60201cdb">More...</a><br /></td></tr>
+<tr class="separator:a7e8039bf321e426f1a20954d60201cdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a253f9562b81d9c8fc2b650adc71cf91b"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1i_logger.html#a253f9562b81d9c8fc2b650adc71cf91b">get_log_level</a> (void) const =0</td></tr>
+<tr class="separator:a253f9562b81d9c8fc2b650adc71cf91b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9813532971c0bc7b0f00fa04eb76e7c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1i_logger.html#ac9813532971c0bc7b0f00fa04eb76e7c">set_log_level</a> (size_t log_level)=0</td></tr>
+<tr class="separator:ac9813532971c0bc7b0f00fa04eb76e7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98689bf7da8f57cca5ee12e1204dda4d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1i_logger.html#a98689bf7da8f57cca5ee12e1204dda4d">warn</a> (std::string msg) const =0</td></tr>
 <tr class="memdesc:a98689bf7da8f57cca5ee12e1204dda4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Warn user of message regarding poor decisions.  <a href="#a98689bf7da8f57cca5ee12e1204dda4d">More...</a><br /></td></tr>
 <tr class="separator:a98689bf7da8f57cca5ee12e1204dda4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,6 +195,102 @@ Public Member Functions</h2></td></tr>
 <p>Notify user of message regarding fatal error, then finish him. </p>
 
 <p>Implemented in <a class="el" href="structlogs_1_1_def_logger.html#ae401d2dd4354d7b1aeadd2e447b0e9ca">logs::DefLogger</a>, <a class="el" href="struct_test_logger.html#abd50bacaa15f868caf73ad2195582177">TestLogger</a>, and <a class="el" href="struct_test_logger.html#abd50bacaa15f868caf73ad2195582177">TestLogger</a>.</p>
+
+</div>
+</div>
+<a id="a253f9562b81d9c8fc2b650adc71cf91b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a253f9562b81d9c8fc2b650adc71cf91b">&#9670;&nbsp;</a></span>get_log_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual size_t logs::iLogger::get_log_level </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="structlogs_1_1_def_logger.html#a85013e3d91fb44ec19d50d087d3ed6f8">logs::DefLogger</a>, <a class="el" href="struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575">TestLogger</a>, and <a class="el" href="struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575">TestLogger</a>.</p>
+
+</div>
+</div>
+<a id="a7e8039bf321e426f1a20954d60201cdb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e8039bf321e426f1a20954d60201cdb">&#9670;&nbsp;</a></span>log()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void logs::iLogger::log </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>msg_level</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>msg</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Log message at any specified level of verbosity. </p>
+
+<p>Implemented in <a class="el" href="structlogs_1_1_def_logger.html#a723aa8c0e23c816a0cae5dbc31e8f480">logs::DefLogger</a>, <a class="el" href="struct_test_logger.html#a5020b262dc31cb19bdeeb7c46ce9a195">TestLogger</a>, and <a class="el" href="struct_test_logger.html#a5020b262dc31cb19bdeeb7c46ce9a195">TestLogger</a>.</p>
+
+</div>
+</div>
+<a id="ac9813532971c0bc7b0f00fa04eb76e7c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9813532971c0bc7b0f00fa04eb76e7c">&#9670;&nbsp;</a></span>set_log_level()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void logs::iLogger::set_log_level </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>log_level</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Implemented in <a class="el" href="structlogs_1_1_def_logger.html#a29d7e644af673e3c79df2578da21d06b">logs::DefLogger</a>, <a class="el" href="struct_test_logger.html#ae0f79c7b29ee49a666727aad80883cd0">TestLogger</a>, and <a class="el" href="struct_test_logger.html#ae0f79c7b29ee49a666727aad80883cd0">TestLogger</a>.</p>
 
 </div>
 </div>

@@ -66,6 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
@@ -76,6 +77,7 @@ $(function() {
 <div class="textblock"><code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;vector&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for fmts.hpp:</div>
 <div class="dyncontent">
@@ -99,6 +101,12 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="fmts_8hpp_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfmts_1_1string.html">fmts::string</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wrap std::string so that array symbols are prefixed with escaped symbol.  <a href="structfmts_1_1string.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacefmts"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html">fmts</a></td></tr>
@@ -106,22 +114,26 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ac6aba723af83c830cc44de7eefe24a12"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ac6aba723af83c830cc44de7eefe24a12">fmts::operator&lt;&lt;</a> (std::ostream &amp;os, string sstr)</td></tr>
+<tr class="memdesc:ac6aba723af83c830cc44de7eefe24a12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Override <a class="el" href="structfmts_1_1string.html" title="Wrap std::string so that array symbols are prefixed with escaped symbol. ">fmts::string</a> stream into out stream.  <a href="namespacefmts.html#ac6aba723af83c830cc44de7eefe24a12">More...</a><br /></td></tr>
+<tr class="separator:ac6aba723af83c830cc44de7eefe24a12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4e253d55279e2583101abdcbfdf7cbd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ab4e253d55279e2583101abdcbfdf7cbd">fmts::to_stream</a> (std::ostream &amp;s, const char *str)</td></tr>
 <tr class="memdesc:ab4e253d55279e2583101abdcbfdf7cbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream C-style strings to s.  <a href="namespacefmts.html#ab4e253d55279e2583101abdcbfdf7cbd">More...</a><br /></td></tr>
 <tr class="separator:ab4e253d55279e2583101abdcbfdf7cbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a30e7baf1fe441dec7ab83aa390e49e4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a30e7baf1fe441dec7ab83aa390e49e4e">fmts::to_stream</a> (std::ostream &amp;s, std::string str)</td></tr>
-<tr class="memdesc:a30e7baf1fe441dec7ab83aa390e49e4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream std::strings to s.  <a href="namespacefmts.html#a30e7baf1fe441dec7ab83aa390e49e4e">More...</a><br /></td></tr>
-<tr class="separator:a30e7baf1fe441dec7ab83aa390e49e4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a696d3e83f7cf97767837e782b9ebb0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a8a696d3e83f7cf97767837e782b9ebb0">fmts::to_stream</a> (std::ostream &amp;s, int8_t c)</td></tr>
 <tr class="memdesc:a8a696d3e83f7cf97767837e782b9ebb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream byte-size integers and display as numbers to s.  <a href="namespacefmts.html#a8a696d3e83f7cf97767837e782b9ebb0">More...</a><br /></td></tr>
 <tr class="separator:a8a696d3e83f7cf97767837e782b9ebb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8108a0fcdb770502d80477649d5f782d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a8108a0fcdb770502d80477649d5f782d">fmts::to_stream</a> (std::ostream &amp;s, uint8_t c)</td></tr>
 <tr class="memdesc:a8108a0fcdb770502d80477649d5f782d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream byte-size unsigned integers and display as numbers to s.  <a href="namespacefmts.html#a8108a0fcdb770502d80477649d5f782d">More...</a><br /></td></tr>
 <tr class="separator:a8108a0fcdb770502d80477649d5f782d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4db4f0f16211bdb64d8a98ea46034d42"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a4db4f0f16211bdb64d8a98ea46034d42"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a4db4f0f16211bdb64d8a98ea46034d42">fmts::to_stream</a> (std::ostream &amp;s, T val)</td></tr>
-<tr class="memdesc:a4db4f0f16211bdb64d8a98ea46034d42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream generic value to s.  <a href="namespacefmts.html#a4db4f0f16211bdb64d8a98ea46034d42">More...</a><br /></td></tr>
-<tr class="separator:a4db4f0f16211bdb64d8a98ea46034d42"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae244630b95a89a2a5e46c3a53553f7c1"><td class="memTemplParams" colspan="2">template&lt;typename T , typename std::enable_if&lt;!std::is_array&lt; T &gt;::value &gt;::type *  = nullptr&gt; </td></tr>
+<tr class="memitem:ae244630b95a89a2a5e46c3a53553f7c1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ae244630b95a89a2a5e46c3a53553f7c1">fmts::to_stream</a> (std::ostream &amp;s, T val)</td></tr>
+<tr class="memdesc:ae244630b95a89a2a5e46c3a53553f7c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream generic value to s.  <a href="namespacefmts.html#ae244630b95a89a2a5e46c3a53553f7c1">More...</a><br /></td></tr>
+<tr class="separator:ae244630b95a89a2a5e46c3a53553f7c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1abf54f06f54d916774d9c65b01123e6"><td class="memTemplParams" colspan="2">template&lt;typename Iterator &gt; </td></tr>
+<tr class="memitem:a1abf54f06f54d916774d9c65b01123e6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a1abf54f06f54d916774d9c65b01123e6">fmts::arr_to_stream</a> (std::ostream &amp;s, Iterator begin, Iterator end, std::string delim=std::string(1, arr_delim))</td></tr>
+<tr class="memdesc:a1abf54f06f54d916774d9c65b01123e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream values between iterators as an array delimited by delim input.  <a href="namespacefmts.html#a1abf54f06f54d916774d9c65b01123e6">More...</a><br /></td></tr>
+<tr class="separator:a1abf54f06f54d916774d9c65b01123e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2a52874679d51f25661646e027382909"><td class="memTemplParams" colspan="2">template&lt;typename Iterator &gt; </td></tr>
 <tr class="memitem:a2a52874679d51f25661646e027382909"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a2a52874679d51f25661646e027382909">fmts::to_stream</a> (std::ostream &amp;s, Iterator begin, Iterator end)</td></tr>
 <tr class="memdesc:a2a52874679d51f25661646e027382909"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream values between iterators as an array.  <a href="namespacefmts.html#a2a52874679d51f25661646e027382909">More...</a><br /></td></tr>
@@ -134,10 +146,26 @@ Functions</h2></td></tr>
 <tr class="memitem:a9385aa88dfa164d6dd253d9f3962f57b"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a9385aa88dfa164d6dd253d9f3962f57b">fmts::to_string</a> (Iterator begin, Iterator end)</td></tr>
 <tr class="memdesc:a9385aa88dfa164d6dd253d9f3962f57b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return string representation of values between iterators.  <a href="namespacefmts.html#a9385aa88dfa164d6dd253d9f3962f57b">More...</a><br /></td></tr>
 <tr class="separator:a9385aa88dfa164d6dd253d9f3962f57b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a60b34ab704c203f3d43fb80b38190061"><td class="memTemplParams" colspan="2">template&lt;typename Iterator &gt; </td></tr>
+<tr class="memitem:a60b34ab704c203f3d43fb80b38190061"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a60b34ab704c203f3d43fb80b38190061">fmts::join</a> (std::string delim, Iterator begin, Iterator end)</td></tr>
+<tr class="memdesc:a60b34ab704c203f3d43fb80b38190061"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream generic value to s applied to array types.  <a href="namespacefmts.html#a60b34ab704c203f3d43fb80b38190061">More...</a><br /></td></tr>
+<tr class="separator:a60b34ab704c203f3d43fb80b38190061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adad5462eecdcc529f5818ba5c73882e6"><td class="memTemplParams" colspan="2">template&lt;typename... ARGS&gt; </td></tr>
 <tr class="memitem:adad5462eecdcc529f5818ba5c73882e6"><td class="memTemplItemLeft" align="right" valign="top">std::string&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#adad5462eecdcc529f5818ba5c73882e6">fmts::sprintf</a> (std::string format, ARGS... args)</td></tr>
 <tr class="memdesc:adad5462eecdcc529f5818ba5c73882e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return std::string with snprintf formatting.  <a href="namespacefmts.html#adad5462eecdcc529f5818ba5c73882e6">More...</a><br /></td></tr>
 <tr class="separator:adad5462eecdcc529f5818ba5c73882e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ea8b89952db77dbebe6b191c99f40f1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a2ea8b89952db77dbebe6b191c99f40f1">fmts::ltrim</a> (std::string &amp;s)</td></tr>
+<tr class="memdesc:a2ea8b89952db77dbebe6b191c99f40f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trim all white-space symbols on the left side of string s.  <a href="namespacefmts.html#a2ea8b89952db77dbebe6b191c99f40f1">More...</a><br /></td></tr>
+<tr class="separator:a2ea8b89952db77dbebe6b191c99f40f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ff33827584adcc28dd2b8dad34ca50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ac6ff33827584adcc28dd2b8dad34ca50">fmts::rtrim</a> (std::string &amp;s)</td></tr>
+<tr class="memdesc:ac6ff33827584adcc28dd2b8dad34ca50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trim all white-space symbols on the right side of string s.  <a href="namespacefmts.html#ac6ff33827584adcc28dd2b8dad34ca50">More...</a><br /></td></tr>
+<tr class="separator:ac6ff33827584adcc28dd2b8dad34ca50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec07c77570a1217ce9825b0b59252cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a8ec07c77570a1217ce9825b0b59252cd">fmts::trim</a> (std::string &amp;s)</td></tr>
+<tr class="memdesc:a8ec07c77570a1217ce9825b0b59252cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Trim all white-space symbols surroudning string s.  <a href="namespacefmts.html#a8ec07c77570a1217ce9825b0b59252cd">More...</a><br /></td></tr>
+<tr class="separator:a8ec07c77570a1217ce9825b0b59252cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b81d47cee49dcf4e3ae319e35dbbc8a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a9b81d47cee49dcf4e3ae319e35dbbc8a">fmts::split</a> (std::string s, std::string delim)</td></tr>
+<tr class="memdesc:a9b81d47cee49dcf4e3ae319e35dbbc8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return string s split into all substrings separated by delim as a vector.  <a href="namespacefmts.html#a9b81d47cee49dcf4e3ae319e35dbbc8a">More...</a><br /></td></tr>
+<tr class="separator:a9b81d47cee49dcf4e3ae319e35dbbc8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -148,7 +176,7 @@ Variables</h2></td></tr>
 <tr class="memdesc:ac894d64b2ea08c254bb603a933095011"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for the end of an array as string.  <a href="namespacefmts.html#ac894d64b2ea08c254bb603a933095011">More...</a><br /></td></tr>
 <tr class="separator:ac894d64b2ea08c254bb603a933095011"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a757d94f2759cd51a133041447e13cefc"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a757d94f2759cd51a133041447e13cefc">fmts::arr_delim</a> = '\\'</td></tr>
-<tr class="memdesc:a757d94f2759cd51a133041447e13cefc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for the delimter between elements of an array as string.  <a href="namespacefmts.html#a757d94f2759cd51a133041447e13cefc">More...</a><br /></td></tr>
+<tr class="memdesc:a757d94f2759cd51a133041447e13cefc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for the delimiter between elements of an array as string.  <a href="namespacefmts.html#a757d94f2759cd51a133041447e13cefc">More...</a><br /></td></tr>
 <tr class="separator:a757d94f2759cd51a133041447e13cefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eilogger',['~iLogger',['../structlogs_1_1i_logger.html#aecca2715a205b8b0ce5cffafb2e246f2',1,'logs::iLogger']]]
+  ['parse',['parse',['../structflag_1_1_flag_set.html#afd88dd928b8c988eff918b5bb645579d',1,'flag::FlagSet::parse(int argc, const char **argv)'],['../structflag_1_1_flag_set.html#a8d0f22f8f00f9a0b80d39655285ea61d',1,'flag::FlagSet::parse(int argc, const char **argv, opt::variables_map &amp;vars)']]]
 ];

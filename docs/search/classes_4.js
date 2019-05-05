@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['testlogger',['TestLogger',['../struct_test_logger.html',1,'']]]
+  ['string',['string',['../structfmts_1_1string.html',1,'fmts']]]
 ];

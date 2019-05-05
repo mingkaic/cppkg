@@ -10,5 +10,6 @@ var searchData=
   ['arr_5fbegin',['arr_begin',['../namespacefmts.html#a52903e0ecc6db98a4ae6bddbb842898f',1,'fmts']]],
   ['arr_5fdelim',['arr_delim',['../namespacefmts.html#a757d94f2759cd51a133041447e13cefc',1,'fmts']]],
   ['arr_5fend',['arr_end',['../namespacefmts.html#ac894d64b2ea08c254bb603a933095011',1,'fmts']]],
+  ['arr_5fto_5fstream',['arr_to_stream',['../namespacefmts.html#a1abf54f06f54d916774d9c65b01123e6',1,'fmts']]],
   ['arrvalt',['ArrValT',['../namespacediff.html#a03490b4eec786475758342205aff28e7',1,'diff']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pos_5f',['pos_',['../structflag_1_1_flag_set.html#afeb64580eb2728b2f2029d8ed4462137',1,'flag::FlagSet']]]
+  ['orig_5f',['orig_',['../structdiff_1_1_diff.html#a752ea946cd7fa952ec4bd5129a23b80b',1,'diff::Diff']]]
 ];
