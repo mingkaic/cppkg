@@ -23,7 +23,7 @@ struct iLogger
 	virtual ~iLogger (void) = default;
 
 	/// Log message at any specified level of verbosity
-	virtual void log (size_t log_level, std::string msg) const = 0;
+	virtual void log (size_t msg_level, std::string msg) const = 0;
 
 	virtual size_t get_log_level (void) const = 0;
 
@@ -58,11 +58,11 @@ enum LOG_LEVEL
 /// Default implementation of iLogger used in ADE
 struct DefLogger final : public iLogger
 {
-	void log (size_t log_level, std::string msg) const override
+	void log (size_t msg_level, std::string msg) const override
 	{
-		if (log_level <= log_level_)
+		if (msg_level <= log_level_)
 		{
-			switch (log_level_)
+			switch (msg_level)
 			{
 				case FATAL:
 					fatal(msg);

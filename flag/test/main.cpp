@@ -3,11 +3,35 @@
 #include "flag/flag.hpp"
 
 
+static const char* program = "program";
+static const char* help_flag = "--help";
+const size_t log_level_ret = 42873301;
+
+
 struct TestLogger : public logs::iLogger
 {
 	static std::string latest_warning_;
 	static std::string latest_error_;
 	static std::string latest_fatal_;
+	static std::string latest_log_msg_;
+	static size_t set_log_level_;
+
+	void log (size_t msg_level, std::string msg) const override
+	{
+		std::stringstream ss;
+		ss << msg_level << msg;
+		latest_log_msg_ = ss.str();
+	}
+
+	size_t get_log_level (void) const override
+	{
+		return log_level_ret;
+	}
+
+	void set_log_level (size_t log_level) override
+	{
+		set_log_level_ = log_level;
+	}
 
 	void warn (std::string msg) const override
 	{
@@ -31,6 +55,10 @@ std::string TestLogger::latest_warning_;
 std::string TestLogger::latest_error_;
 
 std::string TestLogger::latest_fatal_;
+
+std::string TestLogger::latest_log_msg_;
+
+size_t TestLogger::set_log_level_ = 0;
 
 std::shared_ptr<TestLogger> tlogger = std::make_shared<TestLogger>();
 
@@ -60,7 +88,7 @@ protected:
 
 TEST_F(FLAG, Help)
 {
-	flag::FlagSet f("program");
+	flag::FlagSet f(program);
 
 	std::string str;
 	int i;
@@ -83,7 +111,7 @@ TEST_F(FLAG, Help)
 	f.add_arg("arg", flag::opt::value<std::string>(&arg),
 		"first argument", 1);
 
-	char* args[] = {"program", "--help"};
+	const char* args[] = {program, help_flag};
 
 	std::string expectmsg =
 		"usage: program [flags] arg\n"
@@ -98,7 +126,7 @@ TEST_F(FLAG, Help)
 	EXPECT_STREQ(expectmsg.c_str(), TestLogger::latest_warning_.c_str());
 
 	// unlimited args
-	flag::FlagSet f2("program");
+	flag::FlagSet f2(program);
 	f2.add_arg("arg", flag::opt::value<std::string>(&arg),
 		"first argument", -1);
 
@@ -119,7 +147,7 @@ TEST_F(FLAG, Parse)
 	bool b;
 	bool s;
 
-	flag::FlagSet f("program");
+	flag::FlagSet f(program);
 	f.add_flags()
 		("string", flag::opt::value<std::string>(&str)->
 			default_value("default string"),
@@ -137,7 +165,7 @@ TEST_F(FLAG, Parse)
 	f.add_arg("arg", flag::opt::value<std::string>(&arg)->required(),
 		"first argument", 1);
 
-	char* args[] = {"program", "argument value"};
+	const char* args[] = {program, "argument value"};
 	ASSERT_TRUE(f.parse(2, args));
 	EXPECT_STREQ("argument value", arg.c_str());
 	EXPECT_STREQ("default string", str.c_str());
@@ -146,7 +174,7 @@ TEST_F(FLAG, Parse)
 	EXPECT_EQ(true, b);
 	EXPECT_EQ(false, s);
 
-	char* args2[] = {"program",
+	const char* args2[] = {program,
 		"--string", "special string",
 		"--ints", "4567",
 		"--doubs", "9.7",
@@ -160,11 +188,11 @@ TEST_F(FLAG, Parse)
 	EXPECT_EQ(false, b);
 	EXPECT_EQ(true, s);
 
-	char* badargs[] = {"program"};
+	const char* badargs[] = {program};
 	ASSERT_FALSE(f.parse(1, badargs));
 	EXPECT_STREQ("the option '--arg' is required but missing", TestLogger::latest_error_.c_str());
 
-	char* badargs2[] = {"program", "--whoami", "argument value"};
+	const char* badargs2[] = {program, "--whoami", "argument value"};
 	ASSERT_FALSE(f.parse(3, badargs2));
 	EXPECT_STREQ("unrecognised option '--whoami'",
 		TestLogger::latest_error_.c_str());

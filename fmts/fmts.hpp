@@ -23,9 +23,10 @@ const char arr_begin = '[';
 /// Symbol for the end of an array as string
 const char arr_end = ']';
 
-/// Symbol for the delimter between elements of an array as string
+/// Symbol for the delimiter between elements of an array as string
 const char arr_delim = '\\';
 
+/// Wrap std::string so that array symbols are prefixed with escaped symbol
 struct string final
 {
 	string (const char* cstr) : val_(cstr) {}
@@ -52,6 +53,7 @@ struct string final
 	std::string val_;
 };
 
+/// Override fmts::string stream into out stream
 std::ostream& operator << (std::ostream& os, string sstr);
 
 /// Stream C-style strings to s
@@ -139,12 +141,16 @@ std::string sprintf (std::string format, ARGS... args)
 	return std::string(buf, buf + n - 1);
 }
 
+/// Trim all white-space symbols on the left side of string s
 void ltrim(std::string& s);
 
+/// Trim all white-space symbols on the right side of string s
 void rtrim(std::string& s);
 
+/// Trim all white-space symbols surroudning string s
 void trim(std::string& s);
 
+/// Return string s split into all substrings separated by delim as a vector
 std::vector<std::string> split (std::string s, std::string delim);
 
 }
