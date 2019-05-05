@@ -66,7 +66,6 @@ struct DefLogger final : public iLogger
 			{
 				case FATAL:
 					fatal(msg);
-					break;
 				case ERROR:
 					error(msg);
 					break;
@@ -92,7 +91,7 @@ struct DefLogger final : public iLogger
 	/// Implementation of iLogger
 	void warn (std::string msg) const override
 	{
-		if (log_level_ <= WARN)
+		if (WARN <= log_level_)
 		{
 			std::cerr << warn_tag << msg << '\n';
 		}
@@ -101,7 +100,7 @@ struct DefLogger final : public iLogger
 	/// Implementation of iLogger
 	void error (std::string msg) const override
 	{
-		if (log_level_ <= ERROR)
+		if (ERROR <= log_level_)
 		{
 			std::cerr << err_tag << msg << '\n';
 		}
@@ -110,7 +109,10 @@ struct DefLogger final : public iLogger
 	/// Implementation of iLogger
 	void fatal (std::string msg) const override
 	{
-		throw std::runtime_error(msg);
+		if (FATAL <= log_level_)
+		{
+			throw std::runtime_error(msg);
+		}
 	}
 
 	LOG_LEVEL log_level_ = INFO;
