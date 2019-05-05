@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['val_5f',['val_',['../structdiff_1_1_diff.html#ac6ac352c37eb043c01fa084998350f3c',1,'diff::Diff']]]
+  ['tlogger',['tlogger',['../flag_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp'],['../logs_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp']]]
 ];

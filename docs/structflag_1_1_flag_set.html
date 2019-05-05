@@ -83,10 +83,10 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abe19ff40609d65a4960b94d168b02fce"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#abe19ff40609d65a4960b94d168b02fce">FlagSet</a> (const char *prog)</td></tr>
 <tr class="separator:abe19ff40609d65a4960b94d168b02fce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a31b25f589bf31126a870537e55525dd2"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#a31b25f589bf31126a870537e55525dd2">parse</a> (int argc, char **argv)</td></tr>
-<tr class="separator:a31b25f589bf31126a870537e55525dd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0654e2468b40f33d8c46b686420d529f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#a0654e2468b40f33d8c46b686420d529f">parse</a> (int argc, char **argv, opt::variables_map &amp;vars)</td></tr>
-<tr class="separator:a0654e2468b40f33d8c46b686420d529f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd88dd928b8c988eff918b5bb645579d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#afd88dd928b8c988eff918b5bb645579d">parse</a> (int argc, const char **argv)</td></tr>
+<tr class="separator:afd88dd928b8c988eff918b5bb645579d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d0f22f8f00f9a0b80d39655285ea61d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#a8d0f22f8f00f9a0b80d39655285ea61d">parse</a> (int argc, const char **argv, opt::variables_map &amp;vars)</td></tr>
+<tr class="separator:a8d0f22f8f00f9a0b80d39655285ea61d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f04506b0f7976cb7c20ab817a067c0a"><td class="memItemLeft" align="right" valign="top">opt::options_description_easy_init&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#a4f04506b0f7976cb7c20ab817a067c0a">add_flags</a> (void)</td></tr>
 <tr class="separator:a4f04506b0f7976cb7c20ab817a067c0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5087e400dd0b1ad23d56e4463908f0a0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structflag_1_1_flag_set.html#a5087e400dd0b1ad23d56e4463908f0a0">add_arg</a> (const char *name, const opt::value_semantic *s, const char *description, int maxcount)</td></tr>
@@ -202,8 +202,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a31b25f589bf31126a870537e55525dd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a31b25f589bf31126a870537e55525dd2">&#9670;&nbsp;</a></span>parse() <span class="overload">[1/2]</span></h2>
+<a id="afd88dd928b8c988eff918b5bb645579d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd88dd928b8c988eff918b5bb645579d">&#9670;&nbsp;</a></span>parse() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,7 +220,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char **&#160;</td>
+          <td class="paramtype">const char **&#160;</td>
           <td class="paramname"><em>argv</em>&#160;</td>
         </tr>
         <tr>
@@ -239,8 +239,8 @@ Private Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="a0654e2468b40f33d8c46b686420d529f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0654e2468b40f33d8c46b686420d529f">&#9670;&nbsp;</a></span>parse() <span class="overload">[2/2]</span></h2>
+<a id="a8d0f22f8f00f9a0b80d39655285ea61d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d0f22f8f00f9a0b80d39655285ea61d">&#9670;&nbsp;</a></span>parse() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -254,7 +254,7 @@ Private Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char **&#160;</td>
+          <td class="paramtype">const char **&#160;</td>
           <td class="paramname"><em>argv</em>, </td>
         </tr>
         <tr>

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <string>
 #include <sstream>
+#include <vector>
 
 #ifndef ERR_STRING_HPP
 #define ERR_STRING_HPP
@@ -22,14 +23,41 @@ const char arr_begin = '[';
 /// Symbol for the end of an array as string
 const char arr_end = ']';
 
-/// Symbol for the delimter between elements of an array as string
+/// Symbol for the delimiter between elements of an array as string
 const char arr_delim = '\\';
+
+/// Wrap std::string so that array symbols are prefixed with escaped symbol
+struct string final
+{
+	string (const char* cstr) : val_(cstr) {}
+
+	string (const std::string& sstr) : val_(sstr) {}
+
+	operator std::string()
+	{
+		std::string modified = val_;
+		for (size_t i = 0, n = modified.size(); i < n; ++i)
+		{
+			switch (modified[i]) {
+				case arr_begin:
+				case arr_end:
+				case arr_delim:
+					modified.insert(modified.begin() + i, arr_delim);
+					++i;
+					++n;
+			}
+		}
+		return modified;
+	}
+
+	std::string val_;
+};
+
+/// Override fmts::string stream into out stream
+std::ostream& operator << (std::ostream& os, string sstr);
 
 /// Stream C-style strings to s
 void to_stream (std::ostream& s, const char* str);
-
-/// Stream std::strings to s
-void to_stream (std::ostream& s, std::string str);
 
 /// Stream byte-size integers and display as numbers to s
 void to_stream (std::ostream& s, int8_t c);
@@ -38,10 +66,26 @@ void to_stream (std::ostream& s, int8_t c);
 void to_stream (std::ostream& s, uint8_t c);
 
 /// Stream generic value to s
-template <typename T>
+template <typename T, typename std::enable_if<!std::is_array<T>::value>::type* = nullptr>
 void to_stream (std::ostream& s, T val)
 {
 	s << val;
+}
+
+/// Stream values between iterators as an array delimited by delim input
+template <typename Iterator>
+void arr_to_stream (std::ostream& s, Iterator begin, Iterator end,
+	std::string delim = std::string(1, arr_delim))
+{
+	if (begin != end)
+	{
+		to_stream(s, *(begin++));
+		while (begin != end)
+		{
+			s << delim;
+			to_stream(s, *(begin++));
+		}
+	}
 }
 
 /// Stream values between iterators as an array
@@ -49,16 +93,15 @@ template <typename Iterator>
 void to_stream (std::ostream& s, Iterator begin, Iterator end)
 {
 	s << arr_begin;
-	if (begin != end)
-	{
-		to_stream(s, *(begin++));
-		while (begin != end)
-		{
-			s << arr_delim;
-			to_stream(s, *(begin++));
-		}
-	}
+	arr_to_stream(s, begin, end);
 	s << arr_end;
+}
+
+/// Stream generic value to s applied to array types
+template <typename T, typename std::enable_if<std::is_array<T>::value>::type* = nullptr>
+void to_stream (std::ostream& s, T val)
+{
+	to_stream(s, std::begin(val), std::end(val));
 }
 
 /// Return string representation for common arguments
@@ -79,6 +122,15 @@ std::string to_string (Iterator begin, Iterator end)
 	return ss.str();
 }
 
+/// Stream generic value to s applied to array types
+template <typename Iterator>
+std::string join (std::string delim, Iterator begin, Iterator end)
+{
+	std::stringstream ss;
+	arr_to_stream(ss, begin, end, delim);
+	return ss.str();
+}
+
 /// Return std::string with snprintf formatting
 template <typename... ARGS>
 std::string sprintf (std::string format, ARGS... args)
@@ -88,6 +140,18 @@ std::string sprintf (std::string format, ARGS... args)
 	std::snprintf(buf, n, format.c_str(), args...);
 	return std::string(buf, buf + n - 1);
 }
+
+/// Trim all white-space symbols on the left side of string s
+void ltrim(std::string& s);
+
+/// Trim all white-space symbols on the right side of string s
+void rtrim(std::string& s);
+
+/// Trim all white-space symbols surroudning string s
+void trim(std::string& s);
+
+/// Return string s split into all substrings separated by delim as a vector
+std::vector<std::string> split (std::string s, std::string delim);
 
 }
 

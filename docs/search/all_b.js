@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['readme_2emd',['README.md',['../_r_e_a_d_m_e_8md.html',1,'']]],
-  ['readme_5fdiff_2emd',['README_DIFF.md',['../_r_e_a_d_m_e___d_i_f_f_8md.html',1,'']]],
-  ['readme_5fflag_2emd',['README_FLAG.md',['../_r_e_a_d_m_e___f_l_a_g_8md.html',1,'']]],
-  ['readme_5ffmts_2emd',['README_FMTS.md',['../_r_e_a_d_m_e___f_m_t_s_8md.html',1,'']]],
-  ['readme_5flogs_2emd',['README_LOGS.md',['../_r_e_a_d_m_e___l_o_g_s_8md.html',1,'']]]
+  ['operator_3c_3c',['operator&lt;&lt;',['../namespacefmts.html#ac6aba723af83c830cc44de7eefe24a12',1,'fmts']]],
+  ['orig_5f',['orig_',['../structdiff_1_1_diff.html#a752ea946cd7fa952ec4bd5129a23b80b',1,'diff::Diff']]],
+  ['string',['string',['../structfmts_1_1string.html#ac57918aef6ecc8baceaa495440f31bab',1,'fmts::string']]]
 ];

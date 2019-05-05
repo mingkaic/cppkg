@@ -26,7 +26,7 @@ struct FlagSet
 	/// Return true if arguments are successfully parsed according to args_
 	/// --help flag will logs::warn with help message and return false
 	/// Any error will logs::error and return false
-	bool parse(int argc, char** argv)
+	bool parse(int argc, const char** argv)
 	{
 		opt::variables_map vm;
 		return parse(argc, argv, vm);
@@ -34,7 +34,7 @@ struct FlagSet
 
 	/// Return true if arguments are successfully parsed according to args_
 	/// Dump parsed variables to vars
-	bool parse(int argc, char** argv, opt::variables_map& vars);
+	bool parse(int argc, const char** argv, opt::variables_map& vars);
 
 	/// Return boost's options description for flags
 	/// See Boost Documentation for more information:

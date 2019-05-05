@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['updated_5f',['updated_',['../structdiff_1_1_diff.html#a625dbb1f825eee155a3bcd0765d912de',1,'diff::Diff']]]
+  ['set_5flog_5flevel_5f',['set_log_level_',['../struct_test_logger.html#abd16fa9c91811fc4c3c34c1d33e8c418',1,'TestLogger']]]
 ];

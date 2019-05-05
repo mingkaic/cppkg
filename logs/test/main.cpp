@@ -3,11 +3,32 @@
 #include "logs/logs.hpp"
 
 
+const size_t log_level_ret = 103272;
+
 struct TestLogger : public logs::iLogger
 {
 	static std::string latest_warning_;
 	static std::string latest_error_;
 	static std::string latest_fatal_;
+	static std::string latest_log_msg_;
+	static size_t set_log_level_;
+
+	void log (size_t msg_level, std::string msg) const override
+	{
+		std::stringstream ss;
+		ss << msg_level << msg;
+		latest_log_msg_ = ss.str();
+	}
+
+	size_t get_log_level (void) const override
+	{
+		return log_level_ret;
+	}
+
+	void set_log_level (size_t log_level) override
+	{
+		set_log_level_ = log_level;
+	}
 
 	void warn (std::string msg) const override
 	{
@@ -31,6 +52,10 @@ std::string TestLogger::latest_warning_;
 std::string TestLogger::latest_error_;
 
 std::string TestLogger::latest_fatal_;
+
+std::string TestLogger::latest_log_msg_;
+
+size_t TestLogger::set_log_level_ = 0;
 
 std::shared_ptr<TestLogger> tlogger = std::make_shared<TestLogger>();
 
@@ -61,6 +86,27 @@ protected:
 TEST_F(LOGS, Default)
 {
 	logs::DefLogger log;
+	EXPECT_EQ(logs::INFO, log.get_log_level());
+	log.set_log_level(logs::DEBUG);
+	EXPECT_EQ(logs::DEBUG, log.get_log_level());
+	log.log(logs::INFO, "log info message");
+	log.log(logs::WARN, "log warn message");
+	log.log(logs::ERROR, "log error message");
+	try
+	{
+		log.log(logs::FATAL, "log fatal message");
+		FAIL() << "log.fatal failed to throw error";
+	}
+	catch (std::runtime_error& e)
+	{
+		const char* msg = e.what();
+		EXPECT_STREQ("log fatal message", msg);
+	}
+	catch (...)
+	{
+		FAIL() << "expected to throw runtime_error";
+	}
+
 	log.warn("warning message");
 	log.error("error message");
 	try
@@ -77,6 +123,66 @@ TEST_F(LOGS, Default)
 	{
 		FAIL() << "expected to throw runtime_error";
 	}
+}
+
+
+TEST_F(LOGS, Trace)
+{
+	logs::trace("tracing message");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf("%dtracing message", logs::TRACE);
+	EXPECT_STREQ(expect.c_str(), cmsg);
+}
+
+
+TEST_F(LOGS, TraceFmt)
+{
+	logs::tracef("tracing %.2f message %d with format %s",
+		4.15, 33, "applepie");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf(
+		"%dtracing 4.15 message 33 with format applepie", logs::TRACE);
+	EXPECT_STREQ(expect.c_str(), cmsg);
+}
+
+
+TEST_F(LOGS, Debug)
+{
+	logs::debug("debugging message");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf("%ddebugging message", logs::DEBUG);
+	EXPECT_STREQ(expect.c_str(), cmsg);
+}
+
+
+TEST_F(LOGS, DebugFmt)
+{
+	logs::debugf("debugging %.3f message %d with format %s",
+		0.31, 7, "orange");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf(
+		"%ddebugging 0.310 message 7 with format orange", logs::DEBUG);
+	EXPECT_STREQ(expect.c_str(), cmsg);
+}
+
+
+TEST_F(LOGS, Info)
+{
+	logs::info("infoing message");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf("%dinfoing message", logs::INFO);
+	EXPECT_STREQ(expect.c_str(), cmsg);
+}
+
+
+TEST_F(LOGS, InfoFmt)
+{
+	logs::infof("infoing %.4f message %d with format %s", 3.1415967, -1,
+		"plum");
+	const char* cmsg = TestLogger::latest_log_msg_.c_str();
+	auto expect = fmts::sprintf(
+		"%dinfoing 3.1416 message -1 with format plum", logs::INFO);
+	EXPECT_STREQ(expect.c_str(), cmsg);
 }
 
 

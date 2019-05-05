@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['warn_5ftag',['warn_tag',['../namespacelogs.html#ac79af6a626877a606c13a5fb867d1751',1,'logs']]]
+  ['updated_5f',['updated_',['../structdiff_1_1_diff.html#a625dbb1f825eee155a3bcd0765d912de',1,'diff::Diff']]]
 ];

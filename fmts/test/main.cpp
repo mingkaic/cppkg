@@ -24,11 +24,11 @@ TEST(FMTS, StringFmt)
 	EXPECT_STREQ("abcdefghijkl", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, "abcd\\efgh\\ijkl\\");
+	fmts::to_stream(ss, fmts::string("abcd\\efgh\\ijkl\\"));
 	EXPECT_STREQ("abcd\\\\efgh\\\\ijkl\\\\", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, "\\abcd\\efgh\\ijkl");
+	fmts::to_stream(ss, fmts::string("\\abcd\\efgh\\ijkl"));
 	EXPECT_STREQ("\\\\abcd\\\\efgh\\\\ijkl", ss.str().c_str());
 }
 
@@ -54,7 +54,10 @@ TEST(FMTS, StreamIterators)
 	ss.str("");
 
 	std::vector<std::string> svec = {
-		"what's\\up\\mybro", "nothing\\much\\fam", "\\hella\\lit"};
+		fmts::string("what's\\up\\mybro"),
+		fmts::string("nothing\\much\\fam"),
+		fmts::string("\\hella\\lit")
+	};
 	fmts::to_stream(ss, svec.begin(), svec.end());
 	EXPECT_STREQ("[what's\\\\up\\\\mybro\\nothing\\\\much\\\\"
 		"fam\\\\\\hella\\\\lit]", ss.str().c_str());
@@ -94,6 +97,45 @@ TEST(FMTS, Sprintf)
 	std::string s = fmts::sprintf("%% %s %d %.3f %% %%%% %s %d %.1f %% %%%%",
 		str, 123, 5.689, oth, 77, 0.4, 12);
 	EXPECT_STREQ("% string 123 5.689 % %% other 77 0.4 % %%", s.c_str());
+}
+
+
+TEST(FMTS, LeftTrim)
+{
+	std::string content = "    abce  dfgi hjk lm  ";
+	fmts::ltrim(content);
+	EXPECT_STREQ("abce  dfgi hjk lm  ", content.c_str());
+}
+
+
+TEST(FMTS, RightTrim)
+{
+	std::string content = "    abce  dfgi hjk lm  ";
+	fmts::rtrim(content);
+	EXPECT_STREQ("    abce  dfgi hjk lm", content.c_str());
+}
+
+
+TEST(FMTS, Trim)
+{
+	std::string content = "    abce  dfgi hjk lm  ";
+	fmts::trim(content);
+	EXPECT_STREQ("abce  dfgi hjk lm", content.c_str());
+}
+
+
+TEST(FMTS, Split)
+{
+	std::string content = ", ,abce, df,gi, hjk, lm, ";
+	auto arrs = fmts::split(content, ", ");
+	// expect ["", ",abce", "df,gi", "hjk", "lm", ""]
+	ASSERT_EQ(6, arrs.size());
+	EXPECT_STREQ("", arrs[0].c_str());
+	EXPECT_STREQ(",abce", arrs[1].c_str());
+	EXPECT_STREQ("df,gi", arrs[2].c_str());
+	EXPECT_STREQ("hjk", arrs[3].c_str());
+	EXPECT_STREQ("lm", arrs[4].c_str());
+	EXPECT_STREQ("", arrs[5].c_str());
 }
 
 

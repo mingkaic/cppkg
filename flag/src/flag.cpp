@@ -48,7 +48,7 @@ FlagSet::FlagSet (const char* prog) :
 	flags_(fmts::sprintf("%s flags", prog)),
 	args_(fmts::sprintf("%s arguments", prog)) {}
 
-bool FlagSet::parse(int argc, char** argv, opt::variables_map& vars)
+bool FlagSet::parse(int argc, const char** argv, opt::variables_map& vars)
 {
 	flags_.add_options()
 		("help", "Display help message");
