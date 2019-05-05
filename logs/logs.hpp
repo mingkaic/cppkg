@@ -109,10 +109,7 @@ struct DefLogger final : public iLogger
 	/// Implementation of iLogger
 	void fatal (std::string msg) const override
 	{
-		if (FATAL <= log_level_)
-		{
-			throw std::runtime_error(msg);
-		}
+		throw std::runtime_error(msg);
 	}
 
 	LOG_LEVEL log_level_ = INFO;
