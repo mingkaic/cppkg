@@ -21,6 +21,7 @@ namespace diff
 {
 
 using IndexT = int16_t;
+
 using PointT = std::pair<IndexT,IndexT>;
 
 template <typename ARR>

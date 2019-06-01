@@ -12,7 +12,7 @@ void set_logger (std::shared_ptr<iLogger> logger)
 	glogger = logger;
 }
 
-const iLogger& get_logger (void)
+iLogger& get_logger (void)
 {
 	return *glogger;
 }
