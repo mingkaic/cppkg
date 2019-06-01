@@ -16,9 +16,13 @@ struct Sequence final
 		{
 			for (auto& exit_signal : exit_signals_)
 			{
-				exit_signal.set_value();
+				try
+				{
+					exit_signal.set_value();
+				}
+				catch (...) {}
 			}
-			dependency_.get();
+			dependency_.wait();
 		}
 	}
 
@@ -46,7 +50,7 @@ struct Sequence final
 		job.detach();
 	}
 
-    /// return whether any job is running
+	/// return whether any job is running
 	bool is_running (void) const
 	{
 		return dependency_.valid();
@@ -57,7 +61,7 @@ struct Sequence final
 	{
 		if (dependency_.valid())
 		{
-			dependency_.get();
+			dependency_.wait();
 		}
 	}
 
