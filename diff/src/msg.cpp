@@ -1,6 +1,6 @@
 #include "diff/msg.hpp"
 
-#ifdef DIFF_MSG_HPP
+#ifdef PKG_DIFF_MSG_HPP
 
 namespace diff
 {

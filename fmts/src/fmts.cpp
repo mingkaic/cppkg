@@ -1,6 +1,6 @@
 #include "fmts/fmts.hpp"
 
-#ifdef ERR_STRING_HPP
+#ifdef PKG_FMTS_HPP
 
 namespace fmts
 {
