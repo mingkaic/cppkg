@@ -99,13 +99,13 @@ extern std::shared_ptr<TestLogger> tlogger;
 	catch (std::runtime_error& e) { EXPECT_STREQ(MSG, e.what()); }\
 	catch (std::exception& e) { FAIL() << "unexpected throw " << e.what(); }
 #define EXPECT_ERROR(EVENT, MSG) EVENT;\
-	EXPECT_STREQ(MSG, TestLogger::latest_error_.c_str()) << \
+	EXPECT_STREQ(MSG, exam::TestLogger::latest_error_.c_str()) << \
 		"failed to elicit " << MSG << " warning from " << #EVENT;\
-	TestLogger::latest_error_ = "";
+	exam::TestLogger::latest_error_ = "";
 #define EXPECT_WARN(EVENT, MSG) EVENT;\
-	EXPECT_STREQ(MSG, TestLogger::latest_warning_.c_str()) << \
+	EXPECT_STREQ(MSG, exam::TestLogger::latest_warning_.c_str()) << \
 		"failed to elicit " << MSG << " error from " << #EVENT;\
-	TestLogger::latest_warning_ = "";
+	exam::TestLogger::latest_warning_ = "";
 
 }
 
