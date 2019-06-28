@@ -12,8 +12,8 @@
 
 #include "diff/format.hpp"
 
-#ifndef DIFF_MSG_HPP
-#define DIFF_MSG_HPP
+#ifndef PKG_DIFF_MSG_HPP
+#define PKG_DIFF_MSG_HPP
 
 namespace diff
 {
@@ -31,4 +31,4 @@ std::string diff_msg (
 
 }
 
-#endif // DIFF_MSG_HPP
+#endif // PKG_DIFF_MSG_HPP

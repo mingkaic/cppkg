@@ -10,6 +10,9 @@
 
 #include "diff/myers_diff.hpp"
 
+#ifndef PKG_DIFF_FORMAT_HPP
+#define PKG_DIFF_FORMAT_HPP
+
 namespace diff
 {
 
@@ -39,3 +42,5 @@ void diff_line_format (std::ostream& out, Diff<T>& line)
 }
 
 }
+
+#endif // PKG_DIFF_FORMAT_HPP

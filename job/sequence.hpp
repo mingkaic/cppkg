@@ -2,8 +2,8 @@
 #include <thread>
 #include <future>
 
-#ifndef JOB_SEQUENCE_HPP
-#define JOB_SEQUENCE_HPP
+#ifndef PKG_JOB_SEQUENCE_HPP
+#define PKG_JOB_SEQUENCE_HPP
 
 namespace job
 {
@@ -85,4 +85,4 @@ private:
 
 }
 
-#endif // JOB_SEQUENCE_HPP
+#endif // PKG_JOB_SEQUENCE_HPP

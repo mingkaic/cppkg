@@ -2,8 +2,8 @@
 #include <thread>
 #include <future>
 
-#ifndef JOB_MANAGED_HPP
-#define JOB_MANAGED_HPP
+#ifndef PKG_JOB_MANAGED_HPP
+#define PKG_JOB_MANAGED_HPP
 
 namespace job
 {
@@ -93,4 +93,4 @@ private:
 
 }
 
-#endif // JOB_MANAGED_HPP
+#endif // PKG_JOB_MANAGED_HPP

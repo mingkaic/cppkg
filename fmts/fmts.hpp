@@ -11,8 +11,8 @@
 #include <sstream>
 #include <vector>
 
-#ifndef ERR_STRING_HPP
-#define ERR_STRING_HPP
+#ifndef PKG_FMTS_HPP
+#define PKG_FMTS_HPP
 
 namespace fmts
 {
@@ -171,4 +171,4 @@ std::vector<std::string> split (std::string s, std::string delim);
 
 }
 
-#endif // ERR_STRING_HPP
+#endif // PKG_FMTS_HPP

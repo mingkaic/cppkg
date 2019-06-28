@@ -1,7 +1,7 @@
 #include <functional>
 
-#ifndef JOB_SCOPE_GUARD_HPP
-#define JOB_SCOPE_GUARD_HPP
+#ifndef PKG_JOB_SCOPE_GUARD_HPP
+#define PKG_JOB_SCOPE_GUARD_HPP
 
 namespace job
 {
@@ -29,4 +29,4 @@ private:
 
 }
 
-#endif // JOB_SCOPE_GUARD_HPP
+#endif // PKG_JOB_SCOPE_GUARD_HPP
