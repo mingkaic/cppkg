@@ -25,8 +25,10 @@ struct iLogger
 	/// Log message at any specified level of verbosity
 	virtual void log (size_t msg_level, std::string msg) const = 0;
 
+	/// Get log level encoding specifying verbosity
 	virtual size_t get_log_level (void) const = 0;
 
+	/// Set log level encoding specifying verbosity
 	virtual void set_log_level (size_t log_level) = 0;
 
 	/// Warn user of message regarding poor decisions
@@ -45,6 +47,7 @@ const std::string warn_tag = "[WARNING]:";
 /// String tagged prepending an error message in default logger
 const std::string err_tag = "[ERROR]:";
 
+/// Log verbosity encoding
 enum LOG_LEVEL
 {
 	FATAL = 0,
@@ -58,6 +61,7 @@ enum LOG_LEVEL
 /// Default implementation of iLogger used in ADE
 struct DefLogger final : public iLogger
 {
+	/// Implementation of iLogger
 	void log (size_t msg_level, std::string msg) const override
 	{
 		if (msg_level <= log_level_)
@@ -78,11 +82,13 @@ struct DefLogger final : public iLogger
 		}
 	}
 
+	/// Implementation of iLogger
 	size_t get_log_level (void) const override
 	{
 		return log_level_;
 	}
 
+	/// Implementation of iLogger
 	void set_log_level (size_t log_level) override
 	{
 		log_level_ = (LOG_LEVEL) log_level;
@@ -119,7 +125,7 @@ struct DefLogger final : public iLogger
 void set_logger (std::shared_ptr<iLogger> logger);
 
 /// Get reference to ADE global logger
-const iLogger& get_logger (void);
+iLogger& get_logger (void);
 
 /// Log at trace level using global logger
 void trace (std::string msg);

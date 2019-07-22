@@ -14,13 +14,14 @@
 #include <iterator>
 #include <vector>
 
-#ifndef DIFF_MYERS_HPP
-#define DIFF_MYERS_HPP
+#ifndef PKG_DIFF_MYERS_HPP
+#define PKG_DIFF_MYERS_HPP
 
 namespace diff
 {
 
 using IndexT = int16_t;
+
 using PointT = std::pair<IndexT,IndexT>;
 
 template <typename ARR>
@@ -251,4 +252,4 @@ std::vector<DiffArrT<ARR>> myers_diff (ARR orig, ARR updated)
 
 }
 
-#endif // DIFF_MYERS_HPP
+#endif // PKG_DIFF_MYERS_HPP

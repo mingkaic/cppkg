@@ -11,8 +11,8 @@
 #include <sstream>
 #include <vector>
 
-#ifndef ERR_STRING_HPP
-#define ERR_STRING_HPP
+#ifndef PKG_FMTS_HPP
+#define PKG_FMTS_HPP
 
 namespace fmts
 {
@@ -25,6 +25,8 @@ const char arr_end = ']';
 
 /// Symbol for the delimiter between elements of an array as string
 const char arr_delim = '\\';
+
+const char pair_delim = ':';
 
 /// Wrap std::string so that array symbols are prefixed with escaped symbol
 struct string final
@@ -42,6 +44,7 @@ struct string final
 				case arr_begin:
 				case arr_end:
 				case arr_delim:
+				case pair_delim:
 					modified.insert(modified.begin() + i, arr_delim);
 					++i;
 					++n;
@@ -70,6 +73,19 @@ template <typename T, typename std::enable_if<!std::is_array<T>::value>::type* =
 void to_stream (std::ostream& s, T val)
 {
 	s << val;
+}
+
+template <typename PLEFT, typename PRIGHT>
+void pair_to_stream (std::ostream& s, std::pair<PLEFT,PRIGHT> p,
+	std::string delim = std::string(1, pair_delim))
+{
+	s << p.first << delim << p.second;
+}
+
+template <typename PLEFT, typename PRIGHT>
+void to_stream (std::ostream& s, std::pair<PLEFT,PRIGHT> p)
+{
+	pair_to_stream(s, p);
 }
 
 /// Stream values between iterators as an array delimited by delim input
@@ -155,4 +171,4 @@ std::vector<std::string> split (std::string s, std::string delim);
 
 }
 
-#endif // ERR_STRING_HPP
+#endif // PKG_FMTS_HPP

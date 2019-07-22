@@ -1,6 +1,7 @@
 #include <array>
 #include <list>
 #include <vector>
+#include <unordered_map>
 
 #include "gtest/gtest.h"
 
@@ -83,10 +84,19 @@ TEST(FMTS, StringIterators)
 {
 	std::vector<double> dbs = {1.5, 1, 5.6, 7.8};
 	std::array<int,4> iar = {-5, 2, -3, 6};
+	std::unordered_map<std::string,size_t> s2i = {
+		{"abc", 123},
+		{"cde", 345},
+		{"efg", 567},
+	};
+
 	std::string dbstr = fmts::to_string(dbs.begin(), dbs.end());
 	std::string iarstr = fmts::to_string(iar.begin(), iar.end());
+	std::string s2istr = fmts::to_string(s2i.begin(), s2i.end());
+
 	EXPECT_STREQ("[1.5\\1\\5.6\\7.8]", dbstr.c_str());
 	EXPECT_STREQ("[-5\\2\\-3\\6]", iarstr.c_str());
+	EXPECT_STREQ("[efg:567\\cde:345\\abc:123]", s2istr.c_str());
 }
 
 
