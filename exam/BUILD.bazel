@@ -9,6 +9,11 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "test_srcs",
+    srcs = glob(["test/*.cpp"]),
+)
+
 ######### LIBRARY #########
 
 cc_library(
@@ -21,4 +26,17 @@ cc_library(
         "//fmts:fmts",
     ],
     visibility = ["//visibility:public"],
+)
+
+######### TEST #########
+
+cc_test(
+    name = "test",
+    size = "small",
+    srcs = [":test_srcs"],
+    deps = [
+        "//exam:exam",
+        "@gtest//:gtest",
+    ],
+    copts = ["-std=c++14"],
 )

@@ -73,10 +73,10 @@ extern std::shared_ptr<TestLogger> tlogger;
 		"expect list " << arrs.str() << ", got " << arrs2.str() << " instead"; }
 #define _INSET(SET, CONTENT, GBOOL, PREFIX_MSG) {\
 	GBOOL(SET.end() != SET.find(CONTENT)) <<\
-		PREFIX_MSG + " find " << #CONTENT << " in " << #SET; }
+		PREFIX_MSG << " find " << #CONTENT << " in " << #SET; }
 #define _INARR(ARR, CONTENT, GBOOL, PREFIX_MSG) { auto et = ARR.end();\
 	GBOOL(et != std::find(ARR.begin(), et, CONTENT)) <<\
-		PREFIX_MSG + " find " << #CONTENT << " in " << #ARR; }
+		PREFIX_MSG << " find " << #CONTENT << " in " << #ARR; }
 
 #define ASSERT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_TRUE)
 #define EXPECT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_TRUE)
