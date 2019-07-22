@@ -71,27 +71,27 @@ extern std::shared_ptr<TestLogger> tlogger;
 	fmts::to_stream(arrs2, ARR2.begin(), ARR2.end());\
 	GBOOL(std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
 		"expect list " << arrs.str() << ", got " << arrs2.str() << " instead"; }
-#define _INSET(SET, CONTENT, GBOOL) {\
+#define _INSET(SET, CONTENT, GBOOL, PREFIX_MSG) {\
 	GBOOL(SET.end() != SET.find(CONTENT)) <<\
-		"cannot find " << #CONTENT << " in " << #SET; }
-#define _INARR(ARR, CONTENT, GBOOL) { auto et = ARR.end();\
+		PREFIX_MSG + " find " << #CONTENT << " in " << #SET; }
+#define _INARR(ARR, CONTENT, GBOOL, PREFIX_MSG) { auto et = ARR.end();\
 	GBOOL(et != std::find(ARR.begin(), et, CONTENT)) <<\
-		"cannot find " << #CONTENT << " in " << #ARR; }
+		PREFIX_MSG + " find " << #CONTENT << " in " << #ARR; }
 
 #define ASSERT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_TRUE)
 #define EXPECT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_TRUE)
 #define ASSERT_ARRNEQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_FALSE)
 #define EXPECT_ARRNEQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_FALSE)
 
-#define ASSERT_HAS(SET, KEY) _INSET(SET, KEY, ASSERT_TRUE)
-#define EXPECT_HAS(SET, KEY) _INSET(SET, KEY, EXPECT_TRUE)
-#define ASSERT_HASNOT(SET, KEY) _INSET(SET, KEY, ASSERT_FALSE)
-#define EXPECT_HASNOT(SET, KEY) _INSET(SET, KEY, EXPECT_FALSE)
+#define ASSERT_HAS(SET, KEY) _INSET(SET, KEY, ASSERT_TRUE, "expecting to")
+#define EXPECT_HAS(SET, KEY) _INSET(SET, KEY, EXPECT_TRUE, "expecting to")
+#define ASSERT_HASNOT(SET, KEY) _INSET(SET, KEY, ASSERT_FALSE, "cannot")
+#define EXPECT_HASNOT(SET, KEY) _INSET(SET, KEY, EXPECT_FALSE, "cannot")
 
-#define ASSERT_ARRHAS(ARR, CONTENT) _INARR(ARR, CONTENT, ASSERT_TRUE)
-#define EXPECT_ARRHAS(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_TRUE)
-#define ASSERT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, ASSERT_FALSE)
-#define EXPECT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_FALSE)
+#define ASSERT_ARRHAS(ARR, CONTENT) _INARR(ARR, CONTENT, ASSERT_TRUE, "expecting to")
+#define EXPECT_ARRHAS(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_TRUE, "expecting to")
+#define ASSERT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, ASSERT_FALSE, "cannot")
+#define EXPECT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_FALSE, "cannot")
 
 
 #define EXPECT_FATAL(EVENT, MSG) try { EVENT; FAIL() << \
