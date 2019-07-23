@@ -16,6 +16,18 @@
 namespace exam
 {
 
+struct TestException final : public std::exception
+{
+	TestException (std::string msg) : msg_(msg) {}
+
+	const char* what () const throw ()
+	{
+		return msg_.c_str();
+	}
+
+	std::string msg_;
+};
+
 /// Test Logger to assign in order to use
 /// EXPECT_FATAL, EXPECT_ERROR, or EXPECT_WARN
 struct TestLogger : public logs::iLogger
@@ -29,6 +41,10 @@ struct TestLogger : public logs::iLogger
 	/// Log both level and message
 	void log (size_t log_level, std::string msg) const override
 	{
+		if (log_level == logs::FATAL)
+		{
+			fatal(msg);
+		}
 		latest_lvl_ = log_level;
 		latest_msg_ = msg;
 	}
@@ -62,8 +78,7 @@ struct TestLogger : public logs::iLogger
 	/// Logs message at log::FATAL
 	void fatal (std::string msg) const override
 	{
-		latest_lvl_ = logs::FATAL;
-		latest_msg_ = msg;
+		throw TestException(msg);
 	}
 };
 
@@ -79,7 +94,7 @@ extern std::shared_ptr<TestLogger> tlogger;
 		"failed to log at level " << #LEVEL << " from " << #EVENT <<\
 		", instead got level " << exam::TestLogger::latest_lvl_;\
 	exam::TestLogger::latest_msg_ = "";\
-	exam::TestLogger::latest_lvl_ = logs::TRACE + 1;
+	exam::TestLogger::latest_lvl_ = logs::FATAL;
 #define _ARRCHECK(ARR, ARR2, GBOOL) { std::stringstream arrs, arrs2;\
 	fmts::to_stream(arrs, ARR.begin(), ARR.end());\
 	fmts::to_stream(arrs2, ARR2.begin(), ARR2.end());\
@@ -108,7 +123,10 @@ extern std::shared_ptr<TestLogger> tlogger;
 #define EXPECT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_FALSE, "cannot")
 
 
-#define EXPECT_FATAL(EVENT, MSG) _LOG(EVENT, MSG, logs::FATAL)
+#define EXPECT_FATAL(EVENT, MSG) try { EVENT; FAIL() <<\
+	"did not expect " << #EVENT << " to succeed"; }\
+	catch (exam::TestException& e) { EXPECT_STREQ(MSG, e.what()); }\
+	catch (std::exception& e) { FAIL() << "unexpected throw " << e.what(); }
 #define EXPECT_ERROR(EVENT, MSG) _LOG(EVENT, MSG, logs::ERROR)
 #define EXPECT_WARN(EVENT, MSG) _LOG(EVENT, MSG, logs::WARN)
 #define EXPECT_INFO(EVENT, MSG) _LOG(EVENT, MSG, logs::INFO)

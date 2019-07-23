@@ -135,7 +135,13 @@ TEST(EXAM, Logality)
 	logs::get_logger().set_log_level(logs::FATAL);
 	EXPECT_EQ(logs::TRACE, logs::get_logger().get_log_level());
 
-	EXPECT_FATAL(logs::fatal("fatal message"), "fatal message");
+	auto fatal_action = []()
+	{
+		logs::fatal("fatal message");
+		FAIL() << "fatal should never have gone this far";
+	};
+
+	EXPECT_FATAL(fatal_action(), "fatal message");
 	EXPECT_ERROR(logs::error("error message"), "error message");
 	EXPECT_WARN(logs::warn("warning message"), "warning message");
 	EXPECT_INFO(logs::info("information message"), "information message");
