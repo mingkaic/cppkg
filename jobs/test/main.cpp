@@ -86,11 +86,15 @@ TEST(JOBS, ManagedJobTermination)
 				std::this_thread::sleep_for(
 					std::chrono::milliseconds(1000));
 			}
+			// stop signal called and exited loop
 			success = true;
 		}, std::ref(success));
 		EXPECT_FALSE(success);
 		// managed termination by destruction
 	}
+	// wait at least 5 attempts for job to terminate
+	std::this_thread::sleep_for(
+		std::chrono::milliseconds(5000));
 	EXPECT_TRUE(success);
 }
 
