@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['set_5flog_5flevel',['set_log_level',['../struct_test_logger.html#ae0f79c7b29ee49a666727aad80883cd0',1,'TestLogger::set_log_level()'],['../structlogs_1_1i_logger.html#ac9813532971c0bc7b0f00fa04eb76e7c',1,'logs::iLogger::set_log_level()'],['../structlogs_1_1_def_logger.html#a29d7e644af673e3c79df2578da21d06b',1,'logs::DefLogger::set_log_level()'],['../struct_test_logger.html#ae0f79c7b29ee49a666727aad80883cd0',1,'TestLogger::set_log_level()']]],
-  ['set_5flogger',['set_logger',['../namespacelogs.html#a410393daa19feb268e241258010a4ea4',1,'logs']]],
-  ['split',['split',['../namespacefmts.html#a9b81d47cee49dcf4e3ae319e35dbbc8a',1,'fmts']]],
-  ['sprintf',['sprintf',['../namespacefmts.html#adad5462eecdcc529f5818ba5c73882e6',1,'fmts']]],
-  ['string',['string',['../structfmts_1_1string.html#a9c3d73cf5798d00b32c7ba5f6b224bcf',1,'fmts::string::string(const char *cstr)'],['../structfmts_1_1string.html#a5bd3d9b6e09e01faeac7177e732156bd',1,'fmts::string::string(const std::string &amp;sstr)']]]
+  ['operator_3c_3c',['operator&lt;&lt;',['../namespacefmts.html#ac6aba723af83c830cc44de7eefe24a12',1,'fmts']]],
+  ['operator_3d',['operator=',['../structjobs_1_1_managed_job.html#ad6c72deb7e813ffdae93c594f7a63913',1,'jobs::ManagedJob::operator=(const ManagedJob &amp;other)=delete'],['../structjobs_1_1_managed_job.html#a9e264673d07aea5a64a652aadcdc5eaa',1,'jobs::ManagedJob::operator=(ManagedJob &amp;&amp;other)'],['../structjobs_1_1_scope_guard.html#a026cfe1d558516a170a9052c7325a367',1,'jobs::ScopeGuard::operator=(const ScopeGuard &amp;)=delete'],['../structjobs_1_1_scope_guard.html#a6d6b62d108122b4e7411245990a2b024',1,'jobs::ScopeGuard::operator=(ScopeGuard &amp;&amp;)=delete']]],
+  ['string',['string',['../structfmts_1_1string.html#ac57918aef6ecc8baceaa495440f31bab',1,'fmts::string']]]
 ];

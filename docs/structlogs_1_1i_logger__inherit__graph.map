@@ -1,4 +1,5 @@
 <map id="logs::iLogger" name="logs::iLogger">
-<area shape="rect" id="node2" href="$structlogs_1_1_def_logger.html" title="Default implementation of iLogger used in ADE. " alt="" coords="5,79,121,104"/>
-<area shape="rect" id="node3" href="$struct_test_logger.html" title="TestLogger" alt="" coords="145,79,232,104"/>
+<area shape="rect" id="node2" href="$structexam_1_1_test_logger.html" title="exam::TestLogger" alt="" coords="5,79,133,104"/>
+<area shape="rect" id="node3" href="$structlogs_1_1_def_logger.html" title="Default implementation of iLogger used in ADE. " alt="" coords="157,79,272,104"/>
+<area shape="rect" id="node4" href="$struct_test_logger.html" title="TestLogger" alt="" coords="296,79,383,104"/>
 </map>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['del_5ftoken',['DEL_TOKEN',['../namespacediff.html#a3198fa964b5b74c53bb2357235ca1fa1',1,'diff']]]
+  ['del_5ftoken',['del_token',['../namespacediff.html#a3105f7f70fad6aa2dd7754cd5702bd15',1,'diff']]],
+  ['dependency_5f',['dependency_',['../structjobs_1_1_sequence.html#ae473d887cbc7054b16103758f0d219c2',1,'jobs::Sequence']]]
 ];

@@ -94,6 +94,14 @@ Functions</h2></td></tr>
 <tr class="memitem:ae244630b95a89a2a5e46c3a53553f7c1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ae244630b95a89a2a5e46c3a53553f7c1">to_stream</a> (std::ostream &amp;s, T val)</td></tr>
 <tr class="memdesc:ae244630b95a89a2a5e46c3a53553f7c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream generic value to s.  <a href="#ae244630b95a89a2a5e46c3a53553f7c1">More...</a><br /></td></tr>
 <tr class="separator:ae244630b95a89a2a5e46c3a53553f7c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab69bcb933bfb94b58b4e1081732c936f"><td class="memTemplParams" colspan="2">template&lt;typename PLEFT , typename PRIGHT &gt; </td></tr>
+<tr class="memitem:ab69bcb933bfb94b58b4e1081732c936f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ab69bcb933bfb94b58b4e1081732c936f">pair_to_stream</a> (std::ostream &amp;s, std::pair&lt; PLEFT, PRIGHT &gt; p, std::string delim=std::string(1, <a class="el" href="namespacefmts.html#ac16f9a304ba39bea5cf994b9bb7eb06c">pair_delim</a>))</td></tr>
+<tr class="memdesc:ab69bcb933bfb94b58b4e1081732c936f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream pair p to s given specified delim between first and second elements.  <a href="#ab69bcb933bfb94b58b4e1081732c936f">More...</a><br /></td></tr>
+<tr class="separator:ab69bcb933bfb94b58b4e1081732c936f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add69f434a21a99cdd9fa3c5bd045921b"><td class="memTemplParams" colspan="2">template&lt;typename PLEFT , typename PRIGHT &gt; </td></tr>
+<tr class="memitem:add69f434a21a99cdd9fa3c5bd045921b"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#add69f434a21a99cdd9fa3c5bd045921b">to_stream</a> (std::ostream &amp;s, std::pair&lt; PLEFT, PRIGHT &gt; p)</td></tr>
+<tr class="memdesc:add69f434a21a99cdd9fa3c5bd045921b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream pair using default delim.  <a href="#add69f434a21a99cdd9fa3c5bd045921b">More...</a><br /></td></tr>
+<tr class="separator:add69f434a21a99cdd9fa3c5bd045921b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1abf54f06f54d916774d9c65b01123e6"><td class="memTemplParams" colspan="2">template&lt;typename Iterator &gt; </td></tr>
 <tr class="memitem:a1abf54f06f54d916774d9c65b01123e6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a1abf54f06f54d916774d9c65b01123e6">arr_to_stream</a> (std::ostream &amp;s, Iterator begin, Iterator end, std::string delim=std::string(1, <a class="el" href="namespacefmts.html#a757d94f2759cd51a133041447e13cefc">arr_delim</a>))</td></tr>
 <tr class="memdesc:a1abf54f06f54d916774d9c65b01123e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stream values between iterators as an array delimited by delim input.  <a href="#a1abf54f06f54d916774d9c65b01123e6">More...</a><br /></td></tr>
@@ -142,6 +150,8 @@ Variables</h2></td></tr>
 <tr class="memitem:a757d94f2759cd51a133041447e13cefc"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#a757d94f2759cd51a133041447e13cefc">arr_delim</a> = '\\'</td></tr>
 <tr class="memdesc:a757d94f2759cd51a133041447e13cefc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for the delimiter between elements of an array as string.  <a href="#a757d94f2759cd51a133041447e13cefc">More...</a><br /></td></tr>
 <tr class="separator:a757d94f2759cd51a133041447e13cefc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac16f9a304ba39bea5cf994b9bb7eb06c"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefmts.html#ac16f9a304ba39bea5cf994b9bb7eb06c">pair_delim</a> = ':'</td></tr>
+<tr class="separator:ac16f9a304ba39bea5cf994b9bb7eb06c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="fmts_8hpp.html">fmts.hpp</a> fmts</p>
@@ -279,6 +289,44 @@ template&lt;typename Iterator &gt; </div>
 
 </div>
 </div>
+<a id="ab69bcb933bfb94b58b4e1081732c936f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab69bcb933bfb94b58b4e1081732c936f">&#9670;&nbsp;</a></span>pair_to_stream()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PLEFT , typename PRIGHT &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void fmts::pair_to_stream </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; PLEFT, PRIGHT &gt;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>delim</em> = <code>std::string(1,&#160;<a class="el" href="namespacefmts.html#ac16f9a304ba39bea5cf994b9bb7eb06c">pair_delim</a>)</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stream pair p to s given specified delim between first and second elements. </p>
+
+</div>
+</div>
 <a id="ac6ff33827584adcc28dd2b8dad34ca50"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac6ff33827584adcc28dd2b8dad34ca50">&#9670;&nbsp;</a></span>rtrim()</h2>
 
@@ -362,7 +410,7 @@ template&lt;typename... ARGS&gt; </div>
 </div>
 </div>
 <a id="ab4e253d55279e2583101abdcbfdf7cbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4e253d55279e2583101abdcbfdf7cbd">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4e253d55279e2583101abdcbfdf7cbd">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -392,7 +440,7 @@ template&lt;typename... ARGS&gt; </div>
 </div>
 </div>
 <a id="a8a696d3e83f7cf97767837e782b9ebb0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a696d3e83f7cf97767837e782b9ebb0">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a696d3e83f7cf97767837e782b9ebb0">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -422,7 +470,7 @@ template&lt;typename... ARGS&gt; </div>
 </div>
 </div>
 <a id="a8108a0fcdb770502d80477649d5f782d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8108a0fcdb770502d80477649d5f782d">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8108a0fcdb770502d80477649d5f782d">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -452,7 +500,7 @@ template&lt;typename... ARGS&gt; </div>
 </div>
 </div>
 <a id="ae244630b95a89a2a5e46c3a53553f7c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae244630b95a89a2a5e46c3a53553f7c1">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae244630b95a89a2a5e46c3a53553f7c1">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[4/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -484,8 +532,40 @@ template&lt;typename T , typename std::enable_if&lt;!std::is_array&lt; T &gt;::v
 
 </div>
 </div>
+<a id="add69f434a21a99cdd9fa3c5bd045921b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add69f434a21a99cdd9fa3c5bd045921b">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[5/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PLEFT , typename PRIGHT &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void fmts::to_stream </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>s</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::pair&lt; PLEFT, PRIGHT &gt;&#160;</td>
+          <td class="paramname"><em>p</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Stream pair using default delim. </p>
+
+</div>
+</div>
 <a id="a2a52874679d51f25661646e027382909"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a52874679d51f25661646e027382909">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a52874679d51f25661646e027382909">&#9670;&nbsp;</a></span>to_stream() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -642,6 +722,20 @@ template&lt;typename Iterator &gt; </div>
 </div><div class="memdoc">
 
 <p>Symbol for the end of an array as string. </p>
+
+</div>
+</div>
+<a id="ac16f9a304ba39bea5cf994b9bb7eb06c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac16f9a304ba39bea5cf994b9bb7eb06c">&#9670;&nbsp;</a></span>pair_delim</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char fmts::pair_delim = ':'</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
 
 </div>
 </div>

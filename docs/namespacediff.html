@@ -104,6 +104,7 @@ Enumerations</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a6cd06190966d2e0984246fb87d2d333f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6cd06190966d2e0984246fb87d2d333f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacediff.html#a6cd06190966d2e0984246fb87d2d333f">diff_line_format</a> (std::ostream &amp;out, <a class="el" href="structdiff_1_1_diff.html">Diff</a>&lt; T &gt; &amp;line)</td></tr>
+<tr class="memdesc:a6cd06190966d2e0984246fb87d2d333f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format specified difference lines and stream to out.  <a href="#a6cd06190966d2e0984246fb87d2d333f">More...</a><br /></td></tr>
 <tr class="separator:a6cd06190966d2e0984246fb87d2d333f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a59e58a073501a10386782ca47491c70c"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a59e58a073501a10386782ca47491c70c">diff_msg</a> (std::vector&lt; std::string &gt; expected, std::vector&lt; std::string &gt; got)</td></tr>
 <tr class="separator:a59e58a073501a10386782ca47491c70c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -124,19 +125,21 @@ Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:a8b4221dc5eec1f19ae0350099ffa0b7b"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a8b4221dc5eec1f19ae0350099ffa0b7b">ADD_TOKEN</a> = '+'</td></tr>
-<tr class="separator:a8b4221dc5eec1f19ae0350099ffa0b7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3198fa964b5b74c53bb2357235ca1fa1"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a3198fa964b5b74c53bb2357235ca1fa1">DEL_TOKEN</a> = '-'</td></tr>
-<tr class="separator:a3198fa964b5b74c53bb2357235ca1fa1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a194695a3946d448e00f8ccc97d526a6d"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a194695a3946d448e00f8ccc97d526a6d">LINES_BEFORE</a> = 3</td></tr>
-<tr class="separator:a194695a3946d448e00f8ccc97d526a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae382f0f50d8e323af0be81548f048125"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#ae382f0f50d8e323af0be81548f048125">LINES_AFTER</a> = 3</td></tr>
-<tr class="separator:ae382f0f50d8e323af0be81548f048125"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfa16fb6491053599c97da81b6cd6f0c"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#abfa16fb6491053599c97da81b6cd6f0c">add_token</a> = '+'</td></tr>
+<tr class="memdesc:abfa16fb6491053599c97da81b6cd6f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for added lines.  <a href="#abfa16fb6491053599c97da81b6cd6f0c">More...</a><br /></td></tr>
+<tr class="separator:abfa16fb6491053599c97da81b6cd6f0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3105f7f70fad6aa2dd7754cd5702bd15"><td class="memItemLeft" align="right" valign="top">const char&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a3105f7f70fad6aa2dd7754cd5702bd15">del_token</a> = '-'</td></tr>
+<tr class="memdesc:a3105f7f70fad6aa2dd7754cd5702bd15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Symbol for removed lines.  <a href="#a3105f7f70fad6aa2dd7754cd5702bd15">More...</a><br /></td></tr>
+<tr class="separator:a3105f7f70fad6aa2dd7754cd5702bd15"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1997e385f0a794dc1a4e321eb216ad4a"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a1997e385f0a794dc1a4e321eb216ad4a">lines_before</a> = 3</td></tr>
+<tr class="memdesc:a1997e385f0a794dc1a4e321eb216ad4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of lines to display before lines where differences occured.  <a href="#a1997e385f0a794dc1a4e321eb216ad4a">More...</a><br /></td></tr>
+<tr class="separator:a1997e385f0a794dc1a4e321eb216ad4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9afa607774214be878431f2df014c606"><td class="memItemLeft" align="right" valign="top">const uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacediff.html#a9afa607774214be878431f2df014c606">lines_after</a> = 3</td></tr>
+<tr class="memdesc:a9afa607774214be878431f2df014c606"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of lines to display after lines where differences occured.  <a href="#a9afa607774214be878431f2df014c606">More...</a><br /></td></tr>
+<tr class="separator:a9afa607774214be878431f2df014c606"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="format_8hpp.html">format.hpp</a> diff</p>
-<p>Purpose: Define diff structure (defined in <a class="el" href="myers__diff_8hpp.html">myers_diff.hpp</a>) string representation</p>
-<p><a class="el" href="myers__diff_8hpp.html">myers_diff.hpp</a> diff</p>
+<div class="textblock"><p><a class="el" href="myers__diff_8hpp.html">myers_diff.hpp</a> diff</p>
 <p>Purpose: Define and implement myers diff algorithm</p>
 <p>all implementations are based on the tutorial outlined in <a href="https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/">https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/</a> </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
@@ -250,6 +253,8 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Format specified difference lines and stream to out. </p>
 
 </div>
 </div>
@@ -409,59 +414,67 @@ template&lt;typename ARR , typename COMPARATOR  = std::equal_to&lt;ArrValT&lt;AR
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="a8b4221dc5eec1f19ae0350099ffa0b7b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b4221dc5eec1f19ae0350099ffa0b7b">&#9670;&nbsp;</a></span>ADD_TOKEN</h2>
+<a id="abfa16fb6491053599c97da81b6cd6f0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfa16fb6491053599c97da81b6cd6f0c">&#9670;&nbsp;</a></span>add_token</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char diff::ADD_TOKEN = '+'</td>
+          <td class="memname">const char diff::add_token = '+'</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Symbol for added lines. </p>
+
 </div>
 </div>
-<a id="a3198fa964b5b74c53bb2357235ca1fa1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3198fa964b5b74c53bb2357235ca1fa1">&#9670;&nbsp;</a></span>DEL_TOKEN</h2>
+<a id="a3105f7f70fad6aa2dd7754cd5702bd15"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3105f7f70fad6aa2dd7754cd5702bd15">&#9670;&nbsp;</a></span>del_token</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char diff::DEL_TOKEN = '-'</td>
+          <td class="memname">const char diff::del_token = '-'</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Symbol for removed lines. </p>
+
 </div>
 </div>
-<a id="ae382f0f50d8e323af0be81548f048125"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae382f0f50d8e323af0be81548f048125">&#9670;&nbsp;</a></span>LINES_AFTER</h2>
+<a id="a9afa607774214be878431f2df014c606"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9afa607774214be878431f2df014c606">&#9670;&nbsp;</a></span>lines_after</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const uint8_t diff::LINES_AFTER = 3</td>
+          <td class="memname">const uint8_t diff::lines_after = 3</td>
         </tr>
       </table>
 </div><div class="memdoc">
 
+<p>Number of lines to display after lines where differences occured. </p>
+
 </div>
 </div>
-<a id="a194695a3946d448e00f8ccc97d526a6d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a194695a3946d448e00f8ccc97d526a6d">&#9670;&nbsp;</a></span>LINES_BEFORE</h2>
+<a id="a1997e385f0a794dc1a4e321eb216ad4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1997e385f0a794dc1a4e321eb216ad4a">&#9670;&nbsp;</a></span>lines_before</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const uint8_t diff::LINES_BEFORE = 3</td>
+          <td class="memname">const uint8_t diff::lines_before = 3</td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Number of lines to display before lines where differences occured. </p>
 
 </div>
 </div>

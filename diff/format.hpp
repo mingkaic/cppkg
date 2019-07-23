@@ -10,12 +10,19 @@
 
 #include "diff/myers_diff.hpp"
 
+#ifndef PKG_DIFF_FORMAT_HPP
+#define PKG_DIFF_FORMAT_HPP
+
 namespace diff
 {
 
-const char ADD_TOKEN = '+';
-const char DEL_TOKEN = '-';
+/// Symbol for added lines
+const char add_token = '+';
 
+/// Symbol for removed lines
+const char del_token = '-';
+
+/// Format specified difference lines and stream to out
 template <typename T>
 void diff_line_format (std::ostream& out, Diff<T>& line)
 {
@@ -25,13 +32,15 @@ void diff_line_format (std::ostream& out, Diff<T>& line)
 			out << "  " << line.orig_ << "\t" << line.updated_;
 			break;
 		case ADD:
-			out << ADD_TOKEN << "  \t" << line.updated_;
+			out << add_token << "  \t" << line.updated_;
 			break;
 		case DEL:
-			out << DEL_TOKEN << " " << line.orig_ << "\t ";
+			out << del_token << " " << line.orig_ << "\t ";
 			break;
 	}
 	out << "\t" << line.val_ << "\n";
 }
 
 }
+
+#endif // PKG_DIFF_FORMAT_HPP

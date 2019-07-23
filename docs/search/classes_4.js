@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['string',['string',['../structfmts_1_1string.html',1,'fmts']]]
+  ['managedjob',['ManagedJob',['../structjobs_1_1_managed_job.html',1,'jobs']]]
 ];

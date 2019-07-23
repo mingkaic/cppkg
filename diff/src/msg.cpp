@@ -1,6 +1,6 @@
 #include "diff/msg.hpp"
 
-#ifdef DIFF_MSG_HPP
+#ifdef PKG_DIFF_MSG_HPP
 
 namespace diff
 {
@@ -17,8 +17,8 @@ std::string diff_msg (
 	{
 		if (diffs[i].action_ != EQ)
 		{
-			IndexT begin = std::max(0, i - LINES_BEFORE);
-			IndexT end = std::min(ndiffs - 1, i + LINES_AFTER);
+			IndexT begin = std::max(0, i - lines_before);
+			IndexT end = std::min(ndiffs - 1, i + lines_after);
 			std::memset(show + begin, true, sizeof(bool) * (end - begin + 1));
 		}
 	}

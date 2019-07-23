@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['ilogger',['iLogger',['../structlogs_1_1i_logger.html',1,'logs']]],
-  ['indext',['IndexT',['../namespacediff.html#abb79c84e5e9a31f432b1d823bcf128a6',1,'diff']]],
-  ['info',['info',['../namespacelogs.html#af3429c06a5a5206e77487f3df3574d51',1,'logs::info(std::string msg)'],['../namespacelogs.html#a7076c07cb2de8e22fa72f1149b6f1604a54f146583f0ad5c0ac84f8b345b58205',1,'logs::INFO()']]],
-  ['infof',['infof',['../namespacelogs.html#a7052783a28702fd31b74508999360bbf',1,'logs']]]
+  ['get',['get',['../namespaceestd.html#a1acadde33bdf4678ff0ffef2e46de85d',1,'estd']]],
+  ['get_5fid',['get_id',['../structjobs_1_1_managed_job.html#ab751c7db2475fa602e74e7e26b2d7122',1,'jobs::ManagedJob']]],
+  ['get_5flog_5flevel',['get_log_level',['../structexam_1_1_test_logger.html#a03c89ca5204ba5c83a1ae88f359bf2c4',1,'exam::TestLogger::get_log_level()'],['../struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575',1,'TestLogger::get_log_level()'],['../structlogs_1_1i_logger.html#a253f9562b81d9c8fc2b650adc71cf91b',1,'logs::iLogger::get_log_level()'],['../structlogs_1_1_def_logger.html#a85013e3d91fb44ec19d50d087d3ed6f8',1,'logs::DefLogger::get_log_level()'],['../struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575',1,'TestLogger::get_log_level()']]],
+  ['get_5flogger',['get_logger',['../namespacelogs.html#ad4d7c03210b6cfc039abd199a1788f70',1,'logs']]],
+  ['generic_20differ_20_28diff_29',['Generic Differ (DIFF)',['../md_diff__r_e_a_d_m_e__d_i_f_f.html',1,'']]]
 ];

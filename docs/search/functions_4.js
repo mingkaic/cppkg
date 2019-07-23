@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['get_5flog_5flevel',['get_log_level',['../struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575',1,'TestLogger::get_log_level()'],['../structlogs_1_1i_logger.html#a253f9562b81d9c8fc2b650adc71cf91b',1,'logs::iLogger::get_log_level()'],['../structlogs_1_1_def_logger.html#a85013e3d91fb44ec19d50d087d3ed6f8',1,'logs::DefLogger::get_log_level()'],['../struct_test_logger.html#a0e8e9de5db6f266cd587e4cc9007f575',1,'TestLogger::get_log_level()']]],
-  ['get_5flogger',['get_logger',['../namespacelogs.html#a8c6d5d881e00586ba40a969c63d1a2bc',1,'logs']]]
+  ['fatal',['fatal',['../structexam_1_1_test_logger.html#ae8a2911e0ac2250bdcebed12213833fe',1,'exam::TestLogger::fatal()'],['../struct_test_logger.html#abd50bacaa15f868caf73ad2195582177',1,'TestLogger::fatal()'],['../structlogs_1_1i_logger.html#a6c89e8e1dad763b21b777877ab00d39d',1,'logs::iLogger::fatal()'],['../structlogs_1_1_def_logger.html#ae401d2dd4354d7b1aeadd2e447b0e9ca',1,'logs::DefLogger::fatal()'],['../struct_test_logger.html#abd50bacaa15f868caf73ad2195582177',1,'TestLogger::fatal()'],['../namespacelogs.html#a158252dac3e35ea793784ba7eb078ce1',1,'logs::fatal()']]],
+  ['fatalf',['fatalf',['../namespacelogs.html#af89623fccb66a42fd216ef485abbf7b3',1,'logs']]],
+  ['flagset',['FlagSet',['../structflag_1_1_flag_set.html#abe19ff40609d65a4960b94d168b02fce',1,'flag::FlagSet']]]
 ];

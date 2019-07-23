@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['log',['log',['../struct_test_logger.html#a5020b262dc31cb19bdeeb7c46ce9a195',1,'TestLogger::log()'],['../structlogs_1_1i_logger.html#a7e8039bf321e426f1a20954d60201cdb',1,'logs::iLogger::log()'],['../structlogs_1_1_def_logger.html#a723aa8c0e23c816a0cae5dbc31e8f480',1,'logs::DefLogger::log()'],['../struct_test_logger.html#a5020b262dc31cb19bdeeb7c46ce9a195',1,'TestLogger::log()']]],
-  ['ltrim',['ltrim',['../namespacefmts.html#a2ea8b89952db77dbebe6b191c99f40f1',1,'fmts']]]
+  ['info',['info',['../namespacelogs.html#af3429c06a5a5206e77487f3df3574d51',1,'logs']]],
+  ['infof',['infof',['../namespacelogs.html#a7052783a28702fd31b74508999360bbf',1,'logs']]],
+  ['is_5frunning',['is_running',['../structjobs_1_1_managed_job.html#ae9703e892347cab8a730189d648dac3b',1,'jobs::ManagedJob::is_running()'],['../structjobs_1_1_sequence.html#a3e0e18add3dc4a34aec197777d8614c4',1,'jobs::Sequence::is_running()']]]
 ];

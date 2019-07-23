@@ -12,14 +12,17 @@
 
 #include "diff/format.hpp"
 
-#ifndef DIFF_MSG_HPP
-#define DIFF_MSG_HPP
+#ifndef PKG_DIFF_MSG_HPP
+#define PKG_DIFF_MSG_HPP
 
 namespace diff
 {
 
-const uint8_t LINES_BEFORE = 3;
-const uint8_t LINES_AFTER = 3;
+/// Number of lines to display before lines where differences occured
+const uint8_t lines_before = 3;
+
+/// Number of lines to display after lines where differences occured
+const uint8_t lines_after = 3;
 
 /// Return diff message of multiple lines
 /// Message is empty if the lines are the same
@@ -28,4 +31,4 @@ std::string diff_msg (
 
 }
 
-#endif // DIFF_MSG_HPP
+#endif // PKG_DIFF_MSG_HPP

@@ -98,11 +98,13 @@ Collaboration diagram for logs::DefLogger:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a723aa8c0e23c816a0cae5dbc31e8f480"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1_def_logger.html#a723aa8c0e23c816a0cae5dbc31e8f480">log</a> (size_t msg_level, std::string msg) const override</td></tr>
-<tr class="memdesc:a723aa8c0e23c816a0cae5dbc31e8f480"><td class="mdescLeft">&#160;</td><td class="mdescRight">Log message at any specified level of verbosity.  <a href="#a723aa8c0e23c816a0cae5dbc31e8f480">More...</a><br /></td></tr>
+<tr class="memdesc:a723aa8c0e23c816a0cae5dbc31e8f480"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>.  <a href="#a723aa8c0e23c816a0cae5dbc31e8f480">More...</a><br /></td></tr>
 <tr class="separator:a723aa8c0e23c816a0cae5dbc31e8f480"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85013e3d91fb44ec19d50d087d3ed6f8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1_def_logger.html#a85013e3d91fb44ec19d50d087d3ed6f8">get_log_level</a> (void) const override</td></tr>
+<tr class="memdesc:a85013e3d91fb44ec19d50d087d3ed6f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>.  <a href="#a85013e3d91fb44ec19d50d087d3ed6f8">More...</a><br /></td></tr>
 <tr class="separator:a85013e3d91fb44ec19d50d087d3ed6f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a29d7e644af673e3c79df2578da21d06b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1_def_logger.html#a29d7e644af673e3c79df2578da21d06b">set_log_level</a> (size_t log_level) override</td></tr>
+<tr class="memdesc:a29d7e644af673e3c79df2578da21d06b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>.  <a href="#a29d7e644af673e3c79df2578da21d06b">More...</a><br /></td></tr>
 <tr class="separator:a29d7e644af673e3c79df2578da21d06b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8352a242467debc0566a19cc5de17ccc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1_def_logger.html#a8352a242467debc0566a19cc5de17ccc">warn</a> (std::string msg) const override</td></tr>
 <tr class="memdesc:a8352a242467debc0566a19cc5de17ccc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>.  <a href="#a8352a242467debc0566a19cc5de17ccc">More...</a><br /></td></tr>
@@ -120,6 +122,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af3ed38dd10e812d8a29d1236dff6146b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacelogs.html#a7076c07cb2de8e22fa72f1149b6f1604">LOG_LEVEL</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlogs_1_1_def_logger.html#af3ed38dd10e812d8a29d1236dff6146b">log_level_</a> = <a class="el" href="namespacelogs.html#a7076c07cb2de8e22fa72f1149b6f1604a54f146583f0ad5c0ac84f8b345b58205">INFO</a></td></tr>
+<tr class="memdesc:af3ed38dd10e812d8a29d1236dff6146b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels above this log_level_ are ignored.  <a href="#af3ed38dd10e812d8a29d1236dff6146b">More...</a><br /></td></tr>
 <tr class="separator:af3ed38dd10e812d8a29d1236dff6146b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -209,6 +212,8 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>. </p>
+
 <p>Implements <a class="el" href="structlogs_1_1i_logger.html#a253f9562b81d9c8fc2b650adc71cf91b">logs::iLogger</a>.</p>
 
 </div>
@@ -247,7 +252,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Log message at any specified level of verbosity. </p>
+<p>Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>. </p>
 
 <p>Implements <a class="el" href="structlogs_1_1i_logger.html#a7e8039bf321e426f1a20954d60201cdb">logs::iLogger</a>.</p>
 
@@ -276,6 +281,8 @@ Public Attributes</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Implementation of <a class="el" href="structlogs_1_1i_logger.html" title="Interface of logger. ">iLogger</a>. </p>
 
 <p>Implements <a class="el" href="structlogs_1_1i_logger.html#ac9813532971c0bc7b0f00fa04eb76e7c">logs::iLogger</a>.</p>
 
@@ -323,6 +330,8 @@ Public Attributes</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Logging levels above this log_level_ are ignored. </p>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['tlogger',['tlogger',['../flag_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp'],['../logs_2test_2main_8cpp.html#aef40dbefb5f1f67b02b9d7b529c00a31',1,'tlogger():&#160;main.cpp']]]
+  ['set_5flog_5flevel_5f',['set_log_level_',['../struct_test_logger.html#abd16fa9c91811fc4c3c34c1d33e8c418',1,'TestLogger']]]
 ];

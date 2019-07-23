@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['main',['main',['../diff_2test_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp'],['../flag_2test_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp'],['../fmts_2test_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp'],['../logs_2test_2main_8cpp.html#a3c04138a5bfe5d72780bb7e82a18e627',1,'main(int argc, char **argv):&#160;main.cpp']]],
-  ['main_2ecpp',['main.cpp',['../diff_2test_2main_8cpp.html',1,'(Global Namespace)'],['../flag_2test_2main_8cpp.html',1,'(Global Namespace)'],['../fmts_2test_2main_8cpp.html',1,'(Global Namespace)'],['../logs_2test_2main_8cpp.html',1,'(Global Namespace)']]],
-  ['make_5fusage_5fstring',['make_usage_string',['../namespaceflag.html#a43ec76b204f820d47379a208889be814',1,'flag']]],
-  ['message_20logger_20_28logs_29',['Message logger (LOGS)',['../md_logs__r_e_a_d_m_e__l_o_g_s.html',1,'']]],
-  ['msg_2ecpp',['msg.cpp',['../msg_8cpp.html',1,'']]],
-  ['msg_2ehpp',['msg.hpp',['../msg_8hpp.html',1,'']]],
-  ['myers_5fdiff',['myers_diff',['../namespacediff.html#af23971b3650f3795ac383dabc5c94ac6',1,'diff']]],
-  ['myers_5fdiff_2ehpp',['myers_diff.hpp',['../myers__diff_8hpp.html',1,'']]],
-  ['myers_5fdiff_5fbacktrace',['myers_diff_backtrace',['../namespacediff.html#a1ebc1b2dd1a6eb68d2a41ac242e65f85',1,'diff']]],
-  ['myers_5fdiff_5fmin_5fedit',['myers_diff_min_edit',['../namespacediff.html#a883ff0f21e62df661028afcc17bec64f',1,'diff']]],
-  ['myers_5fdiff_5ftrace',['myers_diff_trace',['../namespacediff.html#ad7a9e7d6c77e789fe2cca4bac6f9e351',1,'diff']]]
+  ['job_5f',['job_',['../structjobs_1_1_managed_job.html#ae96921f8a72e2abf5b8436f55bc666e8',1,'jobs::ManagedJob']]],
+  ['jobs',['jobs',['../namespacejobs.html',1,'']]],
+  ['join',['join',['../structjobs_1_1_managed_job.html#a133957c76537252043027af394b07e71',1,'jobs::ManagedJob::join()'],['../structjobs_1_1_sequence.html#a7046d9e25c17f2c7a418b55e5c6a88d3',1,'jobs::Sequence::join()'],['../namespacefmts.html#a60b34ab704c203f3d43fb80b38190061',1,'fmts::join()']]],
+  ['jobs',['Jobs',['../md_jobs__r_e_a_d_m_e__j_o_b_s.html',1,'']]]
 ];

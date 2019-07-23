@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['testlogger',['TestLogger',['../struct_test_logger.html',1,'']]]
+  ['numrange',['NumRange',['../structestd_1_1_num_range.html',1,'estd']]]
 ];
