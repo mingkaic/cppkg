@@ -64,6 +64,37 @@ TEST(JOBS, ManagedJob)
 }
 
 
+TEST(JOBS, ManagedJobTermination)
+{
+	bool success = false;
+	{
+		jobs::ManagedJob managed(
+		[](std::future<void> stop_it, bool& success)
+		{
+			for (size_t attempts = 0;
+				stop_it.wait_for(std::chrono::milliseconds(1)) ==
+				std::future_status::timeout;
+				++attempts)
+			{
+				if (attempts >= 30)
+				{
+					// allow at most 30 seconds
+					// fail condition
+					success = false;
+					return;
+				}
+				std::this_thread::sleep_for(
+					std::chrono::milliseconds(1000));
+			}
+			success = true;
+		}, std::ref(success));
+		EXPECT_FALSE(success);
+		// managed termination by destruction
+	}
+	EXPECT_TRUE(success);
+}
+
+
 TEST(JOBS, ScopeGuards)
 {
 	bool expect = false;
