@@ -118,6 +118,7 @@ struct DefLogger final : public iLogger
 		throw std::runtime_error(msg);
 	}
 
+	/// Logging levels above this log_level_ are ignored
 	LOG_LEVEL log_level_ = INFO;
 };
 

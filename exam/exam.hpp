@@ -1,3 +1,11 @@
+///
+/// exam.hpp
+/// exam
+///
+/// Purpose:
+/// Define test utility functions
+///
+
 #include "logs/logs.hpp"
 
 #include "fmts/fmts.hpp"
@@ -8,64 +16,70 @@
 namespace exam
 {
 
+/// Test Logger to assign in order to use
+/// EXPECT_FATAL, EXPECT_ERROR, or EXPECT_WARN
 struct TestLogger : public logs::iLogger
 {
-	static std::string latest_warning_;
-	static std::string latest_error_;
+	/// Latest message logged
+	static std::string latest_msg_;
 
-	enum LOG_LEVEL
-	{
-		NO = 0,
-		YES,
-	};
+	/// Latest log level value
+	static size_t latest_lvl_;
 
+	/// Log both level and message
 	void log (size_t log_level, std::string msg) const override
 	{
-		if (log_level <= log_level_)
-		{
-			switch (log_level_)
-			{
-				case NO:
-					warn(msg);
-					break;
-				case YES:
-				default:
-					std::cout << msg << '\n';
-			}
-		}
+		latest_lvl_ = log_level;
+		latest_msg_ = msg;
 	}
 
+	/// Returns logs::TRACE
 	size_t get_log_level (void) const override
 	{
-		return log_level_;
+		return logs::TRACE;
 	}
 
+	/// Quitely ignores set level, since test logger should record every message
 	void set_log_level (size_t log_level) override
 	{
-		log_level_ = (LOG_LEVEL) log_level;
+		// does actually set anything
 	}
 
+	/// Logs message at log::WARN
 	void warn (std::string msg) const override
 	{
-		latest_warning_ = msg;
+		latest_lvl_ = logs::WARN;
+		latest_msg_ = msg;
 	}
 
+	/// Logs message at log::ERROR
 	void error (std::string msg) const override
 	{
-		latest_error_ = msg;
+		latest_lvl_ = logs::ERROR;
+		latest_msg_ = msg;
 	}
 
+	/// Logs message at log::FATAL
 	void fatal (std::string msg) const override
 	{
-		throw std::runtime_error(msg);
+		latest_lvl_ = logs::FATAL;
+		latest_msg_ = msg;
 	}
-
-	LOG_LEVEL log_level_;
 };
 
+/// Global test logger
 extern std::shared_ptr<TestLogger> tlogger;
 
 
+#define _LOG(EVENT, MSG, LEVEL) EVENT;\
+	EXPECT_STREQ(MSG, exam::TestLogger::latest_msg_.c_str()) <<\
+		"failed to elicit " << MSG << " from " << #EVENT <<\
+		", instead got " << exam::TestLogger::latest_msg_.c_str();\
+	EXPECT_EQ(LEVEL, exam::TestLogger::latest_lvl_) <<\
+		"failed to log at level " << #LEVEL << " from " << #EVENT <<\
+		", instead got level " << exam::TestLogger::latest_lvl_;\
+	exam::TestLogger::latest_msg_ = "";\
+	exam::TestLogger::latest_lvl_ = logs::TRACE + 1;
 #define _ARRCHECK(ARR, ARR2, GBOOL) { std::stringstream arrs, arrs2;\
 	fmts::to_stream(arrs, ARR.begin(), ARR.end());\
 	fmts::to_stream(arrs2, ARR2.begin(), ARR2.end());\
@@ -94,18 +108,12 @@ extern std::shared_ptr<TestLogger> tlogger;
 #define EXPECT_ARRHASNOT(ARR, CONTENT) _INARR(ARR, CONTENT, EXPECT_FALSE, "cannot")
 
 
-#define EXPECT_FATAL(EVENT, MSG) try { EVENT; FAIL() << \
-	"did not expect " << #EVENT << " to succeed"; } \
-	catch (std::runtime_error& e) { EXPECT_STREQ(MSG, e.what()); }\
-	catch (std::exception& e) { FAIL() << "unexpected throw " << e.what(); }
-#define EXPECT_ERROR(EVENT, MSG) EVENT;\
-	EXPECT_STREQ(MSG, exam::TestLogger::latest_error_.c_str()) << \
-		"failed to elicit " << MSG << " warning from " << #EVENT;\
-	exam::TestLogger::latest_error_ = "";
-#define EXPECT_WARN(EVENT, MSG) EVENT;\
-	EXPECT_STREQ(MSG, exam::TestLogger::latest_warning_.c_str()) << \
-		"failed to elicit " << MSG << " error from " << #EVENT;\
-	exam::TestLogger::latest_warning_ = "";
+#define EXPECT_FATAL(EVENT, MSG) _LOG(EVENT, MSG, logs::FATAL)
+#define EXPECT_ERROR(EVENT, MSG) _LOG(EVENT, MSG, logs::ERROR)
+#define EXPECT_WARN(EVENT, MSG) _LOG(EVENT, MSG, logs::WARN)
+#define EXPECT_INFO(EVENT, MSG) _LOG(EVENT, MSG, logs::INFO)
+#define EXPECT_DEBUG(EVENT, MSG) _LOG(EVENT, MSG, logs::DEBUG)
+#define EXPECT_TRACE(EVENT, MSG) _LOG(EVENT, MSG, logs::TRACE)
 
 }
 

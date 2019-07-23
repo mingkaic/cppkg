@@ -12,6 +12,8 @@
 
 int main (int argc, char** argv)
 {
+	set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
+
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
@@ -207,6 +209,26 @@ TEST(RANGE, Creation)
 
 	EXPECT_EQ(14, backwards.lower_);
 	EXPECT_EQ(54, backwards.upper_);
+}
+
+
+TEST(RANGE, Between)
+{
+	estd::NumRange<double> def;
+	estd::NumRange<size_t> range(54, 14);
+
+	EXPECT_FALSE(def.between(-1));
+	EXPECT_FALSE(def.between(-0.5));
+	EXPECT_TRUE(def.between(0));
+	EXPECT_FALSE(def.between(0.5));
+	EXPECT_FALSE(def.between(1));
+
+	EXPECT_FALSE(range.between(13));
+	for (size_t i = 14; i < 54; ++i)
+	{
+		EXPECT_TRUE(range.between(i));
+	}
+	EXPECT_FALSE(range.between(55));
 }
 
 

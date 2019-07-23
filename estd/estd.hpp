@@ -1,3 +1,11 @@
+///
+/// estd.hpp
+/// estd
+///
+/// Purpose:
+/// Define map and set utility functions
+///
+
 #include <algorithm>
 #include <map>
 #include <set>
@@ -15,12 +23,14 @@ namespace estd
 template <typename MAPPABLE>
 using ValT = typename MAPPABLE::mapped_type;
 
+/// Return true if key is found in map/set s
 template <typename SEARCHABLE, typename KEYTYPE>
 bool has (const SEARCHABLE& s, const KEYTYPE& key)
 {
 	return s.end() != s.find(key);
 }
 
+/// Return true if key is found in map s, and assign mapped value to val
 template <typename MAPPABLE, typename KEYTYPE>
 bool get (ValT<MAPPABLE>& val, const MAPPABLE& s, const KEYTYPE& key)
 {
@@ -33,6 +43,8 @@ bool get (ValT<MAPPABLE>& val, const MAPPABLE& s, const KEYTYPE& key)
 	return found;
 }
 
+/// Return value mapped by key in s if key exists in s
+/// otherwise return default_val
 template <typename MAPPABLE, typename KEYTYPE>
 ValT<MAPPABLE> try_get (const MAPPABLE& s, const KEYTYPE& key,
 	ValT<MAPPABLE> default_val)
@@ -45,6 +57,8 @@ ValT<MAPPABLE> try_get (const MAPPABLE& s, const KEYTYPE& key,
 	return default_val;
 }
 
+/// Return value mapped by key in s if key exists in s
+/// otherwise fatal log (which throws runtime error by default)
 template <typename MAPPABLE, typename KEYTYPE, typename... ARGS>
 const ValT<MAPPABLE>& must_getf (
 	const MAPPABLE& s, const KEYTYPE& key,
@@ -58,6 +72,7 @@ const ValT<MAPPABLE>& must_getf (
 	return it->second;
 }
 
+/// Return true if key is found in list/vector/array s
 template <typename ARR, typename CONTENT>
 bool arr_has (const ARR& s, const CONTENT& key)
 {

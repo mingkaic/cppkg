@@ -135,6 +135,9 @@ TEST(EXAM, Logality)
 	EXPECT_FATAL(logs::fatal("fatal message"), "fatal message");
 	EXPECT_ERROR(logs::error("error message"), "error message");
 	EXPECT_WARN(logs::warn("warning message"), "warning message");
+	EXPECT_INFO(logs::info("information message"), "information message");
+	EXPECT_DEBUG(logs::debug("debug message"), "debug message");
+	EXPECT_TRACE(logs::trace("trace message"), "trace message");
 }
 
 
