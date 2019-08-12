@@ -16,11 +16,11 @@ namespace jobs
 
 /// Invoke held function upon destruction
 /// Operates as C++ style of Golang's defer
-struct ScopeGuard final // todo: replace with a better option
+struct ScopeGuard // todo: replace with a better option
 {
 	ScopeGuard (std::function<void(void)> f) : term_(f) {}
 
-	~ScopeGuard (void)
+	virtual ~ScopeGuard (void)
 	{
 		term_();
 	}
