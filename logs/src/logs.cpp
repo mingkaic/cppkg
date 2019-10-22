@@ -17,6 +17,11 @@ iLogger& get_logger (void)
 	return *glogger;
 }
 
+void set_log_level (size_t log_level)
+{
+	get_logger().set_log_level(log_level);
+}
+
 void trace (std::string msg)
 {
 	get_logger().log(TRACE, msg);

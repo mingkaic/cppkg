@@ -128,6 +128,9 @@ void set_logger (std::shared_ptr<iLogger> logger);
 /// Get reference to ADE global logger
 iLogger& get_logger (void);
 
+/// Set log level using global logger
+void set_log_level (size_t log_level);
+
 /// Log at trace level using global logger
 void trace (std::string msg);
 
