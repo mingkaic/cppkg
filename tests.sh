@@ -15,7 +15,7 @@ bzl_coverage //...
 
 lcov --remove "$COV_DIR/coverage.info" 'external/*' '**/test/*' \
 'testutil/*' '**/genfiles/*' 'dbg/*' -o "$COV_DIR/coverage.info";
-send2coverall "$COV_DIR/coverage.info";
+send2codecov "$COV_DIR/coverage.info";
 
 echo "";
 echo "============ CPPKG TEST SUCCESSFUL ============";
