@@ -14,7 +14,7 @@ jobs:
         - docker push $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT}
     - stage: test
       script:
-        - docker run -e COVERALLS_TOKEN=${COVERALLS_TOKEN}
+        - docker run -e CODECOV_TOKEN=${CODECOV_TOKEN}
           --rm $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT}
 
 notifications:

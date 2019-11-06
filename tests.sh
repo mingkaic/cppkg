@@ -1,32 +1,21 @@
 #!/usr/bin/env bash
 
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
-COV_FILE=$THIS_DIR/coverage.info;
-DOCS=$THIS_DIR/docs
+COV_DIR="$THIS_DIR";
 
 lcov --base-directory . --directory . --zerocounters;
 set -e
 
 # ===== Run Gtest =====
 echo "===== TESTS =====";
-bazel test --config asan --config gtest //...
 
-# ===== Check Docs Directory =====
-echo "===== CHECK DOCUMENT EXISTENCE =====";
-if ! [ -d "$DOCS" ];
-then
-	echo "Documents not found. Please generate documents then try again"
-	exit 1;
-fi
+source "$THIS_DIR/coverage.sh";
 
-# ===== Coverage Analysis ======
-echo "===== STARTING COVERAGE ANALYSIS =====";
-make lcov
-if ! [ -z "$COVERALLS_TOKEN" ];
-then
-	git rev-parse --abbrev-inode* HEAD;
-	coveralls-lcov --repo-token $COVERALLS_TOKEN $COV_FILE; # uploads to coveralls
-fi
+bzl_coverage //...
+
+lcov --remove "$COV_DIR/coverage.info" 'external/*' '**/test/*' \
+'testutil/*' '**/genfiles/*' 'dbg/*' -o "$COV_DIR/coverage.info";
+send2codecov "$COV_DIR/coverage.info";
 
 echo "";
 echo "============ CPPKG TEST SUCCESSFUL ============";
