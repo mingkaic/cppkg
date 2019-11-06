@@ -6,5 +6,6 @@ RUN mkdir -p $APP_DIR
 WORKDIR $APP_DIR
 
 COPY . $APP_DIR
+RUN apt-get update && apt-get install -y curl
 
 ENTRYPOINT [ "./tests.sh" ]
