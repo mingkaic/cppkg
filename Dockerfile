@@ -7,4 +7,4 @@ WORKDIR $APP_DIR
 
 COPY . $APP_DIR
 
-CMD [ "./tests.sh" ]
+ENTRYPOINT [ "./tests.sh" ]

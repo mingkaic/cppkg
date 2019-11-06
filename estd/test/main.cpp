@@ -256,6 +256,7 @@ TEST(STRS, HasAffix)
 	EXPECT_TRUE(estd::has_affix("abcdef", "abcdef"));
 	EXPECT_TRUE(estd::has_affix("abcdef", "def"));
 	EXPECT_TRUE(estd::has_affix("abcdef", "f"));
+	EXPECT_FALSE(estd::has_affix("abcdef", "abcdefg"));
 }
 
 
