@@ -19,7 +19,7 @@ iLogger& get_logger (void)
 
 size_t get_log_level (void)
 {
-	return get_logger().get_logger();
+	return get_logger().get_log_level();
 }
 
 void set_log_level (size_t log_level)
