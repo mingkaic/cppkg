@@ -213,23 +213,23 @@ TEST(RANGE, Creation)
 }
 
 
-TEST(RANGE, Between)
+TEST(RANGE, Contains)
 {
 	estd::NumRange<double> def;
 	estd::NumRange<size_t> range(54, 14);
 
-	EXPECT_FALSE(def.between(-1));
-	EXPECT_FALSE(def.between(-0.5));
-	EXPECT_TRUE(def.between(0));
-	EXPECT_FALSE(def.between(0.5));
-	EXPECT_FALSE(def.between(1));
+	EXPECT_FALSE(def.contains(-1));
+	EXPECT_FALSE(def.contains(-0.5));
+	EXPECT_TRUE(def.contains(0));
+	EXPECT_FALSE(def.contains(0.5));
+	EXPECT_FALSE(def.contains(1));
 
-	EXPECT_FALSE(range.between(13));
+	EXPECT_FALSE(range.contains(13));
 	for (size_t i = 14; i < 54; ++i)
 	{
-		EXPECT_TRUE(range.between(i));
+		EXPECT_TRUE(range.contains(i));
 	}
-	EXPECT_FALSE(range.between(55));
+	EXPECT_FALSE(range.contains(55));
 }
 
 

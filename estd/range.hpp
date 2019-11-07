@@ -28,7 +28,7 @@ struct NumRange final
 		upper_(std::max(bound1, bound2)) {}
 
 	/// Return true if val is in range [lower, upper] inclusively
-	bool between (T val) const
+	bool contains (T val) const
 	{
 		return lower_ <= val && val <= upper_;
 	}
