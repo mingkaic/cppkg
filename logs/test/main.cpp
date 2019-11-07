@@ -79,6 +79,7 @@ protected:
 		TestLogger::latest_warning_ = "";
 		TestLogger::latest_error_ = "";
 		TestLogger::latest_fatal_ = "";
+		TestLogger::set_log_level_ = 0;
 	}
 };
 
@@ -233,6 +234,15 @@ TEST_F(LOGS, FatalFmt)
 		"plum");
 	const char* fmsg = TestLogger::latest_fatal_.c_str();
 	EXPECT_STREQ("fatal 3.1416 message -1 with format plum", fmsg);
+}
+
+
+TEST_F(LOGS, GlobalGetSet)
+{
+	EXPECT_EQ(log_level_ret, logs::get_log_level());
+
+	logs::set_log_level(1231);
+	EXPECT_EQ(1231, TestLogger::set_log_level_);
 }
 
 

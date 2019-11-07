@@ -1,6 +1,6 @@
 # C++ pkg
 [![Build Status](https://travis-ci.org/mingkaic/cppkg.svg?branch=master)](https://travis-ci.org/mingkaic/cppkg)
-[![Coverage Status](https://coveralls.io/repos/github/mingkaic/cppkg/badge.svg?branch=master)](https://coveralls.io/github/mingkaic/cppkg?branch=master)
+[![codecov](https://codecov.io/gh/mingkaic/cppkg/branch/master/graph/badge.svg)](https://codecov.io/gh/mingkaic/cppkg)
 
 Mimic Golang pkg libraries to simplify application development
 
