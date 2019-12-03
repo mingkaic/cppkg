@@ -70,16 +70,19 @@ struct Sequence final
 	template <typename FN, typename ...ARGS>
 	void attach_job (FN&& call, ARGS&&... args)
 	{
-		std::function<bool()> job = std::bind(
-			std::forward<FN>(call), std::forward<ARGS>(args)...);
+		std::function<bool(size_t)> job = std::bind(
+			std::forward<FN>(call), std::placeholders::_1,
+				std::forward<ARGS>(args)...);
 		std::packaged_task<void()> tsk([this, job]()
 		{
+			size_t i = 0;
 			do
 			{
-				if (job())
+				if (job(i))
 				{
 					break;
 				}
+				++i;
 			}
 			while (this->stop_future_.wait_for(
 				std::chrono::milliseconds(1)) ==

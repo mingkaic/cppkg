@@ -111,7 +111,7 @@ TEST(JOBS, SequenceOrdering)
 
 	// job 1
 	seq.attach_job(
-	[](size_t& i)
+	[](size_t, size_t& i)
 	{
 		std::this_thread::sleep_for(
 			std::chrono::milliseconds(5000)); // wait longer job 2
@@ -121,7 +121,7 @@ TEST(JOBS, SequenceOrdering)
 
 	// job 2
 	seq.attach_job(
-	[](size_t& i)
+	[](size_t, size_t& i)
 	{
 		i *= 2; // test
 		std::this_thread::sleep_for(
@@ -145,11 +145,10 @@ TEST(JOBS, SequenceTermination)
 
 	// job 1
 	seq.attach_job(
-	[](bool& success)
+	[](size_t attempt, bool& success)
 	{
-		static size_t attempts = 0;
 		success = true;
-		if (attempts >= 20)
+		if (attempt >= 20)
 		{
 			// allow at most 20 seconds
 			// fail condition
@@ -158,13 +157,13 @@ TEST(JOBS, SequenceTermination)
 		}
 		std::this_thread::sleep_for(
 			std::chrono::milliseconds(1000));
-		++attempts;
+		++attempt;
 		return false;
 	}, std::ref(job1_succ));
 
 	// job 2
 	seq.attach_job(
-	[](bool& passed)
+	[](size_t attempt, bool& passed)
 	{
 		// this job should never have executed
 		passed = true;
