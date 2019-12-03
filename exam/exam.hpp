@@ -98,7 +98,8 @@ extern std::shared_ptr<TestLogger> tlogger;
 #define _ARRCHECK(ARR, ARR2, GBOOL) { std::stringstream arrs, arrs2;\
 	fmts::to_stream(arrs, ARR.begin(), ARR.end());\
 	fmts::to_stream(arrs2, ARR2.begin(), ARR2.end());\
-	GBOOL(std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
+	GBOOL(ARR.size() == ARR2.size() &&\
+		std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
 		"expect list " << arrs.str() << ", got " << arrs2.str() << " instead"; }
 #define _INSET(SET, CONTENT, GBOOL, PREFIX_MSG) {\
 	GBOOL(SET.end() != SET.find(CONTENT)) <<\

@@ -20,7 +20,8 @@ cc_library(
     name = "jobs",
     hdrs = glob(["*.hpp"]),
     srcs = glob(["src/*.cpp"]),
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
+    deps = ["//logs:logs"],
     visibility = ["//visibility:public"],
 )
 
@@ -34,5 +35,5 @@ cc_test(
         "//jobs:jobs",
         "@gtest//:gtest",
     ],
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
 )

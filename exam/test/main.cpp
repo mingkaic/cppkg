@@ -135,13 +135,13 @@ TEST(EXAM, Logality)
 	logs::get_logger().set_log_level(logs::FATAL);
 	EXPECT_EQ(logs::TRACE, logs::get_logger().get_log_level());
 
-	auto fatal_action = []()
+	auto fatal_action = []
 	{
 		logs::fatal("fatal message");
 		FAIL() << "fatal should never have gone this far";
 	};
 
-	auto fatal_action2 = []()
+	auto fatal_action2 = []
 	{
 		logs::get_logger().log(logs::FATAL, "fatal message2");
 		FAIL() << "fatal should never have gone this far";

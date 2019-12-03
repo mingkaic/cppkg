@@ -25,5 +25,7 @@ test:asan --linkopt -fsanitize=address
 # === GTESTS ===
 
 test:gtest --action_env="GTEST_SHUFFLE=1" --action_env="GTEST_BREAK_ON_FAILURE=1"
-
 coverage:gtest --action_env="GTEST_SHUFFLE=1" --action_env="GTEST_BREAK_ON_FAILURE=1"
+
+test:full --action_env="GTEST_REPEAT=30"
+coverage:full --action_env="GTEST_REPEAT=30"

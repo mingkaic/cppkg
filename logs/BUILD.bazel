@@ -20,7 +20,7 @@ cc_library(
     name = "logs",
     hdrs = glob(["*.hpp"]),
     srcs = glob(["src/*.cpp"]),
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
     deps = ["//fmts:fmts"],
     visibility = ["//visibility:public"],
 )
@@ -35,5 +35,5 @@ cc_test(
         "//logs:logs",
         "@gtest//:gtest",
     ],
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
 )

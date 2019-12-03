@@ -24,9 +24,17 @@ struct ManagedJob final
 	template <typename FN, typename ...ARGS>
 	ManagedJob (FN&& job, ARGS&&... args)
 	{
-		std::thread job_thd(job,
-			exit_signal_.get_future(),
-			std::forward<ARGS>(args)...);
+		exit_future_ = exit_signal_.get_future();
+		std::thread job_thd(
+		[](std::shared_future<void> stop_it, FN&& job, ARGS&&... args)
+		{
+			do
+			{
+				job(std::forward<ARGS>(args)...);
+			}
+			while (stop_it.wait_for(std::chrono::milliseconds(1)) ==
+				std::future_status::timeout);
+		}, exit_future_, std::forward<FN>(job), std::forward<ARGS>(args)...);
 		job_ = std::move(job_thd);
 	}
 
@@ -43,7 +51,10 @@ struct ManagedJob final
 
 	ManagedJob (ManagedJob&& other) :
 		exit_signal_(std::move(other.exit_signal_)),
-		job_(std::move(other.job_)) {}
+		job_(std::move(other.job_))
+	{
+		exit_future_ = exit_signal_.get_future();
+	}
 
 	ManagedJob& operator = (const ManagedJob& other) = delete;
 
@@ -57,6 +68,7 @@ struct ManagedJob final
 				job_.detach();
 			}
 			exit_signal_ = std::move(other.exit_signal_);
+			exit_future_ = exit_signal_.get_future();
 			job_ = std::move(other.job_);
 		}
 		return *this;
@@ -94,6 +106,8 @@ struct ManagedJob final
 			exit_signal_.set_value();
 		}
 	}
+
+	std::shared_future<void> exit_future_;
 
 private:
 	std::promise<void> exit_signal_;
