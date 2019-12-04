@@ -19,7 +19,10 @@ namespace jobs
 /// Thread wrapper that offers termination option
 struct ManagedJob final
 {
-	ManagedJob (void) = default;
+	ManagedJob (void)
+	{
+		exit_future_ = exit_signal_.get_future();
+	}
 
 	template <typename FN, typename ...ARGS>
 	ManagedJob (FN&& job, ARGS&&... args)
@@ -40,11 +43,11 @@ struct ManagedJob final
 
 	~ManagedJob (void)
 	{
-		if (job_.joinable())
+		if (job_.joinable() && exit_future_.valid())
 		{
 			exit_signal_.set_value();
-			job_.detach();
 		}
+		join();
 	}
 
 	ManagedJob (const ManagedJob& other) = delete;
@@ -62,13 +65,13 @@ struct ManagedJob final
 	{
 		if (this != &other)
 		{
-			if (job_.joinable())
+			if (job_.joinable() && exit_future_.valid())
 			{
 				exit_signal_.set_value();
 				job_.detach();
 			}
 			exit_signal_ = std::move(other.exit_signal_);
-			exit_future_ = exit_signal_.get_future();
+			exit_future_ = std::move(other.exit_future_);
 			job_ = std::move(other.job_);
 		}
 		return *this;

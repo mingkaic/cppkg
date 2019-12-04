@@ -24,9 +24,10 @@ namespace jobs
 /// Manages sequential dependency of detached threads
 struct Sequence final
 {
-	Sequence (void) :
-		queue_mutex_(),
-		master_(
+	Sequence (void)
+	{
+		stop_future_ = stop_signal_.get_future();
+		master_ = std::move(ManagedJob(
 			[](Sequence* seq)
 			{
 				std::packaged_task<void()> tsk;
@@ -53,9 +54,7 @@ struct Sequence final
 				}
 				std::thread thd(std::move(tsk));
 				thd.join();
-			}, this)
-	{
-		stop_future_ = stop_signal_.get_future();
+			}, this));
 	}
 
 	~Sequence (void)
