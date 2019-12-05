@@ -27,7 +27,7 @@ struct Sequence final
 	Sequence (void)
 	{
 		stop_future_ = stop_signal_.get_future();
-		master_ = std::move(ManagedJob(
+		master_ = ManagedJob(
 			[](Sequence* seq)
 			{
 				std::packaged_task<void()> tsk;
@@ -54,7 +54,7 @@ struct Sequence final
 				}
 				std::thread thd(std::move(tsk));
 				thd.join();
-			}, this));
+			}, this);
 	}
 
 	~Sequence (void)
