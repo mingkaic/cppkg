@@ -100,6 +100,12 @@ extern std::shared_ptr<TestLogger> tlogger;
 	fmts::to_stream(arrs2, ARR2.begin(), ARR2.end());\
 	GBOOL(std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
 		"expect list " << arrs.str() << ", got " << arrs2.str() << " instead"; }
+#define _VECCHECK(VEC, VEC2, GBOOL) { std::stringstream vecs, vecs2;\
+	fmts::to_stream(vecs, VEC.begin(), VEC.end());\
+	fmts::to_stream(vecs2, VEC2.begin(), VEC2.end());\
+	GBOOL(VEC.size() == VEC2.size() &&\
+		std::equal(VEC.begin(), VEC.end(), VEC2.begin())) <<\
+		"expect list " << vecs.str() << ", got " << vecs2.str() << " instead"; }
 #define _INSET(SET, CONTENT, GBOOL, PREFIX_MSG) {\
 	GBOOL(SET.end() != SET.find(CONTENT)) <<\
 		PREFIX_MSG << " find " << #CONTENT << " in " << #SET; }
@@ -111,6 +117,11 @@ extern std::shared_ptr<TestLogger> tlogger;
 #define EXPECT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_TRUE)
 #define ASSERT_ARRNEQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_FALSE)
 #define EXPECT_ARRNEQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_FALSE)
+
+#define ASSERT_VECEQ(VEC, VEC2) _VECCHECK(VEC, VEC2, ASSERT_TRUE)
+#define EXPECT_VECEQ(VEC, VEC2) _VECCHECK(VEC, VEC2, EXPECT_TRUE)
+#define ASSERT_VECNEQ(VEC, VEC2) _VECCHECK(VEC, VEC2, ASSERT_FALSE)
+#define EXPECT_VECNEQ(VEC, VEC2) _VECCHECK(VEC, VEC2, EXPECT_FALSE)
 
 #define ASSERT_HAS(SET, KEY) _INSET(SET, KEY, ASSERT_TRUE, "expecting to")
 #define EXPECT_HAS(SET, KEY) _INSET(SET, KEY, EXPECT_TRUE, "expecting to")

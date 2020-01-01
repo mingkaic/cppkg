@@ -19,31 +19,45 @@ namespace jobs
 /// Thread wrapper that offers termination option
 struct ManagedJob final
 {
-	ManagedJob (void) = default;
+	ManagedJob (void)
+	{
+		exit_future_ = exit_signal_.get_future();
+	}
 
 	template <typename FN, typename ...ARGS>
 	ManagedJob (FN&& job, ARGS&&... args)
 	{
-		std::thread job_thd(job,
-			exit_signal_.get_future(),
-			std::forward<ARGS>(args)...);
+		exit_future_ = exit_signal_.get_future();
+		std::thread job_thd(
+		[](std::shared_future<void> stop_it, FN&& job, ARGS&&... args)
+		{
+			do
+			{
+				job(std::forward<ARGS>(args)...);
+			}
+			while (stop_it.wait_for(std::chrono::milliseconds(1)) ==
+				std::future_status::timeout);
+		}, exit_future_, std::forward<FN>(job), std::forward<ARGS>(args)...);
 		job_ = std::move(job_thd);
 	}
 
 	~ManagedJob (void)
 	{
-		if (job_.joinable())
+		if (job_.joinable() && exit_future_.valid())
 		{
 			exit_signal_.set_value();
-			job_.detach();
 		}
+		join();
 	}
 
 	ManagedJob (const ManagedJob& other) = delete;
 
 	ManagedJob (ManagedJob&& other) :
 		exit_signal_(std::move(other.exit_signal_)),
-		job_(std::move(other.job_)) {}
+		job_(std::move(other.job_))
+	{
+		exit_future_ = exit_signal_.get_future();
+	}
 
 	ManagedJob& operator = (const ManagedJob& other) = delete;
 
@@ -51,12 +65,13 @@ struct ManagedJob final
 	{
 		if (this != &other)
 		{
-			if (job_.joinable())
+			if (job_.joinable() && exit_future_.valid())
 			{
 				exit_signal_.set_value();
 				job_.detach();
 			}
 			exit_signal_ = std::move(other.exit_signal_);
+			exit_future_ = std::move(other.exit_future_);
 			job_ = std::move(other.job_);
 		}
 		return *this;
@@ -94,6 +109,8 @@ struct ManagedJob final
 			exit_signal_.set_value();
 		}
 	}
+
+	std::shared_future<void> exit_future_;
 
 private:
 	std::promise<void> exit_signal_;

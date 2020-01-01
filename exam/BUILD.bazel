@@ -38,5 +38,5 @@ cc_test(
         "//exam:exam",
         "@gtest//:gtest",
     ],
-    copts = ["-std=c++14"],
+    copts = ["-std=c++17"],
 )
