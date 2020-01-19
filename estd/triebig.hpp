@@ -1,7 +1,7 @@
 #ifndef ESTD_TRIEBIG_HPP
 #define ESTD_TRIEBIG_HPP
 
-#include "estd/hash.hpp"
+#include "estd/contain.hpp"
 #include "estd/trie.hpp"
 
 namespace estd
