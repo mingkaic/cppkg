@@ -6,7 +6,7 @@ Mimic Golang pkg libraries to simplify application development
 
 # Dependencies
 
-## DIFF, FMTS, and LOGS
+## DIFF, ESTD, EXAM, FMTS, JOBS, and LOGS
 
 These libraries don't depend on anything
 

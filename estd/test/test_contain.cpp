@@ -1,5 +1,5 @@
 
-#ifndef DISABLE_ESTD_HASH_TEST
+#ifndef DISABLE_ESTD_CONTAIN_TEST
 
 #include <array>
 #include <list>
@@ -9,10 +9,10 @@
 
 #include "exam/exam.hpp"
 
-#include "estd/hash.hpp"
+#include "estd/contain.hpp"
 
 
-TEST(HASH, Has)
+TEST(CONTAIN, Has)
 {
 	std::map<std::string,size_t> stuff = {
 		{"abcdef", 123},
@@ -60,7 +60,7 @@ TEST(HASH, Has)
 }
 
 
-TEST(HASH, Get)
+TEST(CONTAIN, Get)
 {
 	std::map<std::string,size_t> stuff = {
 		{"abcdef", 123},
@@ -98,7 +98,7 @@ TEST(HASH, Get)
 }
 
 
-TEST(HASH, TryGet)
+TEST(CONTAIN, TryGet)
 {
 	std::map<std::string,size_t> stuff = {
 		{"abcdef", 123},
@@ -126,7 +126,7 @@ TEST(HASH, TryGet)
 }
 
 
-TEST(HASH, MustGet)
+TEST(CONTAIN, MustGet)
 {
 	std::map<std::string,size_t> stuff = {
 		{"abcdef", 123},
@@ -161,7 +161,7 @@ TEST(HASH, MustGet)
 }
 
 
-TEST(HASH, ArrHas)
+TEST(CONTAIN, ArrHas)
 {
 	std::array<size_t,3> arr = {123, 456, 789};
 	std::vector<size_t> vec = {123, 456, 789};
@@ -185,4 +185,4 @@ TEST(HASH, ArrHas)
 }
 
 
-#endif // DISABLE_ESTD_HASH_TEST
+#endif // DISABLE_ESTD_CONTAIN_TEST

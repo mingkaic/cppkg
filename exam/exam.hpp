@@ -8,8 +8,6 @@
 
 #include "logs/logs.hpp"
 
-#include "fmts/fmts.hpp"
-
 #ifndef PKG_EXAM_HPP
 #define PKG_EXAM_HPP
 

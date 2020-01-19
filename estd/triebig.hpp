@@ -1,8 +1,7 @@
 #ifndef ESTD_TRIEBIG_HPP
 #define ESTD_TRIEBIG_HPP
 
-#include <unordered_map>
-
+#include "estd/hash.hpp"
 #include "estd/trie.hpp"
 
 namespace estd
@@ -28,12 +27,12 @@ struct TrieBigNode final : public iTrieNode<KEY,VAL>
 
 	const iTrieNode<KEY,VAL>* next (const KEY& k) const override
 	{
-		return estd::try_get(children_, k, nullptr);
+		return try_get(children_, k, nullptr);
 	}
 
 	iTrieNode<KEY,VAL>* next (const KEY& k) override
 	{
-		return estd::try_get(children_, k, nullptr);
+		return try_get(children_, k, nullptr);
 	}
 
 	iTrieNode<KEY,VAL>* add (const KEY& k, iTrieNode<KEY,VAL>* node) override

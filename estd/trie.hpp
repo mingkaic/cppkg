@@ -1,13 +1,9 @@
 #ifndef ESTD_TRIE_HPP
 #define ESTD_TRIE_HPP
 
-#include <algorithm>
-#include <memory>
 #include <optional>
 
 #include "logs/logs.hpp"
-
-#include "estd/estd.hpp"
 
 namespace estd
 {
