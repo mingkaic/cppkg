@@ -13,7 +13,7 @@
 
 int main (int argc, char** argv)
 {
-	set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
+	logs::set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
 
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
