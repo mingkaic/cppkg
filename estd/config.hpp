@@ -52,8 +52,7 @@ struct ConfigMap final : public iConfig
 			auto& entry = entries_.at(cfg_name);
 			return entry.data_;
 		}
-		logger_.error(fmts::sprintf(
-			"failed to find config name %s", cfg_name.c_str()));
+		logs::errorf("failed to find config name %s", cfg_name.c_str());
 		return nullptr;
 	}
 
