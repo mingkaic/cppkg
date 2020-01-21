@@ -11,9 +11,9 @@ struct iConfig
 {
     virtual ~iConfig (void) = default;
 
-    virtual std::vector<string> get_names (void) const = 0;
+    virtual std::vector<std::string> get_names (void) const = 0;
 
-    virtual void* get_obj (std::string cfg_name) const = 0;
+    virtual void* get_obj (std::string cfg_name) = 0;
 };
 
 }
