@@ -132,8 +132,8 @@ TEST(EXAM, ArrHasality)
 
 TEST(EXAM, Logality)
 {
-	logs::get_logger().set_log_level(logs::FATAL);
-	EXPECT_EQ(logs::TRACE, logs::get_logger().get_log_level());
+	logs::get_logger().set_log_level("fatal");
+	EXPECT_STREQ("trace", logs::get_logger().get_log_level().c_str());
 
 	auto fatal_action = []
 	{

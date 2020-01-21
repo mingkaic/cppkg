@@ -5,7 +5,7 @@
 
 static const char* program = "program";
 static const char* help_flag = "--help";
-const size_t log_level_ret = 42873301;
+const std::string log_level_ret = "42873301";
 
 
 struct TestLogger : public logs::iLogger
@@ -14,36 +14,48 @@ struct TestLogger : public logs::iLogger
 	static std::string latest_error_;
 	static std::string latest_fatal_;
 	static std::string latest_log_msg_;
-	static size_t set_log_level_;
+	static std::string set_log_level_;
 
-	void log (size_t msg_level, std::string msg) const override
+	bool supports_level (const std::string& msg_level) const override
+	{
+		return true;
+	}
+
+	void log (const std::string& msg_level, const std::string& msg) const override
+	{
+		std::stringstream ss;
+		ss << logs::enum_log(msg_level) << msg;
+		latest_log_msg_ = ss.str();
+	}
+
+	void log (size_t msg_level, const std::string& msg) const override
 	{
 		std::stringstream ss;
 		ss << msg_level << msg;
 		latest_log_msg_ = ss.str();
 	}
 
-	size_t get_log_level (void) const override
+	std::string get_log_level (void) const override
 	{
 		return log_level_ret;
 	}
 
-	void set_log_level (size_t log_level) override
+	void set_log_level (const std::string& log_level) override
 	{
 		set_log_level_ = log_level;
 	}
 
-	void warn (std::string msg) const override
+	void warn (const std::string& msg) const override
 	{
 		latest_warning_ = msg;
 	}
 
-	void error (std::string msg) const override
+	void error (const std::string& msg) const override
 	{
 		latest_error_ = msg;
 	}
 
-	void fatal (std::string msg) const override
+	void fatal (const std::string& msg) const override
 	{
 		latest_fatal_ = msg;
 	}
@@ -58,7 +70,7 @@ std::string TestLogger::latest_fatal_;
 
 std::string TestLogger::latest_log_msg_;
 
-size_t TestLogger::set_log_level_ = 0;
+std::string TestLogger::set_log_level_ = "0";
 
 std::shared_ptr<TestLogger> tlogger = std::make_shared<TestLogger>();
 
