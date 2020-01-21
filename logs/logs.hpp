@@ -22,6 +22,9 @@ struct iLogger
 {
 	virtual ~iLogger (void) = default;
 
+	/// Return true if log level is supported
+	virtual bool supports_level (const std::string& msg_level) const = 0;
+
 	/// Log message at any specified level of verbosity
 	virtual void log (size_t msg_level, std::string msg) const = 0;
 
@@ -58,9 +61,27 @@ enum LOG_LEVEL
 	TRACE,
 };
 
+static std::unordered_map<std::string,LOG_LEVEL> log_names =
+{
+	{"fatal", FATAL},
+	{"error", ERROR},
+	{"warn", WARN},
+	{"info", INFO},
+	{"debug", DEBUG},
+	{"trace", TRACE},
+};
+
 /// Default implementation of iLogger used in ADE
 struct DefLogger final : public iLogger
 {
+	bool supports_level (const std::string& msg_level) const override
+	{
+		std::string level = msg_level;
+		std::transform(level.begin(), level.end(), level.begin(),
+			[](unsigned char c){ return std::tolower(c); });
+		return estd::has(log_names, level);
+	}
+
 	/// Implementation of iLogger
 	void log (size_t msg_level, std::string msg) const override
 	{
