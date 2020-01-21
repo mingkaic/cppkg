@@ -59,20 +59,26 @@ struct ConfigMap final : public iConfig
 	template <typename T>
 	void add_entry (const std::string& cfg_name)
 	{
-		entries_.emplace(cfg_name, ConfigEntry{
-			new T(),
-			[](void* ptr) { delete static_cast<T*>(ptr); },
-		});
+		if (false == estd::has(entries_, cfg_name))
+		{
+			entries_.emplace(cfg_name, ConfigEntry{
+				new T(),
+				[](void* ptr) { delete static_cast<T*>(ptr); },
+			});
+		}
 	}
 
 	template <typename T>
 	void add_entry (const std::string& cfg_name,
 		std::function<void(T*)> del)
 	{
-		entries_.emplace(cfg_name, ConfigEntry{
-			new T(),
-			[del](void* ptr) { del(static_cast<T*>(ptr)); },
-		});
+		if (false == estd::has(entries_, cfg_name))
+		{
+			entries_.emplace(cfg_name, ConfigEntry{
+				new T(),
+				[del](void* ptr) { del(static_cast<T*>(ptr)); },
+			});
+		}
 	}
 
 	void rm_entry (const std::string& cfg_name)
