@@ -203,6 +203,11 @@ struct Trie
 		return nullptr;
 	}
 
+	NODE* root (void)
+	{
+		return root_.get();
+	}
+
 	const NODE* root (void) const
 	{
 		return root_.get();
