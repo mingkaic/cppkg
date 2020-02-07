@@ -76,6 +76,20 @@ struct TrieNode final : public iTrieNode<KEY,VAL>
 	std::array<TrieNode<KEY,VAL,NKEY,HASHER>*,NKEY> children_;
 
 	size_t nchildren_;
+
+private:
+	void clear_impl (void) override
+	{
+		for (auto& child : children_)
+		{
+			if (nullptr != child)
+			{
+				delete child;
+			}
+			child = nullptr;
+		}
+		nchildren_ = 0;
+	}
 };
 
 template <typename KEY, typename VAL, size_t NKEY, typename HASHER>

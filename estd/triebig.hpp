@@ -49,6 +49,12 @@ struct TrieBigNode final : public iTrieNode<KEY,VAL>
 	}
 
 	std::unordered_map<KEY,TrieBigNode<KEY,VAL,HASHER>*,HASHER> children_;
+
+private:
+	void clear_impl (void) override
+	{
+		children_.clear();
+	}
 };
 
 }

@@ -27,7 +27,16 @@ struct iTrieNode
 
 	virtual iTrieNode<KEY,VAL>* rm (const KEY& k) = 0;
 
+	void clear (void)
+	{
+		clear_impl();
+		leaf_.reset();
+	}
+
 	std::optional<VAL> leaf_;
+
+protected:
+	virtual void clear_impl (void) = 0;
 };
 
 template <typename ARR>
@@ -211,6 +220,11 @@ struct Trie
 	const NODE* root (void) const
 	{
 		return root_.get();
+	}
+
+	void clear (void)
+	{
+		root_->clear();
 	}
 
 private:

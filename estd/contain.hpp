@@ -20,7 +20,22 @@ namespace estd
 {
 
 template <typename MAPPABLE>
+using KeyT = typename MAPPABLE::key_type;
+
+template <typename MAPPABLE>
 using ValT = typename MAPPABLE::mapped_type;
+
+template <typename MAPPABLE>
+std::vector<KeyT<MAPPABLE>> get_keys (const MAPPABLE& m)
+{
+	std::vector<KeyT<MAPPABLE>> keys;
+	keys.reserve(m.size());
+	for (const auto& e : m)
+	{
+		keys.push_back(e.first);
+	}
+	return keys;
+}
 
 /// Return true if key is found in map/set s
 template <typename SEARCHABLE, typename KEYTYPE>
