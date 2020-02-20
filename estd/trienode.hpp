@@ -22,13 +22,7 @@ struct TrieNode final : public iTrieNode<KEY,VAL>
 	// to avoid invalid deletion, set to change of ownership/deleted child to null
 	~TrieNode (void)
 	{
-		for (auto child : children_)
-		{
-			if (nullptr != child)
-			{
-				delete child;
-			}
-		}
+		this->clear();
 	}
 
 	size_t nchildren (void) const override

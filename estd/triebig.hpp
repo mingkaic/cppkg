@@ -14,10 +14,7 @@ struct TrieBigNode final : public iTrieNode<KEY,VAL>
 	// to avoid invalid deletion, set to change of ownership/deleted child to null
 	~TrieBigNode (void)
 	{
-		for (auto cpair : children_)
-		{
-			delete cpair.second;
-		}
+		this->clear();
 	}
 
 	size_t nchildren (void) const override
@@ -53,6 +50,10 @@ struct TrieBigNode final : public iTrieNode<KEY,VAL>
 private:
 	void clear_impl (void) override
 	{
+		for (auto cpair : children_)
+		{
+			delete cpair.second;
+		}
 		children_.clear();
 	}
 };
