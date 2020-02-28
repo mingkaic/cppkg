@@ -6,7 +6,6 @@
 /// Define map and set utility functions
 ///
 
-#include <algorithm>
 #include <map>
 #include <set>
 #include <unordered_map>
@@ -14,14 +13,29 @@
 
 #include "logs/logs.hpp"
 
-#ifndef PKG_ESTD_HPP
-#define PKG_ESTD_HPP
+#ifndef PKG_ESTD_HASH_HPP
+#define PKG_ESTD_HASH_HPP
 
 namespace estd
 {
 
 template <typename MAPPABLE>
+using KeyT = typename MAPPABLE::key_type;
+
+template <typename MAPPABLE>
 using ValT = typename MAPPABLE::mapped_type;
+
+template <typename MAPPABLE>
+std::vector<KeyT<MAPPABLE>> get_keys (const MAPPABLE& m)
+{
+	std::vector<KeyT<MAPPABLE>> keys;
+	keys.reserve(m.size());
+	for (const auto& e : m)
+	{
+		keys.push_back(e.first);
+	}
+	return keys;
+}
 
 /// Return true if key is found in map/set s
 template <typename SEARCHABLE, typename KEYTYPE>
@@ -82,4 +96,4 @@ bool arr_has (const ARR& s, const CONTENT& key)
 
 }
 
-#endif // PKG_ESTD_HPP
+#endif // PKG_ESTD_HASH_HPP

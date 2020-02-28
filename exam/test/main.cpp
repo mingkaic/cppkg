@@ -13,7 +13,7 @@
 
 int main (int argc, char** argv)
 {
-	set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
+	logs::set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
 
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
@@ -132,8 +132,8 @@ TEST(EXAM, ArrHasality)
 
 TEST(EXAM, Logality)
 {
-	logs::get_logger().set_log_level(logs::FATAL);
-	EXPECT_EQ(logs::TRACE, logs::get_logger().get_log_level());
+	logs::get_logger().set_log_level("fatal");
+	EXPECT_STREQ("trace", logs::get_logger().get_log_level().c_str());
 
 	auto fatal_action = []
 	{

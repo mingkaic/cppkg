@@ -8,8 +8,6 @@
 
 #include "logs/logs.hpp"
 
-#include "fmts/fmts.hpp"
-
 #ifndef PKG_EXAM_HPP
 #define PKG_EXAM_HPP
 
@@ -18,7 +16,7 @@ namespace exam
 
 struct TestException final : public std::exception
 {
-	TestException (std::string msg) : msg_(msg) {}
+	TestException (const std::string& msg) : msg_(msg) {}
 
 	const char* what () const throw ()
 	{
@@ -38,8 +36,23 @@ struct TestLogger : public logs::iLogger
 	/// Latest log level value
 	static size_t latest_lvl_;
 
+	bool supports_level (const std::string& msg_level) const override
+	{
+		return logs::enum_log(msg_level) < logs::NOT_SET;
+	}
+
+	void log (const std::string& msg_level, const std::string& msg) const override
+	{
+		if (msg_level == "fatal")
+		{
+			fatal(msg);
+		}
+		latest_lvl_ = logs::enum_log(msg_level);
+		latest_msg_ = msg;
+	}
+
 	/// Log both level and message
-	void log (size_t log_level, std::string msg) const override
+	void log (size_t log_level, const std::string& msg) const override
 	{
 		if (log_level == logs::FATAL)
 		{
@@ -50,33 +63,33 @@ struct TestLogger : public logs::iLogger
 	}
 
 	/// Returns logs::TRACE
-	size_t get_log_level (void) const override
+	std::string get_log_level (void) const override
 	{
-		return logs::TRACE;
+		return logs::name_log(logs::TRACE);
 	}
 
 	/// Quitely ignores set level, since test logger should record every message
-	void set_log_level (size_t log_level) override
+	void set_log_level (const std::string& log_level) override
 	{
 		// does actually set anything
 	}
 
 	/// Logs message at log::WARN
-	void warn (std::string msg) const override
+	void warn (const std::string& msg) const override
 	{
 		latest_lvl_ = logs::WARN;
 		latest_msg_ = msg;
 	}
 
 	/// Logs message at log::ERROR
-	void error (std::string msg) const override
+	void error (const std::string& msg) const override
 	{
 		latest_lvl_ = logs::ERROR;
 		latest_msg_ = msg;
 	}
 
 	/// Logs message at log::FATAL
-	void fatal (std::string msg) const override
+	void fatal (const std::string& msg) const override
 	{
 		throw TestException(msg);
 	}
