@@ -54,7 +54,7 @@ TEST(FMTS, StreamIterators)
 	EXPECT_STREQ("[14\\15\\16]", ss.str().c_str());
 	ss.str("");
 
-	StringsT svec = {
+	fmts::StringsT svec = {
 		fmts::string("what's\\up\\mybro"),
 		fmts::string("nothing\\much\\fam"),
 		fmts::string("\\hella\\lit")

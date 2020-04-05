@@ -9,6 +9,9 @@
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <istream>
+
+#include "fmts/fmts.hpp"
 
 #include "diff/format.hpp"
 
@@ -38,8 +41,7 @@ std::string safe_diff_msg (
 	const fmts::StringsT& got);
 
 std::string diff_lines (
-	const std::string& expected,
-	const std::string& got,
+	std::istream& expect, std::istream& got,
 	bool ignore_empty_lines = true,
 	bool trim_spaces = true);
 
