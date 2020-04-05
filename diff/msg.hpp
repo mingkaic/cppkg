@@ -26,8 +26,22 @@ const uint8_t lines_after = 3;
 
 /// Return diff message of multiple lines
 /// Message is empty if the lines are the same
+/// Caveat: the product of size of the vectors is roughly limited to 2^32,
+/// this function does not perform any optimization to diff long messages
 std::string diff_msg (
-	std::vector<std::string> expected, std::vector<std::string> got);
+	const fmts::StringsT& expected,
+	const fmts::StringsT& got);
+
+/// Same as diff_msg, except it diffs the message in batches
+std::string safe_diff_msg (
+	const fmts::StringsT& expected,
+	const fmts::StringsT& got);
+
+std::string diff_lines (
+	const std::string& expected,
+	const std::string& got,
+	bool ignore_empty_lines = true,
+	bool trim_spaces = true);
 
 }
 

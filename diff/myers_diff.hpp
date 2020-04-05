@@ -30,7 +30,7 @@ using ArrValT = typename std::iterator_traits<
 
 /// Return the minimum number of edits between orig and updated arrays
 template <typename ARR, typename COMPARATOR=std::equal_to<ArrValT<ARR>>>
-size_t myers_diff_min_edit (ARR orig, ARR updated)
+size_t myers_diff_min_edit (const ARR& orig, const ARR& updated)
 {
 	COMPARATOR comparator;
 	auto orig_begin = std::begin(orig);

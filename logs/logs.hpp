@@ -77,7 +77,7 @@ static std::unordered_map<std::string,LOG_LEVEL> names2log =
 	{"trace", TRACE},
 };
 
-static std::vector<std::string> lognames = {
+static fmts::StringsT lognames = {
 	"fatal", "error", "warn", "info", "debug", "trace"};
 
 std::string name_log (const LOG_LEVEL& level);

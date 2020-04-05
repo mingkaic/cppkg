@@ -38,7 +38,7 @@ TEST(DIFF, MyersDiff)
 
 	std::string similar = "CBABAC";
 	auto notsame = diff::myers_diff<std::string>(s, similar);
-	std::vector<std::string> expectations = {
+	fmts::StringsT expectations = {
 		"- 0\t \tA\n",
 		"- 1\t \tB\n",
 		"  2\t0\tC\n",

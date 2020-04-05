@@ -17,6 +17,8 @@
 namespace fmts
 {
 
+using StringsT = std::vector<std::string>;
+
 /// Symbol for the start of an array as string
 const char arr_begin = '[';
 
@@ -171,7 +173,7 @@ void rtrim(std::string& s);
 void trim(std::string& s);
 
 /// Return string s split into all substrings separated by delim as a vector
-std::vector<std::string> split (std::string s, std::string delim);
+StringsT split (std::string s, std::string delim);
 
 }
 
