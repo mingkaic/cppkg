@@ -1,15 +1,15 @@
 #include "diff/msg.hpp"
+#include <iostream>
 
 #ifdef PKG_DIFF_MSG_HPP
 
 namespace diff
 {
 
-std::string diff_msg (
-	const fmts::StringsT& expect,
-	const fmts::StringsT& got)
+using MsgDiffT = std::vector<DiffArrT<fmts::StringsT>>;
+
+static std::string to_string (const MsgDiffT& diffs)
 {
-	auto diffs = myers_diff(expect, got);
 	IndexT ndiffs = diffs.size();
 	bool show[ndiffs];
 	std::memset(show, false, sizeof(bool) * ndiffs);
@@ -23,12 +23,28 @@ std::string diff_msg (
 			std::memset(show + begin, true, sizeof(bool) * (end - begin + 1));
 		}
 	}
+	size_t oidx = 0;
+	size_t uidx = 0;
 	std::stringstream out;
 	for (IndexT i = 0; i < ndiffs; ++i)
 	{
 		if (show[i])
 		{
-			diff_line_format(out, diffs[i]);
+			diff_line_format(out, diffs[i].val_,
+				diffs[i].action_, oidx, uidx);
+		}
+		switch (diffs[i].action_)
+		{
+			case EQ:
+				++oidx;
+				++uidx;
+				break;
+			case ADD:
+				++uidx;
+				break;
+			case DEL:
+				++oidx;
+				break;
 		}
 	}
 	return out.str();
@@ -52,18 +68,23 @@ static void process_lines (fmts::StringsT& lines, std::istream& str,
 	}
 }
 
-const size_t batch_limit = std::numeric_limits<IndexT>::max();
-
-std::string safe_diff_msg (
+static void safe_diff_msg_helper (MsgDiffT& diffs,
 	const fmts::StringsT& expect,
-	const fmts::StringsT& got)
+	const fmts::StringsT& got,
+	size_t batch_limit)
 {
 	size_t nexpect = expect.size();
 	size_t ngot = got.size();
 
-	if (nexpect > batch_limit && ngot > batch_limit)
+	if (nexpect <= batch_limit && ngot <= batch_limit)
 	{
-		return diff_msg(expect, got);
+		MsgDiffT mdiffs = myers_diff(expect, got);
+		std::stringstream out;
+		for (IndexT i = 0, n = mdiffs.size(); i < n; ++i)
+		{
+			diffs.push_back(mdiffs[i]);
+		}
+		return;
 	}
 
 	auto exit = expect.begin();
@@ -71,60 +92,50 @@ std::string safe_diff_msg (
 	fmts::StringsT exbatch(exit, exit + std::min(batch_limit, nexpect));
 	fmts::StringsT gobatch(goit, goit + std::min(batch_limit, ngot));
 
-	auto diffs = myers_diff(exbatch, gobatch);
+	MsgDiffT mdiffs = myers_diff(exbatch, gobatch);
 
-	IndexT expect_begin = -1, got_begin = -1, diff_end = -1;
-	// accept all contiguous non-EQ batches before the end of the line
-	for (IndexT i = 0, ndiffs = diffs.size(); i < ndiffs; ++i)
+	IndexT diff_end, eoffset, goffset;
+	diff_end = mdiffs.size();
+	eoffset = std::min(batch_limit, nexpect);
+	goffset = std::min(batch_limit, ngot);
+	for (IndexT i = 0, n = mdiffs.size(); i < n; ++i)
 	{
-		if (diffs[i].action_ != EQ)
+		if (mdiffs[i].action_ == EQ)
 		{
-			if (expect_begin < 0)
-			{
-				expect_begin = diffs[i].orig_;
-			}
-			if (got_begin < 0)
-			{
-				got_begin = diffs[i].updated_;
-			}
-		}
-		else
-		{
-			expect_begin = got_begin = -1;
-			diff_end = i;
+			diff_end = i + 1;
+			eoffset = mdiffs[i].orig_ + 1;
+			goffset = mdiffs[i].updated_ + 1;
 		}
 	}
 
-	std::stringstream out;
-	if (diff_end > -1)
+	for (IndexT i = 0; i < diff_end; ++i)
 	{
-		bool show[diff_end + 1];
-		std::memset(show, false, sizeof(bool) * (diff_end + 1));
-		// mark exact line to show
-		for (IndexT i = 0; i < diff_end + 1; ++i)
-		{
-			if (diffs[i].action_ != EQ)
-			{
-				IndexT begin = std::max(0, i - lines_before);
-				IndexT end = std::min(diff_end, IndexT(i + lines_after));
-				std::memset(show + begin, true, sizeof(bool) * (end - begin + 1));
-			}
-		}
-
-		for (IndexT i = 0; i < diff_end + 1; ++i)
-		{
-			if (show[i])
-			{
-				diff_line_format(out, diffs[i]);
-			}
-		}
+		diffs.push_back(mdiffs[i]);
 	}
 
 	// revalidate contiguous non-EQ that continues pass the end of line
 	// and affix to existing messages
-	return out.str() + safe_diff_msg(
-		fmts::StringsT(exit + expect_begin, expect.end()),
-		fmts::StringsT(goit + got_begin, got.end()));
+	safe_diff_msg_helper(diffs,
+		fmts::StringsT(exit + eoffset, expect.end()),
+		fmts::StringsT(goit + goffset, got.end()), batch_limit);
+}
+
+std::string diff_msg (
+	const fmts::StringsT& expect,
+	const fmts::StringsT& got)
+{
+	MsgDiffT diffs = myers_diff(expect, got);
+	return to_string(diffs);
+}
+
+std::string safe_diff_msg (
+	const fmts::StringsT& expect,
+	const fmts::StringsT& got,
+	size_t batch_limit)
+{
+	MsgDiffT diff;
+	safe_diff_msg_helper(diff, expect, got, batch_limit);
+	return to_string(diff);
 }
 
 std::string diff_lines (

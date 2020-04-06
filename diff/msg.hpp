@@ -38,7 +38,8 @@ std::string diff_msg (
 /// Same as diff_msg, except it diffs the message in batches
 std::string safe_diff_msg (
 	const fmts::StringsT& expected,
-	const fmts::StringsT& got);
+	const fmts::StringsT& got,
+	size_t batch_limit = std::numeric_limits<IndexT>::max());
 
 std::string diff_lines (
 	std::istream& expect, std::istream& got,
