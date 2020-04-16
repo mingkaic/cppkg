@@ -44,9 +44,9 @@ void trim(std::string& s)
 	rtrim(s);
 }
 
-std::vector<std::string> split (std::string s, std::string delim)
+StringsT split (std::string s, std::string delim)
 {
-	std::vector<std::string> out;
+	StringsT out;
 
 	size_t i = 0;
 	while ((i = s.find(delim, 0)) != std::string::npos)

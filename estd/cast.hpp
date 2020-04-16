@@ -6,6 +6,23 @@
 namespace estd
 {
 
+template <typename T, typename U>
+T* must_cast (U* ptr)
+{
+	if (nullptr == ptr)
+	{
+		logs::fatalf("cannot cast null %s to %s",
+			typeid(U).name(), typeid(T).name());
+	}
+	auto out = dynamic_cast<T*>(ptr);
+	if (nullptr == out)
+	{
+		logs::fatalf("failed to cast %s to %s",
+			typeid(U).name(), typeid(T).name());
+	}
+	return out;
+}
+
 /// Safely cast shared pointer U to corresponding T ensuring output is not null,
 /// and emit fatal error upon cast failure. This function neither replaces
 /// std::static_pointer_cast nor std::dynamic_pointer_cast

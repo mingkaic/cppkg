@@ -38,7 +38,7 @@ TEST(DIFF, MyersDiff)
 
 	std::string similar = "CBABAC";
 	auto notsame = diff::myers_diff<std::string>(s, similar);
-	std::vector<std::string> expectations = {
+	fmts::StringsT expectations = {
 		"- 0\t \tA\n",
 		"- 1\t \tB\n",
 		"  2\t0\tC\n",
@@ -53,7 +53,8 @@ TEST(DIFF, MyersDiff)
 	for (size_t i = 0, n = notsame.size(); i < n; ++i)
 	{
 		std::stringstream ss;
-		diff::diff_line_format(ss, notsame[i]);
+		diff::diff_line_format(ss, notsame[i].val_,
+			notsame[i].action_, notsame[i].orig_, notsame[i].updated_);
 		EXPECT_STREQ(expectations[i].c_str(), ss.str().c_str());
 	}
 
@@ -77,7 +78,7 @@ TEST(DIFF, MyersDiff)
 }
 
 
-TEST(DIFF, Msg)
+TEST(DIFF, Msg_CompleteMatch)
 {
 	auto match = diff::diff_msg({
 		"advise",
@@ -108,7 +109,11 @@ TEST(DIFF, Msg)
 	});
 
 	EXPECT_STREQ("", match.c_str());
+}
 
+
+TEST(DIFF, Msg_SamePrefix)
+{
 	auto same_prefix = diff::diff_msg({
 		"advise",
 		"apathetic",
@@ -154,7 +159,11 @@ TEST(DIFF, Msg)
 		"+  \t10\ttremble\n"
 		"+  \t11\thop\n",
 		same_prefix.c_str());
+}
 
+
+TEST(DIFF, Msg_SamePostfix)
+{
 	auto same_postfix = diff::diff_msg({
 		"advise",
 		"apathetic",
@@ -202,7 +211,11 @@ TEST(DIFF, Msg)
 		"  8\t8\tbright\n"
 		"  9\t9\tjam\n",
 		same_postfix.c_str());
+}
 
+
+TEST(DIFF, Msg_SporadicSimilar)
+{
 	auto small_overlap = diff::diff_msg({
 		"advise",
 		"apathetic",
@@ -254,7 +267,11 @@ TEST(DIFF, Msg)
 		"+  \t10\tbed\n"
 		"+  \t11\thop\n",
 		small_overlap.c_str());
+}
 
+
+TEST(DIFF, Msg_MoreSimilar)
+{
 	auto bigger_overlap = diff::diff_msg({
 		"advise",
 		"apathetic",
@@ -301,7 +318,11 @@ TEST(DIFF, Msg)
 		"+  \t10\tbed\n"
 		"+  \t11\thop\n",
 		bigger_overlap.c_str());
+}
 
+
+TEST(DIFF, Msg_CompleteDiff)
+{
 	auto no_overlap = diff::diff_msg({
 		"advise",
 		"apathetic",
@@ -351,6 +372,308 @@ TEST(DIFF, Msg)
 		"+  \t5\tnew\n"
 		"+  \t6\tsneeze\n"
 		"+  \t7\tcomplete\n"
+		"+  \t8\tspiky\n"
+		"+  \t9\ttremble\n"
+		"+  \t10\tbed\n"
+		"+  \t11\thop\n",
+		no_overlap.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_CompleteMatch)
+{
+	auto match = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, 8);
+
+	EXPECT_STREQ("", match.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_SamePrefix)
+{
+	auto same_prefix = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"mate",
+		"head",
+		"wine",
+		"new",
+		"tremble",
+		"hop",
+	}, 8);
+
+	EXPECT_STREQ(
+		"  3\t3\tgreasy\n"
+		"  4\t4\ttoy\n"
+		"  5\t5\tobtain\n"
+		"- 6\t \tnosy\n"
+		"- 7\t \tjuicy\n"
+		"- 8\t \tbright\n"
+		"- 9\t \tjam\n"
+		"- 10\t \tdust\n"
+		"- 11\t \tsilent\n"
+		"+  \t6\tmate\n"
+		"+  \t7\thead\n"
+		"+  \t8\twine\n"
+		"+  \t9\tnew\n"
+		"+  \t10\ttremble\n"
+		"+  \t11\thop\n",
+		same_prefix.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_SamePostfix)
+{
+	auto same_postfix = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"mate",
+		"head",
+		"wine",
+		"abrupt",
+		"whistle",
+		"new",
+		"sneeze",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, 8);
+
+	EXPECT_STREQ(
+		"- 0\t \tadvise\n"
+		"- 1\t \tapathetic\n"
+		"- 2\t \tdisappear\n"
+		"- 3\t \tgreasy\n"
+		"- 4\t \ttoy\n"
+		"- 5\t \tobtain\n"
+		"- 6\t \tnosy\n"
+		"+  \t0\tmate\n"
+		"+  \t1\thead\n"
+		"+  \t2\twine\n"
+		"+  \t3\tabrupt\n"
+		"+  \t4\twhistle\n"
+		"+  \t5\tnew\n"
+		"+  \t6\tsneeze\n"
+		"  7\t7\tjuicy\n"
+		"  8\t8\tbright\n"
+		"  9\t9\tjam\n",
+		same_postfix.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_SporadicSimilar)
+{
+	auto small_overlap = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"mate",
+		"head",
+		"wine",
+		"abrupt",
+		"obtain",
+		"nosy",
+		"juicy",
+		"complete",
+		"spiky",
+		"tremble",
+		"bed",
+		"hop",
+	}, 8);
+
+	EXPECT_STREQ(
+		"- 0\t \tadvise\n"
+		"- 1\t \tapathetic\n"
+		"- 2\t \tdisappear\n"
+		"- 3\t \tgreasy\n"
+		"- 4\t \ttoy\n"
+		"+  \t0\tmate\n"
+		"+  \t1\thead\n"
+		"+  \t2\twine\n"
+		"+  \t3\tabrupt\n"
+		"  5\t4\tobtain\n"
+		"  6\t5\tnosy\n"
+		"  7\t6\tjuicy\n"
+		"- 8\t \tbright\n"
+		"- 9\t \tjam\n"
+		"- 10\t \tdust\n"
+		"- 11\t \tsilent\n"
+		"+  \t7\tcomplete\n"
+		"+  \t8\tspiky\n"
+		"+  \t9\ttremble\n"
+		"+  \t10\tbed\n"
+		"+  \t11\thop\n",
+		small_overlap.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_MoreSimilar)
+{
+	auto bigger_overlap = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"mate",
+		"head",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"tremble",
+		"bed",
+		"hop",
+	}, 8);
+
+	EXPECT_STREQ(
+		"- 0\t \tadvise\n"
+		"- 1\t \tapathetic\n"
+		"- 2\t \tdisappear\n"
+		"+  \t0\tmate\n"
+		"+  \t1\thead\n"
+		"  3\t2\tgreasy\n"
+		"  4\t3\ttoy\n"
+		"  5\t4\tobtain\n"
+		"  7\t6\tjuicy\n"
+		"  8\t7\tbright\n"
+		"  9\t8\tjam\n"
+		"- 10\t \tdust\n"
+		"- 11\t \tsilent\n"
+		"+  \t9\ttremble\n"
+		"+  \t10\tbed\n"
+		"+  \t11\thop\n",
+		bigger_overlap.c_str());
+}
+
+
+TEST(DIFF, SafeMsg_CompleteDiff)
+{
+	auto no_overlap = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"mate",
+		"head",
+		"wine",
+		"abrupt",
+		"whistle",
+		"new",
+		"sneeze",
+		"complete",
+		"spiky",
+		"tremble",
+		"bed",
+		"hop",
+	}, 8);
+
+	EXPECT_STREQ(
+		"- 0\t \tadvise\n"
+		"- 1\t \tapathetic\n"
+		"- 2\t \tdisappear\n"
+		"- 3\t \tgreasy\n"
+		"- 4\t \ttoy\n"
+		"- 5\t \tobtain\n"
+		"- 6\t \tnosy\n"
+		"- 7\t \tjuicy\n"
+		"+  \t0\tmate\n"
+		"+  \t1\thead\n"
+		"+  \t2\twine\n"
+		"+  \t3\tabrupt\n"
+		"+  \t4\twhistle\n"
+		"+  \t5\tnew\n"
+		"+  \t6\tsneeze\n"
+		"+  \t7\tcomplete\n"
+		"- 8\t \tbright\n"
+		"- 9\t \tjam\n"
+		"- 10\t \tdust\n"
+		"- 11\t \tsilent\n"
 		"+  \t8\tspiky\n"
 		"+  \t9\ttremble\n"
 		"+  \t10\tbed\n"

@@ -14,7 +14,7 @@ struct iConfig
 {
 	virtual ~iConfig (void) = default;
 
-	virtual std::vector<std::string> get_names (void) const = 0;
+	virtual fmts::StringsT get_names (void) const = 0;
 
 	virtual void* get_obj (const std::string& cfg_name) = 0;
 };
@@ -33,9 +33,9 @@ struct ConfigMap final : public iConfig
 		}
 	}
 
-	std::vector<std::string> get_names (void) const
+	fmts::StringsT get_names (void) const
 	{
-		std::vector<std::string> names;
+		fmts::StringsT names;
 		names.reserve(entries_.size());
 		std::transform(entries_.begin(), entries_.end(),
 			std::back_inserter(names),

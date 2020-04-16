@@ -24,21 +24,22 @@ const char del_token = '-';
 
 /// Format specified difference lines and stream to out
 template <typename T>
-void diff_line_format (std::ostream& out, Diff<T>& line)
+void diff_line_format (std::ostream& out, T val,
+	Action action, int64_t orig, int64_t updated)
 {
-	switch (line.action_)
+	switch (action)
 	{
 		case EQ:
-			out << "  " << line.orig_ << "\t" << line.updated_;
+			out << "  " << orig << "\t" << updated;
 			break;
 		case ADD:
-			out << add_token << "  \t" << line.updated_;
+			out << add_token << "  \t" << updated;
 			break;
 		case DEL:
-			out << del_token << " " << line.orig_ << "\t ";
+			out << del_token << " " << orig << "\t ";
 			break;
 	}
-	out << "\t" << line.val_ << "\n";
+	out << "\t" << val << "\n";
 }
 
 }
