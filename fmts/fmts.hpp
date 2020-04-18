@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <unordered_set>
 
 #ifndef PKG_FMTS_HPP
 #define PKG_FMTS_HPP
