@@ -133,6 +133,29 @@ TEST(FMTS, Trim)
 	EXPECT_STREQ("abce  dfgi hjk lm", content.c_str());
 }
 
+TEST(FMTS, LeftStrip)
+{
+	std::string content = "_*_(abce  dfgi hjk lm)*";
+	fmts::lstrip(content, std::unordered_set<char>{'_', '*', '('});
+	EXPECT_STREQ("abce  dfgi hjk lm)*", content.c_str());
+}
+
+
+TEST(FMTS, RightStrip)
+{
+	std::string content = "_*_(abce  dfgi hjk lm)*";
+	fmts::rstrip(content, std::unordered_set<char>{'_', '*', ')'});
+	EXPECT_STREQ("_*_(abce  dfgi hjk lm", content.c_str());
+}
+
+
+TEST(FMTS, Strip)
+{
+	std::string content = "_*_(abce  dfgi hjk lm)*";
+	fmts::strip(content, std::unordered_set<char>{'_', '*', '(', ')'});
+	EXPECT_STREQ("abce  dfgi hjk lm", content.c_str());
+}
+
 
 TEST(FMTS, Split)
 {

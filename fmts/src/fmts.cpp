@@ -47,13 +47,13 @@ void trim(std::string& s)
 void lstrip (std::string& s, const std::unordered_set<char>& cset)
 {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(),
-		[&](char c) { return false == estd::has(cset, c); }));
+		[&](char c) { return cset.end() == cset.find(c); }));
 }
 
 void rstrip (std::string& s, const std::unordered_set<char>& cset)
 {
 	s.erase(std::find_if(s.rbegin(), s.rend(),
-		[](char c) { return false == estd::has(cset, c); }).base(), s.end());
+		[&](char c) { return cset.end() == cset.find(c); }).base(), s.end());
 }
 
 void strip (std::string& s, const std::unordered_set<char>& cset)
