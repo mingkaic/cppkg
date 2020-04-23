@@ -19,6 +19,16 @@
 namespace estd
 {
 
+/// Hasher useful for satisfying old GCC constraint where enum is not hashable
+struct EnumHash
+{
+	template <typename T>
+	size_t operator() (T e) const
+	{
+		return static_cast<size_t>(e);
+	}
+};
+
 template <typename MAPPABLE>
 using KeyT = typename MAPPABLE::key_type;
 

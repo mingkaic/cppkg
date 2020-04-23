@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <unordered_set>
 
 #ifndef PKG_FMTS_HPP
 #define PKG_FMTS_HPP
@@ -169,8 +170,14 @@ void ltrim(std::string& s);
 /// Trim all white-space symbols on the right side of string s
 void rtrim(std::string& s);
 
-/// Trim all white-space symbols surroudning string s
+/// Trim all white-space symbols surrounding string s
 void trim(std::string& s);
+
+void lstrip (std::string& s, const std::unordered_set<char>& cset);
+
+void rstrip (std::string& s, const std::unordered_set<char>& cset);
+
+void strip (std::string& s, const std::unordered_set<char>& cset);
 
 /// Return string s split into all substrings separated by delim as a vector
 StringsT split (std::string s, std::string delim);
