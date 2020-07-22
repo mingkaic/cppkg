@@ -8,6 +8,7 @@
 
 #include <map>
 #include <set>
+#include <string>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -28,6 +29,9 @@ struct EnumHash
 		return static_cast<size_t>(e);
 	}
 };
+
+template <typename VAL>
+using StrMapT = std::unordered_map<std::string,VAL>;
 
 template <typename MAPPABLE>
 using KeyT = typename MAPPABLE::key_type;

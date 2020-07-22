@@ -2,11 +2,22 @@ licenses(["notice"])
 
 filegroup(
     name = "srcs",
-    srcs = glob([
-        "*.hpp",
-        "src/*.cpp",
-    ]) + ["BUILD.bazel"],
+    srcs = [
+        ":fmt_hdrs",
+        ":fmt_srcs",
+        "BUILD.bazel",
+    ],
     visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "fmt_hdrs",
+    srcs = glob(["*.hpp"]),
+)
+
+filegroup(
+    name = "fmt_srcs",
+    srcs = glob(["src/*.cpp"]),
 )
 
 filegroup(
@@ -18,8 +29,8 @@ filegroup(
 
 cc_library(
     name = "fmts",
-    hdrs = glob(["*.hpp"]),
-    srcs = glob(["src/*.cpp"]),
+    hdrs = [":fmt_hdrs"],
+    srcs = [":fmt_srcs"],
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
 )
@@ -31,7 +42,7 @@ cc_test(
     size = "small",
     srcs = [":test_srcs"],
     deps = [
-        "//fmts:fmts",
+        ":fmts",
         "@gtest//:gtest",
     ],
     copts = ["-std=c++17"],

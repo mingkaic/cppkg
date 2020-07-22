@@ -10,12 +10,12 @@ filegroup(
 )
 
 filegroup(
-    name = "diff_hdrs",
+    name = "error_hdrs",
     srcs = glob(["*.hpp"]),
 )
 
 filegroup(
-    name = "diff_srcs",
+    name = "error_srcs",
     srcs = glob(["src/*.cpp"]),
 )
 
@@ -27,23 +27,23 @@ filegroup(
 ######### LIBRARIES #########
 
 cc_library(
-    name = "diff",
-    hdrs = [":diff_hdrs"],
-    srcs = [":diff_srcs"],
+    name = "error",
+    hdrs = [":error_hdrs"],
+    srcs = [":error_srcs"],
     copts = ["-std=c++17"],
     deps = ["//fmts:fmts"],
     visibility = ["//visibility:public"],
 )
 
-######### TEST #########
+# ######### TEST #########
 
-cc_test(
-    name = "test",
-    size = "small",
-    srcs = [":test_srcs"],
-    deps = [
-        ":diff",
-        "@gtest//:gtest",
-    ],
-    copts = ["-std=c++17"],
-)
+# cc_test(
+#     name = "test",
+#     size = "small",
+#     srcs = [":test_srcs"],
+#     deps = [
+#         ":error",
+#         "@gtest//:gtest",
+#     ],
+#     copts = ["-std=c++17"],
+# )

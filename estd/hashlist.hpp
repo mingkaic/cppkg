@@ -154,6 +154,7 @@ struct HashList final
 		lst_.clear();
 	}
 
+private:
 	ListT lst_;
 
 	std::unordered_map<T,IterT,HASH> umap_;
