@@ -22,7 +22,7 @@ struct ErrMsg final : public iError
 
 	template <typename ...ARGS>
 	ErrMsg (const std::string& format, ARGS... args) :
-		ErrMsg(fmts::sprintf(fmt, args...)) {}
+		ErrMsg(fmts::sprintf(format, args...)) {}
 
 	std::string to_string (void) const override
 	{

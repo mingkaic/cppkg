@@ -4,7 +4,7 @@ filegroup(
     name = "srcs",
     srcs = [
         ":estd_hdrs",
-        ":estd_srcs",
+        # ":estd_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -15,10 +15,10 @@ filegroup(
     srcs = glob(["*.hpp"]),
 )
 
-filegroup(
-    name = "estd_srcs",
-    srcs = glob(["src/*.cpp"]),
-)
+# filegroup(
+#     name = "estd_srcs",
+#     srcs = glob(["src/*.cpp"]),
+# )
 
 filegroup(
     name = "test_srcs",
@@ -30,7 +30,7 @@ filegroup(
 cc_library(
     name = "estd",
     hdrs = [":estd_hdrs"],
-    srcs = [":estd_srcs"],
+    # srcs = [":estd_srcs"],
     copts = ["-std=c++17"],
     deps = ["//logs:logs"],
     visibility = ["//visibility:public"],

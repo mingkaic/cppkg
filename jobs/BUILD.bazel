@@ -4,7 +4,7 @@ filegroup(
     name = "srcs",
     srcs = [
         ":jobs_hdrs",
-        ":jobs_srcs",
+        # ":jobs_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -15,10 +15,10 @@ filegroup(
     srcs = glob(["*.hpp"]),
 )
 
-filegroup(
-    name = "jobs_srcs",
-    srcs = glob(["src/*.cpp"]),
-)
+# filegroup(
+#     name = "jobs_srcs",
+#     srcs = glob(["src/*.cpp"]),
+# )
 
 filegroup(
     name = "test_srcs",
@@ -30,7 +30,7 @@ filegroup(
 cc_library(
     name = "jobs",
     hdrs = [":jobs_hdrs"],
-    srcs = [":jobs_srcs"],
+    # srcs = [":jobs_srcs"],
     copts = ["-std=c++17"],
     deps = ["//logs:logs"],
     visibility = ["//visibility:public"],

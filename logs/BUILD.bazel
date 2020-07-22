@@ -4,7 +4,7 @@ filegroup(
     name = "srcs",
     srcs = [
         ":logs_hdrs",
-        ":srcs_hdrs",
+        ":logs_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
