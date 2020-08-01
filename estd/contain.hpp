@@ -33,6 +33,8 @@ struct EnumHash
 template <typename VAL>
 using StrMapT = std::unordered_map<std::string,VAL>;
 
+using StrSetT = std::unordered_set<std::string>;
+
 template <typename MAPPABLE>
 using KeyT = typename MAPPABLE::key_type;
 
@@ -106,6 +108,19 @@ bool arr_has (const ARR& s, const CONTENT& key)
 {
 	auto et = s.end();
 	return et != std::find(s.begin(), et, key);
+}
+
+/// Return unordered set of map
+template <typename KEYTYPE, typename VALTYPE>
+std::unordered_set<KEYTYPE> map_keyset (
+	const std::unordered_map<KEYTYPE,VALTYPE>& kv)
+{
+	std::unordered_set<KEYTYPE> k;
+	for (auto& p : kv)
+	{
+		k.emplace(p.first);
+	}
+	return k;
 }
 
 }
