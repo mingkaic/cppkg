@@ -60,26 +60,19 @@ struct ConfigMap final : public iConfig<K,HASH>
 	}
 
 	template <typename T>
-	void add_entry (const K& cfg_key)
+	void add_entry (const K& cfg_key,
+		std::function<T*()> init = []()
+		{
+			return new T();
+		},
+		std::function<void(T*)> del = [](void* ptr)
+		{
+			delete static_cast<T*>(ptr);
+		})
 	{
 		if (false == estd::has(entries_, cfg_key))
 		{
-			entries_.emplace(cfg_key, ConfigEntry{
-				new T(),
-				[](void* ptr) { delete static_cast<T*>(ptr); },
-			});
-		}
-	}
-
-	template <typename T>
-	void add_entry (const K& cfg_key, std::function<void(T*)> del)
-	{
-		if (false == estd::has(entries_, cfg_key))
-		{
-			entries_.emplace(cfg_key, ConfigEntry{
-				new T(),
-				[del](void* ptr) { del(static_cast<T*>(ptr)); },
-			});
+			entries_.emplace(cfg_key, ConfigEntry{init(), del});
 		}
 	}
 

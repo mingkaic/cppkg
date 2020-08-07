@@ -23,8 +23,6 @@
 namespace fmts
 {
 
-using StringsT = types::StringsT;
-
 /// Symbol for the start of an array as string
 const char arr_begin = '[';
 

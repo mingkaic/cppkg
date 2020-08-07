@@ -20,11 +20,6 @@
 namespace estd
 {
 
-using StrSetT = types::StrUSetT;
-
-template <typename VAL>
-using StrMapT = types::StrUMapT<VAL>;
-
 /// Hasher useful for satisfying old GCC constraint where enum is not hashable
 struct EnumHash
 {
