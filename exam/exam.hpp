@@ -36,32 +36,6 @@ struct TestLogger : public logs::iLogger
 	/// Latest log level value
 	static size_t latest_lvl_;
 
-	bool supports_level (const std::string& msg_level) const override
-	{
-		return logs::enum_log(msg_level) < logs::NOT_SET;
-	}
-
-	void log (const std::string& msg_level, const std::string& msg) const override
-	{
-		if (msg_level == "fatal")
-		{
-			fatal(msg);
-		}
-		latest_lvl_ = logs::enum_log(msg_level);
-		latest_msg_ = msg;
-	}
-
-	/// Log both level and message
-	void log (size_t log_level, const std::string& msg) const override
-	{
-		if (log_level == logs::FATAL)
-		{
-			fatal(msg);
-		}
-		latest_lvl_ = log_level;
-		latest_msg_ = msg;
-	}
-
 	/// Returns logs::TRACE
 	std::string get_log_level (void) const override
 	{
@@ -74,22 +48,53 @@ struct TestLogger : public logs::iLogger
 		// does actually set anything
 	}
 
+	bool supports_level (size_t msg_level) const override
+	{
+		return msg_level < logs::NOT_SET;
+	}
+
+	bool supports_level (const std::string& msg_level) const override
+	{
+		return logs::enum_log(msg_level) < logs::NOT_SET;
+	}
+
+	void log (const std::string& msg_level, const std::string& msg) override
+	{
+		if (msg_level == "fatal")
+		{
+			fatal(msg);
+		}
+		latest_lvl_ = logs::enum_log(msg_level);
+		latest_msg_ = msg;
+	}
+
+	/// Log both level and message
+	void log (size_t log_level, const std::string& msg) override
+	{
+		if (log_level == logs::FATAL)
+		{
+			fatal(msg);
+		}
+		latest_lvl_ = log_level;
+		latest_msg_ = msg;
+	}
+
 	/// Logs message at log::WARN
-	void warn (const std::string& msg) const override
+	void warn (const std::string& msg) const
 	{
 		latest_lvl_ = logs::WARN;
 		latest_msg_ = msg;
 	}
 
 	/// Logs message at log::ERROR
-	void error (const std::string& msg) const override
+	void error (const std::string& msg) const
 	{
 		latest_lvl_ = logs::ERROR;
 		latest_msg_ = msg;
 	}
 
 	/// Logs message at log::FATAL
-	void fatal (const std::string& msg) const override
+	void fatal (const std::string& msg) const
 	{
 		throw TestException(msg);
 	}

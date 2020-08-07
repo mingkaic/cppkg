@@ -13,25 +13,6 @@ struct TestLogger : public logs::iLogger
 	static std::string latest_log_msg_;
 	static std::string set_log_level_;
 
-	bool supports_level (const std::string& msg_level) const override
-	{
-		return true;
-	}
-
-	void log (const std::string& msg_level, const std::string& msg) const override
-	{
-		std::stringstream ss;
-		ss << logs::enum_log(msg_level) << msg;
-		latest_log_msg_ = ss.str();
-	}
-
-	void log (size_t msg_level, const std::string& msg) const override
-	{
-		std::stringstream ss;
-		ss << msg_level << msg;
-		latest_log_msg_ = ss.str();
-	}
-
 	std::string get_log_level (void) const override
 	{
 		return log_level_ret;
@@ -42,17 +23,52 @@ struct TestLogger : public logs::iLogger
 		set_log_level_ = log_level;
 	}
 
-	void warn (const std::string& msg) const override
+	bool supports_level (size_t msg_level) const override
+	{
+		return true;
+	}
+
+	bool supports_level (const std::string& msg_level) const override
+	{
+		return true;
+	}
+
+	void log (size_t msg_level, const std::string& msg) override
+	{
+		switch (msg_level)
+		{
+			case logs::WARN:
+				warn(msg);
+				break;
+			case logs::ERROR:
+				error(msg);
+				break;
+			case logs::FATAL:
+				fatal(msg);
+				break;
+			default:
+				std::stringstream ss;
+				ss << msg_level << msg;
+				latest_log_msg_ = ss.str();
+		}
+	}
+
+	void log (const std::string& msg_level, const std::string& msg) override
+	{
+		log(logs::enum_log(msg_level), msg);
+	}
+
+	void warn (const std::string& msg) const
 	{
 		latest_warning_ = msg;
 	}
 
-	void error (const std::string& msg) const override
+	void error (const std::string& msg) const
 	{
 		latest_error_ = msg;
 	}
 
-	void fatal (const std::string& msg) const override
+	void fatal (const std::string& msg) const
 	{
 		latest_fatal_ = msg;
 	}
@@ -114,23 +130,6 @@ TEST_F(LOGS, Default)
 	{
 		const char* msg = e.what();
 		EXPECT_STREQ("log fatal message", msg);
-	}
-	catch (...)
-	{
-		FAIL() << "expected to throw runtime_error";
-	}
-
-	log.warn("warning message");
-	log.error("error message");
-	try
-	{
-		log.fatal("fatal message");
-		FAIL() << "log.fatal failed to throw error";
-	}
-	catch (std::runtime_error& e)
-	{
-		const char* msg = e.what();
-		EXPECT_STREQ("fatal message", msg);
 	}
 	catch (...)
 	{

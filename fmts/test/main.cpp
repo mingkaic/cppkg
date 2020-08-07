@@ -25,11 +25,11 @@ TEST(FMTS, StringFmt)
 	EXPECT_STREQ("abcdefghijkl", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, fmts::string("abcd\\efgh\\ijkl\\"));
+	fmts::to_stream(ss, fmts::String("abcd\\efgh\\ijkl\\"));
 	EXPECT_STREQ("abcd\\\\efgh\\\\ijkl\\\\", ss.str().c_str());
 	ss.str("");
 
-	fmts::to_stream(ss, fmts::string("\\abcd\\efgh\\ijkl"));
+	fmts::to_stream(ss, fmts::String("\\abcd\\efgh\\ijkl"));
 	EXPECT_STREQ("\\\\abcd\\\\efgh\\\\ijkl", ss.str().c_str());
 }
 
@@ -54,10 +54,10 @@ TEST(FMTS, StreamIterators)
 	EXPECT_STREQ("[14\\15\\16]", ss.str().c_str());
 	ss.str("");
 
-	fmts::StringsT svec = {
-		fmts::string("what's\\up\\mybro"),
-		fmts::string("nothing\\much\\fam"),
-		fmts::string("\\hella\\lit")
+	types::StringsT svec = {
+		fmts::String("what's\\up\\mybro"),
+		fmts::String("nothing\\much\\fam"),
+		fmts::String("\\hella\\lit")
 	};
 	fmts::to_stream(ss, svec.begin(), svec.end());
 	EXPECT_STREQ("[what's\\\\up\\\\mybro\\nothing\\\\much\\\\"
@@ -84,7 +84,7 @@ TEST(FMTS, StringIterators)
 {
 	std::vector<double> dbs = {1.5, 1, 5.6, 7.8};
 	std::array<int,4> iar = {-5, 2, -3, 6};
-	std::unordered_map<std::string,size_t> s2i = {
+	types::StrUMapT<size_t> s2i = {
 		{"abc", 123},
 		{"cde", 345},
 		{"efg", 567},

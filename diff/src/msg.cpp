@@ -6,7 +6,7 @@
 namespace diff
 {
 
-using MsgDiffT = std::vector<DiffArrT<fmts::StringsT>>;
+using MsgDiffT = std::vector<DiffArrT<types::StringsT>>;
 
 static std::string to_string (const MsgDiffT& diffs)
 {
@@ -50,7 +50,7 @@ static std::string to_string (const MsgDiffT& diffs)
 	return out.str();
 }
 
-static void process_lines (fmts::StringsT& lines, std::istream& str,
+static void process_lines (types::StringsT& lines, std::istream& str,
 	bool ignore_empty_lines, bool trim_spaces)
 {
 	std::string line;
@@ -69,8 +69,8 @@ static void process_lines (fmts::StringsT& lines, std::istream& str,
 }
 
 static void safe_diff_msg_helper (MsgDiffT& diffs,
-	const fmts::StringsT& expect,
-	const fmts::StringsT& got,
+	const types::StringsT& expect,
+	const types::StringsT& got,
 	size_t batch_limit)
 {
 	size_t nexpect = expect.size();
@@ -89,8 +89,8 @@ static void safe_diff_msg_helper (MsgDiffT& diffs,
 
 	auto exit = expect.begin();
 	auto goit = got.begin();
-	fmts::StringsT exbatch(exit, exit + std::min(batch_limit, nexpect));
-	fmts::StringsT gobatch(goit, goit + std::min(batch_limit, ngot));
+	types::StringsT exbatch(exit, exit + std::min(batch_limit, nexpect));
+	types::StringsT gobatch(goit, goit + std::min(batch_limit, ngot));
 
 	MsgDiffT mdiffs = myers_diff(exbatch, gobatch);
 
@@ -116,21 +116,21 @@ static void safe_diff_msg_helper (MsgDiffT& diffs,
 	// revalidate contiguous non-EQ that continues pass the end of line
 	// and affix to existing messages
 	safe_diff_msg_helper(diffs,
-		fmts::StringsT(exit + eoffset, expect.end()),
-		fmts::StringsT(goit + goffset, got.end()), batch_limit);
+		types::StringsT(exit + eoffset, expect.end()),
+		types::StringsT(goit + goffset, got.end()), batch_limit);
 }
 
 std::string diff_msg (
-	const fmts::StringsT& expect,
-	const fmts::StringsT& got)
+	const types::StringsT& expect,
+	const types::StringsT& got)
 {
 	MsgDiffT diffs = myers_diff(expect, got);
 	return to_string(diffs);
 }
 
 std::string safe_diff_msg (
-	const fmts::StringsT& expect,
-	const fmts::StringsT& got,
+	const types::StringsT& expect,
+	const types::StringsT& got,
 	size_t batch_limit)
 {
 	MsgDiffT diff;
@@ -142,8 +142,8 @@ std::string diff_lines (
 	std::istream& expect, std::istream& got,
 	bool ignore_empty_lines, bool trim_spaces)
 {
-	fmts::StringsT exlines;
-	fmts::StringsT golines;
+	types::StringsT exlines;
+	types::StringsT golines;
 	process_lines(exlines, expect, ignore_empty_lines, trim_spaces);
 	process_lines(golines, got, ignore_empty_lines, trim_spaces);
 

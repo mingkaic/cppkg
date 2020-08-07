@@ -20,6 +20,11 @@
 namespace estd
 {
 
+using StrSetT = types::StrUSetT;
+
+template <typename VAL>
+using StrMapT = types::StrUMapT<VAL>;
+
 /// Hasher useful for satisfying old GCC constraint where enum is not hashable
 struct EnumHash
 {
@@ -29,11 +34,6 @@ struct EnumHash
 		return static_cast<size_t>(e);
 	}
 };
-
-template <typename VAL>
-using StrMapT = std::unordered_map<std::string,VAL>;
-
-using StrSetT = std::unordered_set<std::string>;
 
 template <typename MAPPABLE>
 using KeyT = typename MAPPABLE::key_type;

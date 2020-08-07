@@ -10,7 +10,12 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <map>
+#include <set>
+#include <unordered_map>
 #include <unordered_set>
+
+#include "types/strs.hpp"
 
 #ifndef PKG_FMTS_HPP
 #define PKG_FMTS_HPP
@@ -18,7 +23,7 @@
 namespace fmts
 {
 
-using StringsT = std::vector<std::string>;
+using StringsT = types::StringsT;
 
 /// Symbol for the start of an array as string
 const char arr_begin = '[';
@@ -32,11 +37,11 @@ const char arr_delim = '\\';
 const char pair_delim = ':';
 
 /// Wrap std::string so that array symbols are prefixed with escaped symbol
-struct string final
+struct String final
 {
-	string (const char* cstr) : val_(cstr) {}
+	String (const char* cstr) : val_(cstr) {}
 
-	string (const std::string& sstr) : val_(sstr) {}
+	String (const std::string& sstr) : val_(sstr) {}
 
 	/// Return string representation by breaking array/pair symbols
 	operator std::string()
@@ -44,7 +49,8 @@ struct string final
 		std::string modified = val_;
 		for (size_t i = 0, n = modified.size(); i < n; ++i)
 		{
-			switch (modified[i]) {
+			switch (modified[i])
+			{
 				case arr_begin:
 				case arr_end:
 				case arr_delim:
@@ -61,8 +67,8 @@ struct string final
 	std::string val_;
 };
 
-/// Override fmts::string stream into out stream
-std::ostream& operator << (std::ostream& os, string sstr);
+/// Override fmts::String stream into out stream
+std::ostream& operator << (std::ostream& os, String sstr);
 
 /// Stream C-style strings to s
 void to_stream (std::ostream& s, const char* str);
@@ -180,7 +186,7 @@ void rstrip (std::string& s, const std::unordered_set<char>& cset);
 void strip (std::string& s, const std::unordered_set<char>& cset);
 
 /// Return string s split into all substrings separated by delim as a vector
-StringsT split (std::string s, std::string delim);
+types::StringsT split (std::string s, std::string delim);
 
 }
 

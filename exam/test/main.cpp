@@ -60,17 +60,17 @@ TEST(EXAM, ArrEquality)
 
 TEST(EXAM, SetHasality)
 {
-	std::map<std::string,size_t> stuff = {
+	types::StrMapT<size_t> stuff = {
 		{"abcdef", 123},
 		{"defghi", 456},
 		{"ghijkl", 789},
 	};
 
-	std::set<std::string> ssets = {
+	types::StrSetT ssets = {
 		"abcdef", "defghi", "ghijkl",
 	};
 
-	std::unordered_map<std::string,size_t> ustuff = {
+	types::StrUMapT<size_t> ustuff = {
 		{"abcdef", 123},
 		{"defghi", 456},
 		{"ghijkl", 789},

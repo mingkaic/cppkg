@@ -12,42 +12,13 @@
 #include <vector>
 
 #include "fmts/fmts.hpp"
+#include "logs/ilogs.hpp"
 
 #ifndef PKG_LOGS_HPP
 #define PKG_LOGS_HPP
 
 namespace logs
 {
-
-/// Interface of logger
-struct iLogger
-{
-	virtual ~iLogger (void) = default;
-
-	/// Return true if log level is supported
-	virtual bool supports_level (const std::string& msg_level) const = 0;
-
-	/// Log message at any specified string level of verbosity
-	virtual void log (const std::string& msg_level, const std::string& msg) const = 0;
-
-	/// Log message at any specified enum level of verbosity
-	virtual void log (size_t msg_level, const std::string& msg) const = 0;
-
-	/// Get log level encoding specifying verbosity
-	virtual std::string get_log_level (void) const = 0;
-
-	/// Set log level encoding specifying verbosity
-	virtual void set_log_level (const std::string& log_level) = 0;
-
-	/// Warn user of message regarding poor decisions
-	virtual void warn (const std::string& msg) const = 0;
-
-	/// Notify user of message regarding recoverable error
-	virtual void error (const std::string& msg) const = 0;
-
-	/// Notify user of message regarding fatal error, then finish him
-	virtual void fatal (const std::string& msg) const = 0;
-};
 
 /// String tagged prepending a warning message in default logger
 const std::string warn_tag = "[WARNING]:";
@@ -67,7 +38,7 @@ enum LOG_LEVEL
 	NOT_SET,
 };
 
-static std::unordered_map<std::string,LOG_LEVEL> names2log =
+static types::StrUMapT<LOG_LEVEL> names2log =
 {
 	{"fatal", FATAL},
 	{"error", ERROR},
@@ -77,8 +48,8 @@ static std::unordered_map<std::string,LOG_LEVEL> names2log =
 	{"trace", TRACE},
 };
 
-static fmts::StringsT lognames = {
-	"fatal", "error", "warn", "info", "debug", "trace"};
+static types::StringsT lognames =
+{ "fatal", "error", "warn", "info", "debug", "trace" };
 
 std::string name_log (const LOG_LEVEL& level);
 
@@ -87,6 +58,27 @@ LOG_LEVEL enum_log (const std::string& level);
 /// Default implementation of iLogger used in ADE
 struct DefLogger final : public iLogger
 {
+	/// Implementation of iLogger
+	std::string get_log_level (void) const override
+	{
+		return lognames[log_level_];
+	}
+
+	/// Implementation of iLogger
+	void set_log_level (const std::string& log_level) override
+	{
+		auto it = names2log.find(log_level);
+		if (names2log.end() != it)
+		{
+			log_level_ = names2log.at(log_level);
+		}
+	}
+
+	bool supports_level (size_t msg_level) const override
+	{
+		return msg_level < NOT_SET;
+	}
+
 	bool supports_level (const std::string& msg_level) const override
 	{
 		std::string level = msg_level;
@@ -97,7 +89,7 @@ struct DefLogger final : public iLogger
 	}
 
 	/// Implementation of iLogger
-	void log (const std::string& msg_level, const std::string& msg) const override
+	void log (const std::string& msg_level, const std::string& msg) override
 	{
 		LOG_LEVEL level = TRACE;
 		auto it = names2log.find(msg_level);
@@ -124,7 +116,7 @@ struct DefLogger final : public iLogger
 	}
 
 	/// Implementation of iLogger
-	void log (size_t msg_level, const std::string& msg) const override
+	void log (size_t msg_level, const std::string& msg) override
 	{
 		if (msg_level <= log_level_)
 		{
@@ -144,24 +136,9 @@ struct DefLogger final : public iLogger
 		}
 	}
 
-	/// Implementation of iLogger
-	std::string get_log_level (void) const override
-	{
-		return lognames[log_level_];
-	}
-
-	/// Implementation of iLogger
-	void set_log_level (const std::string& log_level) override
-	{
-		auto it = names2log.find(log_level);
-		if (names2log.end() != it)
-		{
-			log_level_ = names2log.at(log_level);
-		}
-	}
-
-	/// Implementation of iLogger
-	void warn (const std::string& msg) const override
+private:
+	/// Warn user of message regarding poor decisions
+	void warn (const std::string& msg) const
 	{
 		if (WARN <= log_level_)
 		{
@@ -169,8 +146,8 @@ struct DefLogger final : public iLogger
 		}
 	}
 
-	/// Implementation of iLogger
-	void error (const std::string& msg) const override
+	/// Notify user of message regarding recoverable error
+	void error (const std::string& msg) const
 	{
 		if (ERROR <= log_level_)
 		{
@@ -178,8 +155,8 @@ struct DefLogger final : public iLogger
 		}
 	}
 
-	/// Implementation of iLogger
-	void fatal (const std::string& msg) const override
+	/// Notify user of message regarding fatal error, then finish him
+	void fatal (const std::string& msg) const
 	{
 		throw std::runtime_error(msg);
 	}
