@@ -65,7 +65,7 @@ struct ConfigMap final : public iConfig<K,HASH>
 		{
 			return new T();
 		},
-		std::function<void(T*)> del = [](void* ptr)
+		std::function<void(void*)> del = [](void* ptr)
 		{
 			delete static_cast<T*>(ptr);
 		})
