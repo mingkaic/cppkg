@@ -17,6 +17,8 @@ struct iConfig
 
 	virtual std::vector<K> get_keys (void) const = 0;
 
+	virtual bool has_key (const K& cfg_key) const = 0;
+
 	virtual void* get_obj (const K& cfg_key) = 0;
 };
 
@@ -48,6 +50,11 @@ struct ConfigMap final : public iConfig<K,HASH>
 		return names;
 	}
 
+	bool has_key (const K& cfg_key) const override
+	{
+		return has(entries_, cfg_key);
+	}
+
 	void* get_obj (const K& cfg_key) override
 	{
 		if (has(entries_, cfg_key))
@@ -55,7 +62,6 @@ struct ConfigMap final : public iConfig<K,HASH>
 			auto& entry = entries_.at(cfg_key);
 			return entry.data_;
 		}
-		logs::errorf("failed to find config name %s", cfg_key.c_str());
 		return nullptr;
 	}
 
@@ -91,6 +97,7 @@ struct ConfigMap final : public iConfig<K,HASH>
 		}
 	}
 
+private:
 	struct ConfigEntry
 	{
 		void* data_;
