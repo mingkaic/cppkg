@@ -22,28 +22,55 @@ struct iConfig
 	virtual void* get_obj (const K& cfg_key) = 0;
 };
 
-template <typename K=std::string, typename HASH=std::hash<K>>
-struct ConfigMap final : public iConfig<K,HASH>
+using EntryDelF = std::function<void(void*)>;
+
+struct ConfigEntry
 {
-	~ConfigMap (void)
+	ConfigEntry (void* data, EntryDelF deletion = EntryDelF()) :
+		data_(data), deletion_(deletion) {}
+
+	~ConfigEntry (void)
 	{
-		for (auto& epairs : entries_)
+		if (deletion_)
 		{
-			auto& entry = epairs.second;
-			if (entry.deletion_)
-			{
-				entry.deletion_(entry.data_);
-			}
+			deletion_(data_);
 		}
 	}
 
+	ConfigEntry (ConfigEntry&& other) :
+		data_(std::move(other.data_)), deletion_(std::move(other.deletion_)) {}
+
+	ConfigEntry& operator = (ConfigEntry&& other)
+	{
+		if (this != &other)
+		{
+			data_ = std::move(other.data_);
+			deletion_ = std::move(other.deletion_);
+		}
+		return *this;
+	}
+
+	ConfigEntry (const ConfigEntry& other) = delete;
+
+	ConfigEntry& operator = (const ConfigEntry& other) = delete;
+
+	void* data_;
+
+	EntryDelF deletion_;
+};
+
+using EntryptrT = std::shared_ptr<ConfigEntry>;
+
+template <typename K=std::string, typename HASH=std::hash<K>>
+struct ConfigMap final : public iConfig<K,HASH>
+{
 	std::vector<K> get_keys (void) const override
 	{
 		std::vector<K> names;
 		names.reserve(entries_.size());
 		std::transform(entries_.begin(), entries_.end(),
 			std::back_inserter(names),
-			[](const std::pair<K,ConfigEntry>& entry)
+			[](const std::pair<K,EntryptrT>& entry)
 			{
 				return entry.first;
 			});
@@ -60,7 +87,7 @@ struct ConfigMap final : public iConfig<K,HASH>
 		if (has(entries_, cfg_key))
 		{
 			auto& entry = entries_.at(cfg_key);
-			return entry.data_;
+			return entry->data_;
 		}
 		return nullptr;
 	}
@@ -78,7 +105,8 @@ struct ConfigMap final : public iConfig<K,HASH>
 	{
 		if (false == estd::has(entries_, cfg_key))
 		{
-			entries_.emplace(cfg_key, ConfigEntry{init(), del});
+			entries_.emplace(cfg_key,
+				std::make_shared<ConfigEntry>(init(), del));
 		}
 	}
 
@@ -86,26 +114,13 @@ struct ConfigMap final : public iConfig<K,HASH>
 	{
 		if (has(entries_, cfg_key))
 		{
-			{
-				auto& entry = entries_.at(cfg_key);
-				if (entry.deletion_)
-				{
-					entry.deletion_(entry.data_);
-				}
-			}
 			entries_.erase(cfg_key);
 		}
 	}
 
 private:
-	struct ConfigEntry
-	{
-		void* data_;
 
-		std::function<void(void*)> deletion_;
-	};
-
-	std::unordered_map<K,ConfigEntry,HASH> entries_;
+	std::unordered_map<K,EntryptrT,HASH> entries_;
 };
 
 }
