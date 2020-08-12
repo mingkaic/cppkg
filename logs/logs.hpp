@@ -26,6 +26,18 @@ const std::string warn_tag = "[WARNING]:";
 /// String tagged prepending an error message in default logger
 const std::string err_tag = "[ERROR]:";
 
+const std::string fatal_level = "fatal";
+
+const std::string error_level = "error";
+
+const std::string warn_level = "warn";
+
+const std::string info_level = "info";
+
+const std::string debug_level = "debug";
+
+const std::string trace_level = "trace";
+
 /// Log verbosity encoding
 enum LOG_LEVEL
 {
@@ -40,12 +52,12 @@ enum LOG_LEVEL
 
 static types::StrUMapT<LOG_LEVEL> names2log =
 {
-	{"fatal", FATAL},
-	{"error", ERROR},
-	{"warn", WARN},
-	{"info", INFO},
-	{"debug", DEBUG},
-	{"trace", TRACE},
+	{fatal_level, FATAL},
+	{error_level, ERROR},
+	{warn_level, WARN},
+	{info_level, INFO},
+	{debug_level, DEBUG},
+	{trace_level, TRACE},
 };
 
 static types::StringsT lognames =
