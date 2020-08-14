@@ -13,12 +13,26 @@
 namespace egrpc
 {
 
+using ErrPromiseT = std::promise<error::ErrptrT>;
+
+using ErrPromiseptrT = std::shared_ptr<ErrPromiseT>;
+
 // Detached client response handlers
 struct iClientHandler
 {
-	virtual ~iClientHandler  (void) = default;
+	iClientHandler (ErrPromiseptrT promise) : complete_promise_(promise) {}
+
+	virtual ~iClientHandler  (void)
+	{
+		complete_promise_->set_value(error_);
+	}
 
 	virtual void handle (bool event_status) = 0;
+
+protected:
+	ErrPromiseptrT complete_promise_;
+
+	error::ErrptrT error_ = nullptr;
 };
 
 template <typename RES>
@@ -31,14 +45,14 @@ struct AsyncClientHandler final : public iClientHandler
 
 	using InitF = std::function<void(AsyncClientHandler<RES>*)>;
 
-	AsyncClientHandler (std::shared_ptr<logs::iLogger> logger,
+	AsyncClientHandler (ErrPromiseptrT promise,
+		std::shared_ptr<logs::iLogger> logger,
 		HandleResF cb, InitF init, size_t nretries) :
-		logger_(logger), cb_(cb), init_(init), nretries_(nretries)
+		iClientHandler(promise), logger_(logger),
+		cb_(cb), init_(init), nretries_(nretries)
 	{
 		init_(this);
 	}
-
-	~AsyncClientHandler (void) { complete_promise_.set_value(); }
 
 	void handle (bool event_status) override
 	{
@@ -55,8 +69,15 @@ struct AsyncClientHandler final : public iClientHandler
 				this, nretries_, status_.error_message().c_str()));
 			if (nretries_ > 0)
 			{
-				auto next = new AsyncClientHandler<RES>(logger_, cb_, init_, nretries_ - 1);
-				next->complete_promise_.swap(complete_promise_);
+				auto next = new AsyncClientHandler<RES>(
+					complete_promise_, logger_, cb_, init_, nretries_ - 1);
+			}
+			else
+			{
+				error_ = error::error(status_.error_message());
+				logger_->log(logs::error_level, fmts::sprintf(
+					"call %p failed: %s",
+					this, status_.error_message().c_str()));
 			}
 		}
 		delete this;
@@ -78,13 +99,7 @@ struct AsyncClientHandler final : public iClientHandler
 
 	// ctx_ and reader_ need to be kept in memory
 	grpc::ClientContext ctx_;
-
-	std::promise<void> complete_promise_;
 };
-
-using ErrPromiseT = std::promise<error::ErrptrT>;
-
-using ErrFutureT = std::future<error::ErrptrT>;
 
 template <typename DATA>
 struct AsyncClientStreamHandler final : public iClientHandler
@@ -94,10 +109,10 @@ struct AsyncClientStreamHandler final : public iClientHandler
 
 	using HandlerF = std::function<void(DATA&)>;
 
-	AsyncClientStreamHandler (std::shared_ptr<logs::iLogger> logger, HandlerF handler) :
-		logger_(logger), handler_(handler), call_status_(STARTUP) {}
-
-	~AsyncClientStreamHandler (void) { complete_promise_.set_value(error_); }
+	AsyncClientStreamHandler (ErrPromiseptrT promise,
+		std::shared_ptr<logs::iLogger> logger, HandlerF handler) :
+		iClientHandler(promise), logger_(logger),
+		handler_(handler), call_status_(STARTUP) {}
 
 	void handle (bool event_status) override
 	{
@@ -164,10 +179,6 @@ struct AsyncClientStreamHandler final : public iClientHandler
 	DATA reply_;
 
 	grpc::Status status_;
-
-	ErrPromiseT complete_promise_;
-
-	error::ErrptrT error_ = nullptr;
 
 private:
 	enum CallStatus { STARTUP, PROCESS, FINISH };
