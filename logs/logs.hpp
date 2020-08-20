@@ -28,6 +28,8 @@ const std::string err_tag = "[ERROR]:";
 
 const std::string fatal_level = "fatal";
 
+const std::string throw_err_level = "throw_err";
+
 const std::string error_level = "error";
 
 const std::string warn_level = "warn";
@@ -42,6 +44,7 @@ const std::string trace_level = "trace";
 enum LOG_LEVEL
 {
 	FATAL = 0,
+	THROW_ERR,
 	ERROR,
 	WARN,
 	INFO,
