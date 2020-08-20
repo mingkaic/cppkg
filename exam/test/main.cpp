@@ -147,8 +147,15 @@ TEST(EXAM, Logality)
 		FAIL() << "fatal should never have gone this far";
 	};
 
+	auto fatal_action3 = []
+	{
+		logs::get_logger().log(logs::THROW_ERR, "fatal message3");
+		FAIL() << "fatal should never have gone this far";
+	};
+
 	EXPECT_FATAL(fatal_action(), "fatal message");
 	EXPECT_FATAL(fatal_action2(), "fatal message2");
+	EXPECT_FATAL(fatal_action3(), "fatal message3");
 	EXPECT_ERROR(logs::error("error message"), "error message");
 	EXPECT_WARN(logs::warn("warning message"), "warning message");
 	EXPECT_INFO(logs::info("information message"), "information message");

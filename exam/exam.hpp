@@ -60,18 +60,13 @@ struct TestLogger : public logs::iLogger
 
 	void log (const std::string& msg_level, const std::string& msg) override
 	{
-		if (msg_level == "fatal")
-		{
-			fatal(msg);
-		}
-		latest_lvl_ = logs::enum_log(msg_level);
-		latest_msg_ = msg;
+		log(logs::enum_log(msg_level), msg);
 	}
 
 	/// Log both level and message
 	void log (size_t log_level, const std::string& msg) override
 	{
-		if (log_level == logs::FATAL)
+		if (log_level <= logs::THROW_ERR)
 		{
 			fatal(msg);
 		}

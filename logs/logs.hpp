@@ -56,6 +56,7 @@ enum LOG_LEVEL
 static types::StrUMapT<LOG_LEVEL> names2log =
 {
 	{fatal_level, FATAL},
+	{throw_err_level, THROW_ERR},
 	{error_level, ERROR},
 	{warn_level, WARN},
 	{info_level, INFO},
@@ -64,7 +65,15 @@ static types::StrUMapT<LOG_LEVEL> names2log =
 };
 
 static types::StringsT lognames =
-{ "fatal", "error", "warn", "info", "debug", "trace" };
+{
+	fatal_level,
+	throw_err_level,
+	error_level,
+	warn_level,
+	info_level,
+	debug_level,
+	trace_level
+};
 
 std::string name_log (const LOG_LEVEL& level);
 
