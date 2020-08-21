@@ -69,7 +69,7 @@ struct AsyncClientHandler final : public iClientHandler
 				this, nretries_, status_.error_message().c_str()));
 			if (nretries_ > 0)
 			{
-				auto next = new AsyncClientHandler<RES>(
+				new AsyncClientHandler<RES>(
 					complete_promise_, logger_, cb_, init_, nretries_ - 1);
 			}
 			else
