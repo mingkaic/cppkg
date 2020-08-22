@@ -5,6 +5,7 @@
 #include <grpcpp/impl/codegen/async_unary_call.h>
 #include <grpcpp/impl/codegen/async_stream.h>
 
+#include "error/error.hpp"
 #include "logs/logs.hpp"
 
 #ifndef EGRPC_CLIENT_ASYNC_HPP
