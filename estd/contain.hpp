@@ -6,12 +6,6 @@
 /// Define map and set utility functions
 ///
 
-#include <map>
-#include <set>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-
 #include "logs/logs.hpp"
 
 #ifndef PKG_ESTD_HASH_HPP

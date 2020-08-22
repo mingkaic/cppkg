@@ -1,3 +1,4 @@
+
 #ifndef ESTD_TRIENODE_HPP
 #define ESTD_TRIENODE_HPP
 

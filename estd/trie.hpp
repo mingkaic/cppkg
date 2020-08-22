@@ -1,3 +1,4 @@
+
 #ifndef ESTD_TRIE_HPP
 #define ESTD_TRIE_HPP
 

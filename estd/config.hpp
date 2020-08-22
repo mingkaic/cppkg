@@ -1,8 +1,7 @@
+
 #ifndef ESTD_CONFIG_HPP
 #define ESTD_CONFIG_HPP
 
-#include <string>
-#include <vector>
 #include <functional>
 
 #include "estd/contain.hpp"
