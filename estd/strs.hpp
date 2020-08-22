@@ -1,7 +1,8 @@
-#include <string>
 
 #ifndef PKG_ESTD_STR_HPP
 #define PKG_ESTD_STR_HPP
+
+#include <string>
 
 namespace estd
 {

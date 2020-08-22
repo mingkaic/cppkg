@@ -1,6 +1,6 @@
 
-#ifndef ESTD_TRIEBIG_HPP
-#define ESTD_TRIEBIG_HPP
+#ifndef PKG_ESTD_TRIEBIG_HPP
+#define PKG_ESTD_TRIEBIG_HPP
 
 #include "estd/contain.hpp"
 #include "estd/trie.hpp"
@@ -61,4 +61,4 @@ private:
 
 }
 
-#endif // ESTD_TRIEBIG_HPP
+#endif // PKG_ESTD_TRIEBIG_HPP

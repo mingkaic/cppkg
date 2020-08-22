@@ -1,6 +1,6 @@
 
-#ifndef ESTD_TRIE_HPP
-#define ESTD_TRIE_HPP
+#ifndef PKG_ESTD_TRIE_HPP
+#define PKG_ESTD_TRIE_HPP
 
 #include <optional>
 
@@ -272,4 +272,4 @@ private:
 
 }
 
-#endif // ESTD_TRIE_HPP
+#endif // PKG_ESTD_TRIE_HPP

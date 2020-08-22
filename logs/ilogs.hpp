@@ -1,8 +1,8 @@
 
-#include <string>
-
 #ifndef PKG_LOGS_ILOGS_HPP
 #define PKG_LOGS_ILOGS_HPP
+
+#include <string>
 
 namespace logs
 {

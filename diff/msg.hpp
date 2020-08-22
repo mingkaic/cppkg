@@ -6,15 +6,15 @@
 /// Define diff message generators
 ///
 
+#ifndef PKG_DIFF_MSG_HPP
+#define PKG_DIFF_MSG_HPP
+
 #include <cstring>
 #include <istream>
 
 #include "fmts/fmts.hpp"
 
 #include "diff/format.hpp"
-
-#ifndef PKG_DIFF_MSG_HPP
-#define PKG_DIFF_MSG_HPP
 
 namespace diff
 {

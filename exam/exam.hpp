@@ -6,10 +6,10 @@
 /// Define test utility functions
 ///
 
-#include "logs/logs.hpp"
-
 #ifndef PKG_EXAM_HPP
 #define PKG_EXAM_HPP
+
+#include "logs/logs.hpp"
 
 namespace exam
 {

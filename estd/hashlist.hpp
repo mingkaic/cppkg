@@ -1,9 +1,10 @@
+
+#ifndef PKG_ESTD_HASHLIST_HPP
+#define PKG_ESTD_HASHLIST_HPP
+
 #include <list>
 
 #include "estd/contain.hpp"
-
-#ifndef ESTD_HASHLIST_HPP
-#define ESTD_HASHLIST_HPP
 
 namespace estd
 {
@@ -160,4 +161,4 @@ private:
 
 }
 
-#endif // ESTD_HASHLIST_HPP
+#endif // PKG_ESTD_HASHLIST_HPP

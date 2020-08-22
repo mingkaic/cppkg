@@ -6,10 +6,10 @@
 /// Define map and set utility functions
 ///
 
-#include "logs/logs.hpp"
-
 #ifndef PKG_ESTD_HASH_HPP
 #define PKG_ESTD_HASH_HPP
+
+#include "logs/logs.hpp"
 
 namespace estd
 {

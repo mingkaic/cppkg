@@ -6,12 +6,12 @@
 /// Define diff structure (defined in myers_diff.hpp) string representation
 ///
 
+#ifndef PKG_DIFF_FORMAT_HPP
+#define PKG_DIFF_FORMAT_HPP
+
 #include <ostream>
 
 #include "diff/myers_diff.hpp"
-
-#ifndef PKG_DIFF_FORMAT_HPP
-#define PKG_DIFF_FORMAT_HPP
 
 namespace diff
 {

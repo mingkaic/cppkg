@@ -1,6 +1,6 @@
 
-#ifndef ESTD_CONFIG_HPP
-#define ESTD_CONFIG_HPP
+#ifndef PKG_ESTD_CONFIG_HPP
+#define PKG_ESTD_CONFIG_HPP
 
 #include <functional>
 
@@ -124,4 +124,4 @@ private:
 
 }
 
-#endif // ESTD_CONFIG_HPP
+#endif // PKG_ESTD_CONFIG_HPP

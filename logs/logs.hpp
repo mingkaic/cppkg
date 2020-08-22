@@ -6,14 +6,14 @@
 /// Define log handling and interface
 ///
 
+#ifndef PKG_LOGS_HPP
+#define PKG_LOGS_HPP
+
 #include <iostream>
 #include <memory>
 
 #include "fmts/fmts.hpp"
 #include "logs/ilogs.hpp"
-
-#ifndef PKG_LOGS_HPP
-#define PKG_LOGS_HPP
 
 namespace logs
 {

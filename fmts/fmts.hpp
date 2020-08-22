@@ -6,13 +6,13 @@
 /// Define string formatting for various types
 ///
 
+#ifndef PKG_FMTS_HPP
+#define PKG_FMTS_HPP
+
 #include <algorithm>
 #include <sstream>
 
 #include "types/strs.hpp"
-
-#ifndef PKG_FMTS_HPP
-#define PKG_FMTS_HPP
 
 namespace fmts
 {

@@ -1,10 +1,10 @@
 
+#ifndef PKG_ERROR_IERROR_HPP
+#define PKG_ERROR_IERROR_HPP
+
 #include <memory>
 
 #include "fmts/fmts.hpp"
-
-#ifndef ERROR_IERROR_HPP
-#define ERROR_IERROR_HPP
 
 namespace error
 {
@@ -45,4 +45,4 @@ ErrptrT errorf (const std::string& format, ARGS... args)
 
 }
 
-#endif // ERROR_IERROR_HPP
+#endif // PKG_ERROR_IERROR_HPP

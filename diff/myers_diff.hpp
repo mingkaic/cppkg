@@ -9,13 +9,13 @@
 /// https://blog.jcoglan.com/2017/02/12/the-myers-diff-algorithm-part-1/
 ///
 
+#ifndef PKG_DIFF_MYERS_HPP
+#define PKG_DIFF_MYERS_HPP
+
 #include <cassert>
 #include <utility>
 #include <iterator>
 #include <vector>
-
-#ifndef PKG_DIFF_MYERS_HPP
-#define PKG_DIFF_MYERS_HPP
 
 namespace diff
 {

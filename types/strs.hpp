@@ -1,13 +1,13 @@
 
+#ifndef PKG_TYPES_STRS_HPP
+#define PKG_TYPES_STRS_HPP
+
 #include <string>
 #include <vector>
 #include <map>
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
-
-#ifndef PKG_TYPES_STRS_HPP
-#define PKG_TYPES_STRS_HPP
 
 namespace types
 {

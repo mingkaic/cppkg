@@ -1,4 +1,7 @@
 
+#ifndef PKG_EGRPC_CLIENT_ASYNC_HPP
+#define PKG_EGRPC_CLIENT_ASYNC_HPP
+
 #include <future>
 
 #include <grpcpp/grpcpp.h>
@@ -7,9 +10,6 @@
 
 #include "error/error.hpp"
 #include "logs/logs.hpp"
-
-#ifndef EGRPC_CLIENT_ASYNC_HPP
-#define EGRPC_CLIENT_ASYNC_HPP
 
 namespace egrpc
 {
@@ -189,4 +189,4 @@ private:
 
 }
 
-#endif // EGRPC_CLIENT_ASYNC_HPP
+#endif // PKG_EGRPC_CLIENT_ASYNC_HPP

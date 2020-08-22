@@ -6,6 +6,9 @@
 /// Define structure that manages sequentially dependency for threads
 ///
 
+#ifndef PKG_JOBS_SEQUENCE_HPP
+#define PKG_JOBS_SEQUENCE_HPP
+
 #include <functional>
 #include <thread>
 #include <future>
@@ -14,9 +17,6 @@
 #include <list>
 
 #include "logs/logs.hpp"
-
-#ifndef PKG_JOBS_SEQUENCE_HPP
-#define PKG_JOBS_SEQUENCE_HPP
 
 namespace jobs
 {

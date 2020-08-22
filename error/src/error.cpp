@@ -1,7 +1,7 @@
 
 #include "error/error.hpp"
 
-#ifdef ERROR_IERROR_HPP
+#ifdef PKG_ERROR_IERROR_HPP
 
 namespace error
 {

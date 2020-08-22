@@ -6,10 +6,10 @@
 /// Simulate golang defer statement
 ///
 
-#include <functional>
-
 #ifndef PKG_JOBS_SCOPE_GUARD_HPP
 #define PKG_JOBS_SCOPE_GUARD_HPP
+
+#include <functional>
 
 namespace jobs
 {

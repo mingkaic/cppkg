@@ -1,6 +1,6 @@
 
-#ifndef ESTD_TRIENODE_HPP
-#define ESTD_TRIENODE_HPP
+#ifndef PKG_ESTD_TRIENODE_HPP
+#define PKG_ESTD_TRIENODE_HPP
 
 #include <array>
 
@@ -92,4 +92,4 @@ HASHER TrieNode<KEY,VAL,NKEY,HASHER>::hasher_;
 
 }
 
-#endif // ESTD_TRIENODE_HPP
+#endif // PKG_ESTD_TRIENODE_HPP

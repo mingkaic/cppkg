@@ -1,10 +1,10 @@
 
+#ifndef PKG_EGRPC_ICLIENT_HPP
+#define PKG_EGRPC_ICLIENT_HPP
+
 #include <chrono>
 
 #include <grpcpp/grpcpp.h>
-
-#ifndef EGRPC_ICLIENT_HPP
-#define EGRPC_ICLIENT_HPP
 
 namespace egrpc
 {
@@ -54,4 +54,4 @@ protected:
 
 }
 
-#endif // EGRPC_ICLIENT_HPP
+#endif // PKG_EGRPC_ICLIENT_HPP
