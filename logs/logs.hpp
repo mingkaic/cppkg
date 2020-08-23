@@ -111,7 +111,8 @@ struct DefLogger final : public iLogger
 	}
 
 	/// Implementation of iLogger
-	void log (const std::string& msg_level, const std::string& msg) override
+	void log (const std::string& msg_level, const std::string& msg,
+		const SrcLocT& location = SrcLocT::current()) override
 	{
 		LOG_LEVEL level = TRACE;
 		auto it = names2log.find(msg_level);
@@ -138,7 +139,8 @@ struct DefLogger final : public iLogger
 	}
 
 	/// Implementation of iLogger
-	void log (size_t msg_level, const std::string& msg) override
+	void log (size_t msg_level, const std::string& msg,
+		const SrcLocT& location = SrcLocT::current()) override
 	{
 		if (msg_level <= log_level_)
 		{

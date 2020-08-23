@@ -36,16 +36,21 @@ struct TestLogger : public logs::iLogger
 	/// Latest log level value
 	static size_t latest_lvl_;
 
+	static std::string set_llevel;
+
+	static std::string get_llevel;
+
 	/// Returns logs::TRACE
 	std::string get_log_level (void) const override
 	{
-		return logs::name_log(logs::TRACE);
+		return get_llevel;
 	}
 
 	/// Quitely ignores set level, since test logger should record every message
 	void set_log_level (const std::string& log_level) override
 	{
 		// does actually set anything
+		set_llevel = log_level;
 	}
 
 	bool supports_level (size_t msg_level) const override
@@ -58,13 +63,15 @@ struct TestLogger : public logs::iLogger
 		return logs::enum_log(msg_level) < logs::NOT_SET;
 	}
 
-	void log (const std::string& msg_level, const std::string& msg) override
+	void log (const std::string& msg_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
 	{
 		log(logs::enum_log(msg_level), msg);
 	}
 
 	/// Log both level and message
-	void log (size_t log_level, const std::string& msg) override
+	void log (size_t log_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
 	{
 		if (log_level <= logs::THROW_ERR)
 		{

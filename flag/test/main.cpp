@@ -36,7 +36,8 @@ struct TestLogger : public logs::iLogger
 		return true;
 	}
 
-	void log (size_t msg_level, const std::string& msg) override
+	void log (size_t msg_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
 	{
 		switch (msg_level)
 		{
@@ -56,7 +57,8 @@ struct TestLogger : public logs::iLogger
 		}
 	}
 
-	void log (const std::string& msg_level, const std::string& msg) override
+	void log (const std::string& msg_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
 	{
 		log(logs::enum_log(msg_level), msg);
 	}

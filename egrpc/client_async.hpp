@@ -3,6 +3,7 @@
 #define PKG_EGRPC_CLIENT_ASYNC_HPP
 
 #include <future>
+#include <cassert>
 
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/impl/codegen/async_unary_call.h>
