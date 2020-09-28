@@ -7,7 +7,7 @@ namespace egrpc
 
 void wait_for (const ErrPromiseT& promise, HandleErrF err_handle)
 {
-	auto done = promise->get_future();
+	auto done = promise.get_future();
 	while (done.valid() && done.wait_for(
 		std::chrono::milliseconds(1)) ==
 		std::future_status::timeout);
@@ -21,7 +21,7 @@ void wait_for (const ErrPromiseT& promise, HandleErrF err_handle)
 	}
 }
 
-void wait_for (const ErrPromisesT& promises, HandleErrF err_handle)
+void wait_for (ErrPromisesT& promises, HandleErrF err_handle)
 {
 	while (false == promises.empty())
 	{

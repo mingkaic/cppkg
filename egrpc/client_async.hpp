@@ -199,7 +199,7 @@ private:
 
 void wait_for (const ErrPromiseT& promise, HandleErrF err_handle);
 
-void wait_for (const ErrPromisesT& promises, HandleErrF err_handle);
+void wait_for (ErrPromisesT& promises, HandleErrF err_handle);
 
 }
 
