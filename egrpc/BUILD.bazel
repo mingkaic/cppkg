@@ -4,7 +4,7 @@ filegroup(
     name = "srcs",
     srcs = [
         ":egrpc_hdrs",
-        # ":egrpc_srcs",
+        ":egrpc_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -15,22 +15,23 @@ filegroup(
     srcs = glob(["*.hpp"]),
 )
 
-# filegroup(
-#     name = "egrpc_srcs",
-#     srcs = glob([
-#         "src/*.cpp",
-#     ]),
-# )
+filegroup(
+    name = "egrpc_srcs",
+    srcs = glob([
+        "src/*.cpp",
+    ]),
+)
 
 ######### LIBRARY #########
 
 cc_library(
     name = "egrpc",
     hdrs = [":egrpc_hdrs"],
-    # srcs = [":egrpc_srcs"],
+    srcs = [":egrpc_srcs"],
     copts = ["-std=c++17"],
     deps = [
         "//logs:logs",
+        "//error:error",
         "@com_github_grpc_grpc//:grpc++",
     ],
     visibility = ["//visibility:public"],

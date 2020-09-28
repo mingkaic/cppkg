@@ -15,9 +15,13 @@
 namespace egrpc
 {
 
+using HandleErrF = std::function<void(error::ErrptrT)>;
+
 using ErrPromiseT = std::promise<error::ErrptrT>;
 
 using ErrPromiseptrT = std::shared_ptr<ErrPromiseT>;
+
+using ErrPromisesT = std::list<ErrPromiseptrT>;
 
 // Detached client response handlers
 struct iClientHandler
@@ -37,7 +41,7 @@ protected:
 	error::ErrptrT error_ = nullptr;
 };
 
-template <typename RES>
+template <typename REQ, typename RES>
 struct AsyncClientHandler final : public iClientHandler
 {
 	using ReadptrT = std::unique_ptr<
@@ -45,7 +49,7 @@ struct AsyncClientHandler final : public iClientHandler
 
 	using HandleResF = std::function<void(RES&)>;
 
-	using InitF = std::function<void(AsyncClientHandler<RES>*)>;
+	using InitF = std::function<void(REQ&,AsyncClientHandler<REQ,RES>*)>;
 
 	AsyncClientHandler (ErrPromiseptrT promise,
 		std::shared_ptr<logs::iLogger> logger,
@@ -53,7 +57,7 @@ struct AsyncClientHandler final : public iClientHandler
 		iClientHandler(promise), logger_(logger),
 		cb_(cb), init_(init), nretries_(nretries)
 	{
-		init_(this);
+		init_(request_, this);
 	}
 
 	void handle (bool event_status) override
@@ -62,7 +66,10 @@ struct AsyncClientHandler final : public iClientHandler
 		{
 			logger_->log(logs::info_level, fmts::sprintf(
 				"call %p completed successfully", this));
-			cb_(reply_);
+			if (cb_)
+			{
+				cb_(reply_);
+			}
 		}
 		else
 		{
@@ -71,7 +78,7 @@ struct AsyncClientHandler final : public iClientHandler
 				this, nretries_, status_.error_message().c_str()));
 			if (nretries_ > 0)
 			{
-				new AsyncClientHandler<RES>(
+				new AsyncClientHandler<REQ,RES>(
 					complete_promise_, logger_, cb_, init_, nretries_ - 1);
 			}
 			else
@@ -92,6 +99,8 @@ struct AsyncClientHandler final : public iClientHandler
 	InitF init_;
 
 	size_t nretries_;
+
+	REQ request_;
 
 	RES reply_;
 
@@ -187,6 +196,10 @@ private:
 
 	CallStatus call_status_;
 };
+
+void wait_for (const ErrPromiseT& promise, HandleErrF err_handle);
+
+void wait_for (const ErrPromisesT& promises, HandleErrF err_handle);
 
 }
 
