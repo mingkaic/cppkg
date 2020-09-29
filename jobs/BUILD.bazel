@@ -5,6 +5,7 @@ filegroup(
     srcs = [
         ":jobs_hdrs",
         # ":jobs_srcs",
+        ":test_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -46,5 +47,6 @@ cc_test(
         ":jobs",
         "@gtest//:gtest",
     ],
+    linkstatic = True,
     copts = ["-std=c++17"],
 )

@@ -2,10 +2,12 @@ licenses(["notice"])
 
 filegroup(
     name = "srcs",
-    srcs = glob([
-        "*.hpp",
-        "src/*.cpp",
-    ]) + ["BUILD.bazel"],
+    srcs = [
+        ":diff_hdrs",
+        ":diff_srcs",
+        ":test_srcs",
+        "BUILD.bazel",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -45,5 +47,6 @@ cc_test(
         ":diff",
         "@gtest//:gtest",
     ],
+    linkstatic = True,
     copts = ["-std=c++17"],
 )

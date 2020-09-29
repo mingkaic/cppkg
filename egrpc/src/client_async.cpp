@@ -5,7 +5,7 @@
 namespace egrpc
 {
 
-void wait_for (const ErrPromiseT& promise, HandleErrF err_handle)
+void wait_for (ErrPromiseT& promise, HandleErrF err_handle)
 {
 	auto done = promise.get_future();
 	while (done.valid() && done.wait_for(

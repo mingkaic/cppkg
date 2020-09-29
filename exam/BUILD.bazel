@@ -5,6 +5,7 @@ filegroup(
     srcs = [
         ":exam_hdrs",
         ":exam_srcs",
+        ":test_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -49,5 +50,6 @@ cc_test(
         ":exam",
         "@gtest//:gtest",
     ],
+    linkstatic = True,
     copts = ["-std=c++17"],
 )

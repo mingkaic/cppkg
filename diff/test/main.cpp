@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "diff/msg.hpp"
+#include "diff/diff.hpp"
 
 
 int main (int argc, char** argv)

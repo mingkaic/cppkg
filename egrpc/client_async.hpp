@@ -30,7 +30,10 @@ struct iClientHandler
 
 	virtual ~iClientHandler  (void)
 	{
-		complete_promise_->set_value(error_);
+		if (complete_promise_)
+		{
+			complete_promise_->set_value(error_);
+		}
 	}
 
 	virtual void handle (bool event_status) = 0;
@@ -80,6 +83,7 @@ struct AsyncClientHandler final : public iClientHandler
 			{
 				new AsyncClientHandler<REQ,RES>(
 					complete_promise_, logger_, cb_, init_, nretries_ - 1);
+				complete_promise_ = nullptr;
 			}
 			else
 			{
@@ -197,7 +201,7 @@ private:
 	CallStatus call_status_;
 };
 
-void wait_for (const ErrPromiseT& promise, HandleErrF err_handle);
+void wait_for (ErrPromiseT& promise, HandleErrF err_handle);
 
 void wait_for (ErrPromisesT& promises, HandleErrF err_handle);
 

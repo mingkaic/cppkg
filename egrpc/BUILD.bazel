@@ -5,6 +5,7 @@ filegroup(
     srcs = [
         ":egrpc_hdrs",
         ":egrpc_srcs",
+        ":test_srcs",
         "BUILD.bazel",
     ],
     visibility = ["//visibility:public"],
@@ -22,6 +23,11 @@ filegroup(
     ]),
 )
 
+filegroup(
+    name = "test_srcs",
+    srcs = glob(["test/*.cpp"]),
+)
+
 ######### LIBRARY #########
 
 cc_library(
@@ -35,4 +41,19 @@ cc_library(
         "@com_github_grpc_grpc//:grpc++",
     ],
     visibility = ["//visibility:public"],
+)
+
+######### TEST #########
+
+cc_test(
+    name = "test",
+    size = "small",
+    srcs = [":test_srcs"],
+    deps = [
+        ":egrpc",
+        "//exam:exam",
+        "@gtest//:gtest",
+    ],
+    linkstatic = True,
+    copts = ["-std=c++17"],
 )

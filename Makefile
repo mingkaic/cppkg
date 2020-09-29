@@ -18,26 +18,71 @@ LOGS_TEST := //logs:test
 
 JOBS_TEST := //jobs:test
 
+######## COVERAGES ########
 
-cov_clean: coverage.info
-	lcov --remove coverage.info $(COVERAGE_IGNORE) -o coverage.info
-	lcov --list coverage.info
+TMP_COVFILE := /tmp/coverage.info
+COVERAGE_INFO_FILE := bazel-out/_coverage/_coverage_report.dat
+CCOVER := bazel coverage --config asan --action_env="ASAN_OPTIONS=detect_leaks=0" --config gtest --config cc_coverage
+COVERAGE_CTX := tmp/cppkg_coverage
+COVERAGE_CSV := tmp/cppkg_conversions.csv
 
-cov_genhtml: coverage.info
-	genhtml -o html coverage.info
+.PHONY: cov_clean
+cov_clean:
+	rm *.info
+	rm -Rf html
 
+# coverage helper
+.PHONY: cov_init
+cov_init:
+	rm -Rf tmp
+	mkdir -p $(COVERAGE_CTX)
+	find . -maxdepth 1 | grep -E -v 'tmp|.git|bazel-' | tail -n +2 | xargs -i cp -r {} $(COVERAGE_CTX)
+	find $(COVERAGE_CTX) | grep -E '.cpp|.hpp' | python3 scripts/label_uniquify.py $(COVERAGE_CTX) > $(COVERAGE_CSV)
+	find $(COVERAGE_CTX) | grep -E '.yml' | python3 scripts/yaml_replace.py $(COVERAGE_CSV)
 
+.PHONY: cov_copyout
+cov_copyout:
+	python3 scripts/label_replace.py $(COVERAGE_CTX)/$(COVFILE) $(COVERAGE_CSV) > $(COVFILE)
+
+.PHONY: cov_genhtml
+cov_genhtml: cov_copyout
+	genhtml -o html $(COVFILE)
+
+.PHONY: clean_test_coverage
+clean_test_coverage: ${COVERAGE_INFO_FILE}
+	lcov --remove ${COVERAGE_INFO_FILE} '**/test/*' '**/mock/*' '**/*.pb.*' -o ${TMP_COVFILE}
+
+.PHONY: coverage
 coverage:
-	$(CCOVER) $(DIFF_TEST) $(ESTD_TEST) $(EXAM_TEST) $(FMTS_TEST) $(LOGS_TEST) $(JOBS_TEST) $(FLAG_TEST)
-	lcov --remove $(COVERAGE_INFO_FILE) -o coverage.info
+	$(CCOVER) //...
+	@make clean_test_coverage
+	lcov --extract ${TMP_COVFILE} 'diff/*' 'egrpc/*' 'error/*' 'estd/*' 'exam/*' 'flag/*' 'fmts/*' 'jobs/*' 'logs/*' 'types/*' -o coverage.info
 
+###### INDIVIDUAL COVERAGES ######
+
+.PHONY: cover_diff
 cover_diff:
-	$(CCOVER) $(DIFF_TEST)
-	lcov --remove $(COVERAGE_INFO_FILE) -o coverage.info
+	${CCOVER} --instrumentation_filter 'diff/*' //diff:test
+	@make clean_test_coverage
+	lcov -a ${TMP_COVFILE} -o diff_coverage.info
 
+.PHONY: cover_egrpc
+cover_egrpc:
+	${CCOVER} --instrumentation_filter 'egrpc/*' //egrpc:test
+	@make clean_test_coverage
+	lcov -a ${TMP_COVFILE} -o egrpc_coverage.info
+
+.PHONY: cover_error
+cover_error:
+	${CCOVER} --instrumentation_filter 'error/*' //error:test
+	@make clean_test_coverage
+	lcov -a ${TMP_COVFILE} -o error_coverage.info
+
+.PHONY: cover_estd
 cover_estd:
-	$(CCOVER) $(ESTD_TEST)
-	lcov --remove $(COVERAGE_INFO_FILE) 'logs/*' -o coverage.info
+	${CCOVER} --instrumentation_filter 'estd/*' //estd:test
+	@make clean_test_coverage
+	lcov -a ${TMP_COVFILE} -o estd_coverage.info
 
 cover_exam:
 	$(CCOVER) $(EXAM_TEST)
