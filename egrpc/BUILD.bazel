@@ -1,5 +1,7 @@
 licenses(["notice"])
 
+load("@rules_proto_grpc//cpp:defs.bzl", "cpp_grpc_library")
+
 filegroup(
     name = "srcs",
     srcs = [
@@ -28,6 +30,11 @@ filegroup(
     srcs = glob(["test/*.cpp"]),
 )
 
+filegroup(
+    name = "test_protos",
+    srcs = glob(["test/*.proto"]),
+)
+
 ######### LIBRARY #########
 
 cc_library(
@@ -45,12 +52,24 @@ cc_library(
 
 ######### TEST #########
 
+proto_library(
+    name = "test_pb",
+    srcs = [":test_protos"],
+)
+
+cpp_grpc_library(
+    name = "test_cc_grpc",
+    deps = [":test_pb"],
+    visibility = ["//visibility:public"],
+)
+
 cc_test(
     name = "test",
     size = "small",
     srcs = [":test_srcs"],
     deps = [
         ":egrpc",
+        ":test_cc_grpc",
         "//exam:exam",
         "@gtest//:gtest",
     ],

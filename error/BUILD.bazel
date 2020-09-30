@@ -39,14 +39,14 @@ cc_library(
 
 # ######### TEST #########
 
-# cc_test(
-#     name = "test",
-#     size = "small",
-#     srcs = [":test_srcs"],
-#     deps = [
-#         ":error",
-#         "@gtest//:gtest",
-#     ],
-#     linkstatic = True,
-#     copts = ["-std=c++17"],
-# )
+cc_test(
+    name = "test",
+    size = "small",
+    srcs = [":test_srcs"],
+    deps = [
+        ":error",
+        "@gtest//:gtest",
+    ],
+    linkstatic = True,
+    copts = ["-std=c++17"],
+)

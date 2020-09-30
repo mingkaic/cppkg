@@ -35,17 +35,3 @@ cc_library(
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
 )
-
-######### TEST #########
-
-# cc_test(
-#     name = "test",
-#     size = "small",
-#     srcs = [":test_srcs"],
-#     deps = [
-#         ":types",
-#         "@gtest//:gtest",
-#     ],
-#     linkstatic = True,
-#     copts = ["-std=c++17"],
-# )
