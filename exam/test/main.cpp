@@ -164,4 +164,26 @@ TEST(EXAM, Logality)
 }
 
 
+TEST(EXAM, Log)
+{
+	exam::TestLogger logger;
+	EXPECT_TRUE(logger.supports_level(logs::INFO));
+	EXPECT_TRUE(logger.supports_level("info"));
+
+	logger.log(logs::INFO, "hello");
+	EXPECT_EQ(logs::INFO, logger.latest_lvl_);
+	EXPECT_STREQ("hello", logger.latest_msg_.c_str());
+	logger.log("warn", "world");
+	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
+	EXPECT_STREQ("world", logger.latest_msg_.c_str());
+
+	logger.error("foo");
+	EXPECT_EQ(logs::ERROR, logger.latest_lvl_);
+	EXPECT_STREQ("foo", logger.latest_msg_.c_str());
+	logger.warn("bar");
+	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
+	EXPECT_STREQ("bar", logger.latest_msg_.c_str());
+}
+
+
 #endif // DISABLE_EXAM_TEST

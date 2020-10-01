@@ -137,13 +137,16 @@ struct AsyncServerStreamCall final : public iServerCall
 			{
 				RES reply;
 				logger_->log(logs::info_level, fmts::sprintf("rpc %p writing", this));
-				bool wrote = write_call_(req_, it_, reply);
-				++it_;
+				bool wrote = false;
+				while (false == wrote && it_ != ranges_.end())
+				{
+					wrote = write_call_(req_, it_, reply);
+					++it_;
+				}
 				if (wrote)
 				{
 					responder_.Write(reply, this);
-					return;
-				}
+				} // else it_ == ranges_.end()
 			}
 
 			if (it_ == ranges_.end())

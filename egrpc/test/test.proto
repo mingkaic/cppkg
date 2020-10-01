@@ -10,4 +10,5 @@ message MockResponse {
 
 service MockService {
     rpc MockRPC (MockRequest) returns (MockResponse);
+    rpc MockStreamOut (MockRequest) returns (stream MockResponse);
 }

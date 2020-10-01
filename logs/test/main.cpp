@@ -259,4 +259,42 @@ TEST_F(LOGS, GlobalGetSet)
 }
 
 
+TEST(DEFAULT, Logger)
+{
+	logs::DefLogger logger;
+	EXPECT_TRUE(logger.supports_level(logs::INFO));
+	EXPECT_TRUE(logger.supports_level("info"));
+
+	logger.log(logs::INFO, "hello");
+	logger.log("warn", "world");
+	logger.log("error", "oh no");
+
+	try
+	{
+		logger.log(logs::FATAL, "death");
+		FAIL() << "not expecting fatal to succeed";
+	}
+	catch (std::exception& e)
+	{
+		EXPECT_STREQ("death", e.what());
+	}
+}
+
+
+TEST(DEFAULT, Conversions)
+{
+	EXPECT_EQ(logs::INFO, logs::enum_log("info"));
+	EXPECT_EQ(logs::WARN, logs::enum_log("warn"));
+	EXPECT_EQ(logs::ERROR, logs::enum_log("error"));
+	EXPECT_EQ(logs::FATAL, logs::enum_log("fatal"));
+	EXPECT_EQ(logs::NOT_SET, logs::enum_log("hello"));
+
+	EXPECT_STREQ("info", logs::name_log(logs::INFO).c_str());
+	EXPECT_STREQ("warn", logs::name_log(logs::WARN).c_str());
+	EXPECT_STREQ("error", logs::name_log(logs::ERROR).c_str());
+	EXPECT_STREQ("fatal", logs::name_log(logs::FATAL).c_str());
+	EXPECT_STREQ("", logs::name_log(logs::NOT_SET).c_str());
+}
+
+
 #endif // DISABLE_LOGS_TEST

@@ -120,22 +120,7 @@ struct DefLogger final : public iLogger
 		{
 			level = it->second;
 		}
-		if (level <= log_level_)
-		{
-			switch (level)
-			{
-				case FATAL:
-					fatal(msg);
-				case ERROR:
-					error(msg);
-					break;
-				case WARN:
-					warn(msg);
-					break;
-				default:
-					std::cout << msg << '\n';
-			}
-		}
+		log(level, msg, location);
 	}
 
 	/// Implementation of iLogger

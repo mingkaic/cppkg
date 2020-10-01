@@ -15,9 +15,13 @@ int main (int argc, char** argv)
 
 TEST(ERROR, ErrMessage)
 {
-	auto err = error::errorf("bad %s %d", "zzzz", 23);
+	auto err = error::error("bad zzzz 23");
 	ASSERT_NE(nullptr, err);
 	EXPECT_STREQ("bad zzzz 23", err->to_string().c_str());
+
+	auto err2 = error::errorf("bad %s %d", "zzzz", 23);
+	ASSERT_NE(nullptr, err2);
+	EXPECT_STREQ("bad zzzz 23", err2->to_string().c_str());
 }
 
 

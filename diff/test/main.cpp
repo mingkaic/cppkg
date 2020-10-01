@@ -411,6 +411,36 @@ TEST(DIFF, SafeMsg_CompleteMatch)
 	}, 8);
 
 	EXPECT_STREQ("", match.c_str());
+
+	auto match2 = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	});
+
+	EXPECT_STREQ("", match2.c_str());
 }
 
 
@@ -461,6 +491,52 @@ TEST(DIFF, SafeMsg_SamePrefix)
 		"+  \t10\ttremble\n"
 		"+  \t11\thop\n",
 		same_prefix.c_str());
+
+	auto same_prefix2 = diff::safe_diff_msg({
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"nosy",
+		"juicy",
+		"bright",
+		"jam",
+		"dust",
+		"silent",
+	}, {
+		"advise",
+		"apathetic",
+		"disappear",
+		"greasy",
+		"toy",
+		"obtain",
+		"mate",
+		"head",
+		"wine",
+		"new",
+		"tremble",
+		"hop",
+	});
+
+	EXPECT_STREQ(
+		"  3\t3\tgreasy\n"
+		"  4\t4\ttoy\n"
+		"  5\t5\tobtain\n"
+		"- 6\t \tnosy\n"
+		"- 7\t \tjuicy\n"
+		"- 8\t \tbright\n"
+		"- 9\t \tjam\n"
+		"- 10\t \tdust\n"
+		"- 11\t \tsilent\n"
+		"+  \t6\tmate\n"
+		"+  \t7\thead\n"
+		"+  \t8\twine\n"
+		"+  \t9\tnew\n"
+		"+  \t10\ttremble\n"
+		"+  \t11\thop\n",
+		same_prefix2.c_str());
 }
 
 
@@ -679,6 +755,113 @@ TEST(DIFF, SafeMsg_CompleteDiff)
 		"+  \t10\tbed\n"
 		"+  \t11\thop\n",
 		no_overlap.c_str());
+}
+
+
+TEST(DIFF, DiffLines)
+{
+	std::stringstream left;
+	left << " advise  \n"
+		"  apathetic\n\n"
+		" disappear   \n"
+		"greasy \n"
+		"\ttoy\n"
+		"\t\t  obtain\n"
+		"nosy\n"
+		"juicy\t\n"
+		"bright\n\n"
+		"jam\n"
+		"dust\n\n"
+		"silent\n";
+
+	std::stringstream right;
+	right << "advise\n"
+		"  apathetic\n"
+		" disappear   \n"
+		"greasy\t\n"
+		"  toy\n"
+		"\tobtain\n"
+		"nosy\n\n"
+		"juicy\n"
+		"bright\n"
+		"jam\n"
+		"  dust\n"
+		"silent";
+
+	std::stringstream left2(left.str());
+	std::stringstream right2(right.str());
+	std::stringstream left3(left.str());
+	std::stringstream right3(right.str());
+	std::stringstream left4(left.str());
+	std::stringstream right4(right.str());
+
+	auto diff = diff::diff_lines(left, right, false, false); // compare as is
+	EXPECT_STREQ(
+		"- 0\t \t advise  \n"
+		"+  \t0\tadvise\n"
+		"  1\t1\t  apathetic\n"
+		"- 2\t \t\n"
+		"  3\t2\t disappear   \n"
+		"- 4\t \tgreasy \n"
+		"- 5\t \t\ttoy\n"
+		"- 6\t \t\t\t  obtain\n"
+		"+  \t3\tgreasy\t\n"
+		"+  \t4\t  toy\n"
+		"+  \t5\t\tobtain\n"
+		"  7\t6\tnosy\n"
+		"- 8\t \tjuicy\t\n"
+		"- 9\t \tbright\n"
+		"  10\t7\t\n"
+		"+  \t8\tjuicy\n"
+		"+  \t9\tbright\n"
+		"  11\t10\tjam\n"
+		"- 12\t \tdust\n"
+		"- 13\t \t\n"
+		"+  \t11\t  dust\n"
+		"  14\t12\tsilent\n", diff.c_str());
+
+	auto diff2 = diff::diff_lines(left2, right2, true, false); // ignore empty lines
+	EXPECT_STREQ(
+		"- 0\t \t advise  \n"
+		"+  \t0\tadvise\n"
+		"  1\t1\t  apathetic\n"
+		"  2\t2\t disappear   \n"
+		"- 3\t \tgreasy \n"
+		"- 4\t \t\ttoy\n"
+		"- 5\t \t\t\t  obtain\n"
+		"+  \t3\tgreasy\t\n"
+		"+  \t4\t  toy\n"
+		"+  \t5\t\tobtain\n"
+		"  6\t6\tnosy\n"
+		"- 7\t \tjuicy\t\n"
+		"+  \t7\tjuicy\n"
+		"  8\t8\tbright\n"
+		"  9\t9\tjam\n"
+		"- 10\t \tdust\n"
+		"+  \t10\t  dust\n"
+		"  11\t11\tsilent\n", diff2.c_str());
+
+	auto diff3 = diff::diff_lines(left3, right3, false, true); // trim space
+	EXPECT_STREQ(
+		"  0\t0\tadvise\n"
+		"  1\t1\tapathetic\n"
+		"- 2\t \t\n"
+		"  3\t2\tdisappear\n"
+		"  4\t3\tgreasy\n"
+		"  5\t4\ttoy\n"
+		"  6\t5\tobtain\n"
+		"  7\t6\tnosy\n"
+		"+  \t7\t\n"
+		"  8\t8\tjuicy\n"
+		"  9\t9\tbright\n"
+		"- 10\t \t\n"
+		"  11\t10\tjam\n"
+		"  12\t11\tdust\n"
+		"- 13\t \t\n"
+		"  14\t12\tsilent\n", diff3.c_str());
+
+	auto diff4 = diff::diff_lines(left4, right4, true, true); // full cleanup
+	EXPECT_STREQ("", diff4.c_str());
 }
 
 

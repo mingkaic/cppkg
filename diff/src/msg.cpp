@@ -60,7 +60,7 @@ static void process_lines (types::StringsT& lines, std::istream& str,
 		{
 			fmts::trim(line);
 		}
-		if (false == ignore_empty_lines || line.empty())
+		if (false == ignore_empty_lines || line.size() > 0)
 		{
 			// consider line
 			lines.push_back(line);
