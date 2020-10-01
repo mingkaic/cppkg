@@ -6,10 +6,14 @@ Mimic Golang pkg libraries to simplify application development
 
 # Dependencies
 
-## DIFF, ESTD, EXAM, FMTS, JOBS, and LOGS
+## DIFF, ERROR, ESTD, EXAM, FMTS, JOBS, LOGS, and TYPES
 
 These libraries don't depend on anything
 
 ## FLAG
 
-This library depend on boost
+This library depends on boost
+
+## EGRPC
+
+This library depends on grpc and protobuf

@@ -6,12 +6,12 @@
 /// Define thread wrapper that can terminate underlying thread
 ///
 
+#ifndef PKG_JOBS_MANAGED_HPP
+#define PKG_JOBS_MANAGED_HPP
+
 #include <functional>
 #include <thread>
 #include <future>
-
-#ifndef PKG_JOBS_MANAGED_HPP
-#define PKG_JOBS_MANAGED_HPP
 
 namespace jobs
 {

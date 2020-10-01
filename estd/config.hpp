@@ -1,8 +1,7 @@
-#ifndef ESTD_CONFIG_HPP
-#define ESTD_CONFIG_HPP
 
-#include <string>
-#include <vector>
+#ifndef PKG_ESTD_CONFIG_HPP
+#define PKG_ESTD_CONFIG_HPP
+
 #include <functional>
 
 #include "estd/contain.hpp"
@@ -10,103 +9,119 @@
 namespace estd
 {
 
+template <typename K=std::string, typename HASH=std::hash<K>>
 struct iConfig
 {
 	virtual ~iConfig (void) = default;
 
-	virtual fmts::StringsT get_names (void) const = 0;
+	virtual std::vector<K> get_keys (void) const = 0;
 
-	virtual void* get_obj (const std::string& cfg_name) = 0;
+	virtual bool has_key (const K& cfg_key) const = 0;
+
+	virtual void* get_obj (const K& cfg_key) = 0;
 };
 
-struct ConfigMap final : public iConfig
+using EntryDelF = std::function<void(void*)>;
+
+struct ConfigEntry
 {
-	~ConfigMap (void)
+	ConfigEntry (void* data, EntryDelF deletion = EntryDelF()) :
+		data_(data), deletion_(deletion) {}
+
+	~ConfigEntry (void)
 	{
-		for (auto& epairs : entries_)
+		if (deletion_)
 		{
-			auto& entry = epairs.second;
-			if (entry.deletion_)
-			{
-				entry.deletion_(entry.data_);
-			}
+			deletion_(data_);
 		}
 	}
 
-	fmts::StringsT get_names (void) const
+	ConfigEntry (ConfigEntry&& other) :
+		data_(std::move(other.data_)), deletion_(std::move(other.deletion_)) {}
+
+	ConfigEntry& operator = (ConfigEntry&& other)
 	{
-		fmts::StringsT names;
+		if (this != &other)
+		{
+			data_ = std::move(other.data_);
+			deletion_ = std::move(other.deletion_);
+		}
+		return *this;
+	}
+
+	ConfigEntry (const ConfigEntry& other) = delete;
+
+	ConfigEntry& operator = (const ConfigEntry& other) = delete;
+
+	void* data_;
+
+	EntryDelF deletion_;
+};
+
+using EntryptrT = std::shared_ptr<ConfigEntry>;
+
+template <typename K=std::string, typename HASH=std::hash<K>>
+struct ConfigMap final : public iConfig<K,HASH>
+{
+	std::vector<K> get_keys (void) const override
+	{
+		std::vector<K> names;
 		names.reserve(entries_.size());
 		std::transform(entries_.begin(), entries_.end(),
 			std::back_inserter(names),
-			[](const std::pair<std::string,ConfigEntry>& entry)
+			[](const std::pair<K,EntryptrT>& entry)
 			{
 				return entry.first;
 			});
 		return names;
 	}
 
-	void* get_obj (const std::string& cfg_name)
+	bool has_key (const K& cfg_key) const override
 	{
-		if (has(entries_, cfg_name))
+		return has(entries_, cfg_key);
+	}
+
+	void* get_obj (const K& cfg_key) override
+	{
+		if (has(entries_, cfg_key))
 		{
-			auto& entry = entries_.at(cfg_name);
-			return entry.data_;
+			auto& entry = entries_.at(cfg_key);
+			return entry->data_;
 		}
-		logs::errorf("failed to find config name %s", cfg_name.c_str());
 		return nullptr;
 	}
 
 	template <typename T>
-	void add_entry (const std::string& cfg_name)
-	{
-		if (false == estd::has(entries_, cfg_name))
+	void add_entry (const K& cfg_key,
+		std::function<T*()> init = []()
 		{
-			entries_.emplace(cfg_name, ConfigEntry{
-				new T(),
-				[](void* ptr) { delete static_cast<T*>(ptr); },
-			});
+			return new T();
+		},
+		std::function<void(void*)> del = [](void* ptr)
+		{
+			delete static_cast<T*>(ptr);
+		})
+	{
+		if (false == estd::has(entries_, cfg_key))
+		{
+			entries_.emplace(cfg_key,
+				std::make_shared<ConfigEntry>(init(), del));
 		}
 	}
 
-	template <typename T>
-	void add_entry (const std::string& cfg_name,
-		std::function<void(T*)> del)
+	void rm_entry (const K& cfg_key)
 	{
-		if (false == estd::has(entries_, cfg_name))
+		if (has(entries_, cfg_key))
 		{
-			entries_.emplace(cfg_name, ConfigEntry{
-				new T(),
-				[del](void* ptr) { del(static_cast<T*>(ptr)); },
-			});
+			entries_.erase(cfg_key);
 		}
 	}
 
-	void rm_entry (const std::string& cfg_name)
-	{
-		if (has(entries_, cfg_name))
-		{
-			{
-				auto& entry = entries_.at(cfg_name);
-				if (entry.deletion_)
-				{
-					entry.deletion_(entry.data_);
-				}
-			}
-			entries_.erase(cfg_name);
-		}
-	}
+private:
 
-	struct ConfigEntry
-	{
-		void* data_;
-
-		std::function<void(void*)> deletion_;
-	};
-
-	std::unordered_map<std::string,ConfigEntry> entries_;
+	std::unordered_map<K,EntryptrT,HASH> entries_;
 };
 
 }
 
-#endif // ESTD_CONFIG_HPP
+#endif // PKG_ESTD_CONFIG_HPP

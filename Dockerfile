@@ -8,4 +8,4 @@ WORKDIR $APP_DIR
 COPY . $APP_DIR
 RUN apt-get update && apt-get install -y curl
 
-ENTRYPOINT [ "./tests.sh" ]
+ENTRYPOINT [ "./scripts/tests.sh" ]

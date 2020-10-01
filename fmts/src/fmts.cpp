@@ -5,7 +5,7 @@
 namespace fmts
 {
 
-std::ostream& operator << (std::ostream& os, string sstr)
+std::ostream& operator << (std::ostream& os, String sstr)
 {
 	os << (std::string) sstr;
 	return os;
@@ -62,9 +62,9 @@ void strip (std::string& s, const std::unordered_set<char>& cset)
 	rstrip(s, cset);
 }
 
-StringsT split (std::string s, std::string delim)
+types::StringsT split (std::string s, std::string delim)
 {
-	StringsT out;
+	types::StringsT out;
 
 	size_t i = 0;
 	while ((i = s.find(delim, 0)) != std::string::npos)

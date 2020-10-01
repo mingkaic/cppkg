@@ -6,15 +6,10 @@
 /// Define map and set utility functions
 ///
 
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-
-#include "logs/logs.hpp"
-
 #ifndef PKG_ESTD_HASH_HPP
 #define PKG_ESTD_HASH_HPP
+
+#include "logs/logs.hpp"
 
 namespace estd
 {
@@ -102,6 +97,19 @@ bool arr_has (const ARR& s, const CONTENT& key)
 {
 	auto et = s.end();
 	return et != std::find(s.begin(), et, key);
+}
+
+/// Return unordered set of map
+template <typename KEYTYPE, typename VALTYPE>
+std::unordered_set<KEYTYPE> map_keyset (
+	const std::unordered_map<KEYTYPE,VALTYPE>& kv)
+{
+	std::unordered_set<KEYTYPE> k;
+	for (auto& p : kv)
+	{
+		k.emplace(p.first);
+	}
+	return k;
 }
 
 }

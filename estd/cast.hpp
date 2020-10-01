@@ -1,7 +1,8 @@
-#include "logs/logs.hpp"
 
 #ifndef PKG_ESTD_CAST_HPP
 #define PKG_ESTD_CAST_HPP
+
+#include "logs/logs.hpp"
 
 namespace estd
 {

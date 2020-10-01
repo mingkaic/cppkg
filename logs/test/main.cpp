@@ -13,25 +13,6 @@ struct TestLogger : public logs::iLogger
 	static std::string latest_log_msg_;
 	static std::string set_log_level_;
 
-	bool supports_level (const std::string& msg_level) const override
-	{
-		return true;
-	}
-
-	void log (const std::string& msg_level, const std::string& msg) const override
-	{
-		std::stringstream ss;
-		ss << logs::enum_log(msg_level) << msg;
-		latest_log_msg_ = ss.str();
-	}
-
-	void log (size_t msg_level, const std::string& msg) const override
-	{
-		std::stringstream ss;
-		ss << msg_level << msg;
-		latest_log_msg_ = ss.str();
-	}
-
 	std::string get_log_level (void) const override
 	{
 		return log_level_ret;
@@ -42,17 +23,54 @@ struct TestLogger : public logs::iLogger
 		set_log_level_ = log_level;
 	}
 
-	void warn (const std::string& msg) const override
+	bool supports_level (size_t msg_level) const override
+	{
+		return true;
+	}
+
+	bool supports_level (const std::string& msg_level) const override
+	{
+		return true;
+	}
+
+	void log (size_t msg_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
+	{
+		switch (msg_level)
+		{
+			case logs::WARN:
+				warn(msg);
+				break;
+			case logs::ERROR:
+				error(msg);
+				break;
+			case logs::FATAL:
+				fatal(msg);
+				break;
+			default:
+				std::stringstream ss;
+				ss << msg_level << msg;
+				latest_log_msg_ = ss.str();
+		}
+	}
+
+	void log (const std::string& msg_level, const std::string& msg,
+		const logs::SrcLocT& location = logs::SrcLocT::current()) override
+	{
+		log(logs::enum_log(msg_level), msg);
+	}
+
+	void warn (const std::string& msg) const
 	{
 		latest_warning_ = msg;
 	}
 
-	void error (const std::string& msg) const override
+	void error (const std::string& msg) const
 	{
 		latest_error_ = msg;
 	}
 
-	void fatal (const std::string& msg) const override
+	void fatal (const std::string& msg) const
 	{
 		latest_fatal_ = msg;
 	}
@@ -114,23 +132,6 @@ TEST_F(LOGS, Default)
 	{
 		const char* msg = e.what();
 		EXPECT_STREQ("log fatal message", msg);
-	}
-	catch (...)
-	{
-		FAIL() << "expected to throw runtime_error";
-	}
-
-	log.warn("warning message");
-	log.error("error message");
-	try
-	{
-		log.fatal("fatal message");
-		FAIL() << "log.fatal failed to throw error";
-	}
-	catch (std::runtime_error& e)
-	{
-		const char* msg = e.what();
-		EXPECT_STREQ("fatal message", msg);
 	}
 	catch (...)
 	{
@@ -255,6 +256,44 @@ TEST_F(LOGS, GlobalGetSet)
 
 	logs::set_log_level("1231");
 	EXPECT_STREQ("1231", TestLogger::set_log_level_.c_str());
+}
+
+
+TEST(DEFAULT, Logger)
+{
+	logs::DefLogger logger;
+	EXPECT_TRUE(logger.supports_level(logs::INFO));
+	EXPECT_TRUE(logger.supports_level("info"));
+
+	logger.log(logs::INFO, "hello");
+	logger.log("warn", "world");
+	logger.log("error", "oh no");
+
+	try
+	{
+		logger.log(logs::FATAL, "death");
+		FAIL() << "not expecting fatal to succeed";
+	}
+	catch (std::exception& e)
+	{
+		EXPECT_STREQ("death", e.what());
+	}
+}
+
+
+TEST(DEFAULT, Conversions)
+{
+	EXPECT_EQ(logs::INFO, logs::enum_log("info"));
+	EXPECT_EQ(logs::WARN, logs::enum_log("warn"));
+	EXPECT_EQ(logs::ERROR, logs::enum_log("error"));
+	EXPECT_EQ(logs::FATAL, logs::enum_log("fatal"));
+	EXPECT_EQ(logs::NOT_SET, logs::enum_log("hello"));
+
+	EXPECT_STREQ("info", logs::name_log(logs::INFO).c_str());
+	EXPECT_STREQ("warn", logs::name_log(logs::WARN).c_str());
+	EXPECT_STREQ("error", logs::name_log(logs::ERROR).c_str());
+	EXPECT_STREQ("fatal", logs::name_log(logs::FATAL).c_str());
+	EXPECT_STREQ("", logs::name_log(logs::NOT_SET).c_str());
 }
 
 

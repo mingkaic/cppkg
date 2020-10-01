@@ -6,17 +6,15 @@
 /// Define diff message generators
 ///
 
+#ifndef PKG_DIFF_MSG_HPP
+#define PKG_DIFF_MSG_HPP
+
 #include <cstring>
-#include <string>
-#include <sstream>
 #include <istream>
 
 #include "fmts/fmts.hpp"
 
 #include "diff/format.hpp"
-
-#ifndef PKG_DIFF_MSG_HPP
-#define PKG_DIFF_MSG_HPP
 
 namespace diff
 {
@@ -32,13 +30,13 @@ const uint8_t lines_after = 3;
 /// Caveat: the product of size of the vectors is roughly limited to 2^32,
 /// this function does not perform any optimization to diff long messages
 std::string diff_msg (
-	const fmts::StringsT& expected,
-	const fmts::StringsT& got);
+	const types::StringsT& expected,
+	const types::StringsT& got);
 
 /// Same as diff_msg, except it diffs the message in batches
 std::string safe_diff_msg (
-	const fmts::StringsT& expected,
-	const fmts::StringsT& got,
+	const types::StringsT& expected,
+	const types::StringsT& got,
 	size_t batch_limit = std::numeric_limits<IndexT>::max());
 
 std::string diff_lines (
