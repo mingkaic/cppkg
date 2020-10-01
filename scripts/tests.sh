@@ -10,9 +10,9 @@ CONVERSION_CSV="$CONTEXT/tmp/cppkg_conversion.csv";
 
 rm -Rf "$WORKDIR";
 mkdir -p "$WORKDIR";
-find $WORKDIR -maxdepth 1 | grep -E -v 'tmp|.git|bazel-' | tail -n +2 | xargs -i cp -r {} $WORKDIR;
-find $WORKDIR | grep -E '.cpp|.hpp' | python3 $THIS_DIR/label_uniquify.py $WORKDIR > $CONTEXT;
-find $WORKDIR | grep -E '.yml' | python3 $THIS_DIR/yaml_replace.py $CONTEXT;
+find $WORKDIR -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $WORKDIR;
+find $WORKDIR | grep -E '\.cpp|\.hpp' | python3 $THIS_DIR/label_uniquify.py $WORKDIR > $CONTEXT;
+find $WORKDIR | grep -E '\.yml' | python3 $THIS_DIR/yaml_replace.py $CONTEXT;
 
 cd "$WORKDIR";
 lcov --base-directory . --directory . --zerocounters;

@@ -17,7 +17,7 @@ cov_clean:
 cov_init:
 	rm -Rf tmp
 	mkdir -p $(COVERAGE_CTX)
-	find . -maxdepth 1 | grep -E -v 'tmp|.git|bazel-' | tail -n +2 | xargs -i cp -r {} $(COVERAGE_CTX)
+	find . -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $(COVERAGE_CTX)
 	find $(COVERAGE_CTX) | grep -E '\.cpp|\.hpp' | python3 scripts/label_uniquify.py $(COVERAGE_CTX) > $(COVERAGE_CSV)
 	find $(COVERAGE_CTX) | grep -E '\.yml' | python3 scripts/yaml_replace.py $(COVERAGE_CSV)
 
