@@ -9,8 +9,12 @@
 
 int main (int argc, char** argv)
 {
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+
 	::testing::InitGoogleTest(&argc, argv);
-	return RUN_ALL_TESTS();
+	int ret = RUN_ALL_TESTS();
+	google::protobuf::ShutdownProtobufLibrary();
+	return ret;
 }
 
 
@@ -421,11 +425,11 @@ TEST(ASYNC, ServerRequest)
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
 
+	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,mock::MockResponse>;
 	void* last_tag = nullptr;
 	size_t num_calls = 0;
 	bool serve_call = false;
-	auto call = new egrpc::AsyncServerCall<mock::MockRequest,
-	mock::MockResponse>(logger,
+	auto call = new ServerCallT(logger,
 	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
 		mock::MockRequest* req,
 		grpc::ServerAsyncResponseWriter<mock::MockResponse>* writer,
@@ -489,8 +493,8 @@ TEST(ASYNC, ServerRequest)
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(last_tag, tag);
 	EXPECT_NE(last_tag, call);
-	auto tag_name = static_cast<egrpc::AsyncServerCall<
-		mock::MockRequest,mock::MockResponse>*>(last_tag);
+	auto tag_name = static_cast<egrpc::iServerCall*>(last_tag);
+	EXPECT_NE(nullptr, dynamic_cast<ServerCallT*>(tag_name));
 	tag_name->shutdown();
 
 	cq->Shutdown();
@@ -630,9 +634,10 @@ TEST(ASYNC, ServerStream)
 
 	EXPECT_TRUE(cq->Next(&tag, &ok));
 	EXPECT_FALSE(ok);
-	// EXPECT_EQ(last_tag, tag);
-	// EXPECT_NE(last_tag, call);
+	EXPECT_EQ(last_tag, tag);
+	EXPECT_NE(last_tag, call);
 	auto tag_name = static_cast<egrpc::iServerCall*>(last_tag);
+	EXPECT_NE(nullptr, dynamic_cast<StreamCallT*>(tag_name));
 	tag_name->shutdown();
 
 	cq->Shutdown();
@@ -749,126 +754,8 @@ TEST(ASYNC, ServerStreamStartupError)
 	EXPECT_EQ(last_tag, tag);
 	EXPECT_NE(last_tag, call);
 	auto tag_name = static_cast<egrpc::iServerCall*>(last_tag);
+	EXPECT_NE(nullptr, dynamic_cast<StreamCallT*>(tag_name));
 	tag_name->shutdown();
-
-	cq->Shutdown();
-}
-
-
-TEST(ASYNC, ServerStreamProcessShutdown)
-{
-	mock::MockService::AsyncService mock_service;
-	std::string address = "0.0.0.0:12348";
-	auto logger = std::make_shared<exam::TestLogger>();
-
-	grpc::ServerBuilder builder;
-	builder.AddListeningPort(address,
-		grpc::InsecureServerCredentials());
-	std::unique_ptr<grpc::ServerCompletionQueue> cq = builder.AddCompletionQueue();
-
-	builder.RegisterService(&mock_service);
-	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
-
-	void* last_tag = nullptr;
-	size_t num_calls = 0;
-	bool init_call = false;
-	size_t num_iterators = 0;
-	using StreamCallT = egrpc::AsyncServerStreamCall<mock::MockRequest,
-		mock::MockResponse,std::vector<size_t>>;
-
-	auto call = new StreamCallT(logger,
-	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
-		mock::MockRequest* req,
-		grpc::ServerAsyncWriter<mock::MockResponse>* writer,
-		grpc::CompletionQueue* cq,
-		grpc::ServerCompletionQueue* ccq, void* tag)
-	{
-		mock_service.RequestMockStreamOut(ctx, req, writer, cq, ccq, tag);
-		last_tag = tag;
-		++num_calls;
-	},
-	[&init_call](std::vector<size_t>& vec, const mock::MockRequest& req)
-	{
-		init_call = true;
-		vec = {1, 2, 3, 4};
-		return grpc::Status{grpc::OK, "world"};
-	},
-	[&num_iterators](const mock::MockRequest& req,
-		std::vector<size_t>::iterator& it, mock::MockResponse& res)
-	{
-		++num_iterators;
-		return true;
-	}, cq.get());
-
-	EXPECT_EQ(call, last_tag);
-	EXPECT_EQ(1, num_calls);
-	EXPECT_FALSE(init_call);
-	EXPECT_EQ(0, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg0 = fmts::sprintf("rpc %p created", call);
-	EXPECT_STREQ(expect_msg0.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
-
-	std::thread(
-	[address]()
-	{
-		auto stub = mock::MockService::NewStub(grpc::CreateChannel(address,
-			grpc::InsecureChannelCredentials()));
-
-		grpc::ClientContext ctx;
-		ctx.set_deadline(
-			std::chrono::system_clock::now() + std::chrono::minutes(1));
-		mock::MockRequest req;
-		mock::MockResponse res;
-		std::unique_ptr<grpc::ClientReader<mock::MockResponse>>
-		reader(stub->MockStreamOut(&ctx, req));
-		size_t nresponses = 0;
-		while (reader->Read(&res))
-		{
-			++nresponses;
-		}
-		EXPECT_EQ(1, nresponses);
-		auto status = reader->Finish();
-		EXPECT_EQ(grpc::CANCELLED, status.error_code());
-	}).detach();
-
-	void* tag;
-	bool ok = true;
-	EXPECT_TRUE(cq->Next(&tag, &ok));
-	EXPECT_TRUE(ok);
-	EXPECT_EQ(tag, call);
-	call->serve();
-
-	ASSERT_NE(call, last_tag);
-	EXPECT_EQ(2, num_calls);
-	EXPECT_TRUE(init_call);
-	EXPECT_EQ(1, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("rpc %p writing", call);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
-
-	std::thread shutdown(
-	[&cq]()
-	{
-		void* tag;
-		bool ok = true;
-		EXPECT_TRUE(cq->Next(&tag, &ok));
-		EXPECT_TRUE(ok);
-		auto tag_name = static_cast<egrpc::iServerCall*>(tag);
-		tag_name->shutdown();
-
-		EXPECT_TRUE(cq->Next(&tag, &ok));
-		EXPECT_FALSE(ok);
-		auto tag_name2 = static_cast<egrpc::iServerCall*>(tag);
-		tag_name2->shutdown();
-	});
-
-	server->Shutdown();
-
-	shutdown.join();
 
 	cq->Shutdown();
 }
