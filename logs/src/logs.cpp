@@ -63,17 +63,17 @@ void info (const std::string& msg)
 
 void warn (const std::string& msg)
 {
-	get_logger().warn(msg);
+	get_logger().log(WARN, msg);
 }
 
 void error (const std::string& msg)
 {
-	get_logger().error(msg);
+	get_logger().log(ERROR, msg);
 }
 
 void fatal (const std::string& msg)
 {
-	get_logger().fatal(msg);
+	get_logger().log(FATAL, msg);
 }
 
 }

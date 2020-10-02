@@ -1,7 +1,8 @@
-#include <algorithm>
 
 #ifndef PKG_ESTD_ALGORITHM_HPP
 #define PKG_ESTD_ALGORITHM_HPP
+
+#include <algorithm>
 
 namespace estd
 {

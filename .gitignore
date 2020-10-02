@@ -58,6 +58,9 @@ build/
 cmake-build-*/
 shareds/
 bazel-*
+docs/
+tmp/
+html/
 
 **/*.csv
 **/*.pbx

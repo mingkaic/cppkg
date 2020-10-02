@@ -6,12 +6,12 @@
 /// Define flag option parsing with builtin help option
 ///
 
+#ifndef PKG_FLAG_HPP
+#define PKG_FLAG_HPP
+
 #include <boost/program_options.hpp>
 
 #include "logs/logs.hpp"
-
-#ifndef PKG_FLAG_HPP
-#define PKG_FLAG_HPP
 
 namespace flag
 {

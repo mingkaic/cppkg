@@ -2,6 +2,12 @@
 
 # accepts tests as arguments
 function bzl_coverage() {
+	# run test before to detect errors
+	bazel test \
+	--action_env="ASAN_OPTIONS=detect_leaks=0" \
+	--config asan \
+	--config gtest \
+	--remote_http_cache="$REMOTE_CACHE" $@
 	# filter out Processing and '+' lines to avoid extreme verbosity
 	bazel coverage \
 	--action_env="ASAN_OPTIONS=detect_leaks=0" \
@@ -14,7 +20,7 @@ function bzl_coverage() {
     then
 		COV_FILE="$COV_DIR/coverage.info";
 	fi
-	lcov --remove bazel-out/_coverage/_coverage_report.dat -o "$COV_FILE";
+	lcov --remove bazel-out/_coverage/_coverage_report.dat '**/test/*' '**/mock/*' '**/*.pb.*' -o "$COV_FILE";
 }
 
 # uploads coverage file specified by the first argument to coveralls

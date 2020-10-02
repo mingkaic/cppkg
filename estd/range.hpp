@@ -6,11 +6,11 @@
 /// Define range utility structure
 ///
 
-#include <algorithm>
-#include <type_traits>
-
 #ifndef PKG_ESTD_RANGE_HPP
 #define PKG_ESTD_RANGE_HPP
+
+#include <algorithm>
+#include <type_traits>
 
 namespace estd
 {

@@ -60,17 +60,17 @@ TEST(EXAM, ArrEquality)
 
 TEST(EXAM, SetHasality)
 {
-	std::map<std::string,size_t> stuff = {
+	types::StrMapT<size_t> stuff = {
 		{"abcdef", 123},
 		{"defghi", 456},
 		{"ghijkl", 789},
 	};
 
-	std::set<std::string> ssets = {
+	types::StrSetT ssets = {
 		"abcdef", "defghi", "ghijkl",
 	};
 
-	std::unordered_map<std::string,size_t> ustuff = {
+	types::StrUMapT<size_t> ustuff = {
 		{"abcdef", 123},
 		{"defghi", 456},
 		{"ghijkl", 789},
@@ -147,13 +147,42 @@ TEST(EXAM, Logality)
 		FAIL() << "fatal should never have gone this far";
 	};
 
+	auto fatal_action3 = []
+	{
+		logs::get_logger().log(logs::THROW_ERR, "fatal message3");
+		FAIL() << "fatal should never have gone this far";
+	};
+
 	EXPECT_FATAL(fatal_action(), "fatal message");
 	EXPECT_FATAL(fatal_action2(), "fatal message2");
+	EXPECT_FATAL(fatal_action3(), "fatal message3");
 	EXPECT_ERROR(logs::error("error message"), "error message");
 	EXPECT_WARN(logs::warn("warning message"), "warning message");
 	EXPECT_INFO(logs::info("information message"), "information message");
 	EXPECT_DEBUG(logs::debug("debug message"), "debug message");
 	EXPECT_TRACE(logs::trace("trace message"), "trace message");
+}
+
+
+TEST(EXAM, Log)
+{
+	exam::TestLogger logger;
+	EXPECT_TRUE(logger.supports_level(logs::INFO));
+	EXPECT_TRUE(logger.supports_level("info"));
+
+	logger.log(logs::INFO, "hello");
+	EXPECT_EQ(logs::INFO, logger.latest_lvl_);
+	EXPECT_STREQ("hello", logger.latest_msg_.c_str());
+	logger.log("warn", "world");
+	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
+	EXPECT_STREQ("world", logger.latest_msg_.c_str());
+
+	logger.error("foo");
+	EXPECT_EQ(logs::ERROR, logger.latest_lvl_);
+	EXPECT_STREQ("foo", logger.latest_msg_.c_str());
+	logger.warn("bar");
+	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
+	EXPECT_STREQ("bar", logger.latest_msg_.c_str());
 }
 
 
