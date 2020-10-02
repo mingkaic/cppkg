@@ -146,6 +146,7 @@ struct AsyncServerStreamCall final : public iServerCall
 				if (wrote)
 				{
 					responder_.Write(reply, this);
+					return;
 				} // else it_ == ranges_.end()
 			}
 
