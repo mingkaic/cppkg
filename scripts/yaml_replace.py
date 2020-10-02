@@ -1,7 +1,11 @@
 import sys
 import re
+import os.path
 
 replfile = sys.argv[1]
+
+if not os.path.isfile(replfile):
+    exit(0)
 
 raw_paths = sys.stdin.read()
 ymlfiles = raw_paths.split('\n')

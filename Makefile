@@ -5,7 +5,7 @@ TMP_COVFILE := /tmp/coverage.info
 COVERAGE_INFO_FILE := bazel-out/_coverage/_coverage_report.dat
 CCOVER := bazel coverage --config asan --action_env="ASAN_OPTIONS=detect_leaks=0" --config gtest --config cc_coverage
 COVERAGE_CTX := tmp/cppkg_coverage
-COVERAGE_CSV := tmp/cppkg_conversions.csv
+CONVERSION_CSV := tmp/cppkg_conversions.csv
 
 .PHONY: cov_clean
 cov_clean:
@@ -18,12 +18,12 @@ cov_init:
 	rm -Rf tmp
 	mkdir -p $(COVERAGE_CTX)
 	find . -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $(COVERAGE_CTX)
-	find $(COVERAGE_CTX) | grep -E '\.cpp|\.hpp' | python3 scripts/label_uniquify.py $(COVERAGE_CTX) > $(COVERAGE_CSV)
-	find $(COVERAGE_CTX) | grep -E '\.yml' | python3 scripts/yaml_replace.py $(COVERAGE_CSV)
+	find $(COVERAGE_CTX) | grep -E '\.cpp|\.hpp' | python3 scripts/label_uniquify.py $(COVERAGE_CTX) > $(CONVERSION_CSV)
+	find $(COVERAGE_CTX) | grep -E '\.yml' | python3 scripts/yaml_replace.py $(CONVERSION_CSV)
 
 .PHONY: cov_copyout
 cov_copyout:
-	python3 scripts/label_replace.py $(COVERAGE_CTX)/$(COVFILE) $(COVERAGE_CSV) > $(COVFILE)
+	python3 scripts/label_replace.py $(COVERAGE_CTX)/$(COVFILE) $(CONVERSION_CSV) > $(COVFILE)
 
 .PHONY: cov_genhtml
 cov_genhtml: cov_copyout

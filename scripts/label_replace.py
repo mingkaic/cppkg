@@ -1,8 +1,12 @@
 import sys
 import re
+import os.path
 
 srcfile = sys.argv[1]
 replfile = sys.argv[2]
+
+if not os.path.isfile(replfile):
+    exit(0)
 
 mapping = []
 with open(replfile) as f:

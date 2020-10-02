@@ -5,16 +5,18 @@ COV_DIR="$THIS_DIR";
 
 CONTEXT=$(cd "$1" && pwd);
 
-WORKDIR="$CONTEXT/tmp/cppkg_coverage";
+COVERAGE_CTX="$CONTEXT/tmp/cppkg_coverage";
 CONVERSION_CSV="$CONTEXT/tmp/cppkg_conversion.csv";
+TMP_COVFILE="$COV_DIR/coverage.info"
+OUT_COVFILE="$COV_DIR/labelled_coverage.info";
 
-rm -Rf "$WORKDIR";
-mkdir -p "$WORKDIR";
-find $WORKDIR -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $WORKDIR;
-find $WORKDIR | grep -E '\.cpp|\.hpp' | python3 $THIS_DIR/label_uniquify.py $WORKDIR > $CONTEXT;
-find $WORKDIR | grep -E '\.yml' | python3 $THIS_DIR/yaml_replace.py $CONTEXT;
+rm -Rf "$COVERAGE_CTX";
+mkdir -p "$COVERAGE_CTX";
+find $CONTEXT -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $COVERAGE_CTX;
+find $COVERAGE_CTX | grep -E '\.cpp|\.hpp' | python3 "$THIS_DIR/label_uniquify.py" $COVERAGE_CTX > $CONVERSION_CSV;
+find $COVERAGE_CTX | grep -E '\.yml' | python3 "$THIS_DIR/yaml_replace.py" $CONVERSION_CSV;
 
-cd "$WORKDIR";
+cd "$COVERAGE_CTX";
 lcov --base-directory . --directory . --zerocounters;
 set -e
 
@@ -30,8 +32,8 @@ source "$THIS_DIR/coverage.sh";
 
 bzl_coverage //...
 
-python3 "$THIS_DIR/label_replace.py" "$COV_DIR/coverage.info" $CONVERSION_CSV > "$COV_DIR/labelled_coverage.info";
-send2codecov "$COV_DIR/labelled_coverage.info";
+python3 "$THIS_DIR/label_replace.py" $TMP_COVFILE $CONVERSION_CSV > $OUT_COVFILE;
+send2codecov $OUT_COVFILE;
 cd "$CONTEXT";
 
 echo "";
