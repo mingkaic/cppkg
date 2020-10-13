@@ -48,7 +48,7 @@ template <typename REQ, typename RES>
 struct AsyncClientHandler final : public iClientHandler
 {
 	using ReadptrT = std::unique_ptr<
-		grpc::ClientAsyncResponseReader<RES>>;
+		grpc::ClientAsyncResponseReaderInterface<RES>>;
 
 	using HandleResF = std::function<void(RES&)>;
 
