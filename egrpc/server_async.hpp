@@ -24,14 +24,13 @@ struct iServerCall
 };
 
 // Async server request response call
-template <typename REQ, typename RES>
+template <typename REQ, typename WRITER>
 struct AsyncServerCall final : public iServerCall
 {
 	using RequestF = std::function<void(grpc::ServerContext*,REQ*,
-		grpc::ServerAsyncResponseWriter<RES>*,grpc::CompletionQueue*,
-		grpc::ServerCompletionQueue*,void*)>;
+		WRITER*,grpc::CompletionQueue*,grpc::ServerCompletionQueue*,void*)>;
 
-	using WriteF = std::function<grpc::Status(const REQ&,RES&)>;
+	using WriteF = std::function<void(const REQ&,WRITER&,iServerCall*)>;
 
 	AsyncServerCall (std::shared_ptr<logs::iLogger> logger,
 		RequestF req_call, WriteF write_call,
@@ -50,11 +49,9 @@ struct AsyncServerCall final : public iServerCall
 		case PROCESS:
 		{
 			new AsyncServerCall(logger_, req_call_, write_call_, cq_);
-			RES reply;
 			status_ = FINISH;
 			logger_->log(logs::info_level, fmts::sprintf("rpc %p writing", this));
-			auto out_status = write_call_(req_, reply);
-			responder_.Finish(reply, out_status, this);
+			write_call_(req_, responder_, this);
 		}
 			break;
 		case FINISH:
@@ -81,11 +78,41 @@ private:
 
 	grpc::ServerCompletionQueue* cq_;
 
-	grpc::ServerAsyncResponseWriter<RES> responder_;
+	WRITER responder_;
 
 	enum CallStatus { PROCESS, FINISH };
 
 	CallStatus status_;
+};
+
+template <typename R>
+struct iWriter
+{
+	virtual void Write (const R& res, iServerCall* tag) = 0;
+
+	virtual void Finish (grpc::Status status, iServerCall* tag) = 0;
+};
+
+template <typename R>
+using WriterptrT = std::shared_ptr<iWriter<R>>;
+
+template <typename R>
+struct GrpcWriter final : public iWriter<R>
+{
+	GrpcWriter (grpc::ServerContext& ctx) :
+		responder_(&ctx) {}
+
+	void Write (const R& res, iServerCall* tag) override
+	{
+		responder_.Write(res, tag);
+	}
+
+	void Finish (grpc::Status status, iServerCall* tag) override
+	{
+		responder_.Finish(status, tag);
+	}
+
+	grpc::ServerAsyncWriter<R> responder_;
 };
 
 // Async server request stream call
@@ -94,7 +121,7 @@ template <typename REQ, typename RES, typename RANGE,
 struct AsyncServerStreamCall final : public iServerCall
 {
 	using RequestF = std::function<void(grpc::ServerContext*,REQ*,
-		grpc::ServerAsyncWriter<RES>*,grpc::CompletionQueue*,
+		WriterptrT<RES>&,grpc::CompletionQueue*,
 		grpc::ServerCompletionQueue*,void*)>;
 
 	using InitF = std::function<grpc::Status(RANGE&,const REQ&)>;
@@ -105,9 +132,14 @@ struct AsyncServerStreamCall final : public iServerCall
 		RequestF req_call, InitF init_call, WriteF write_call,
 		grpc::ServerCompletionQueue* cq) : logger_(logger),
 		req_call_(req_call), init_call_(init_call), write_call_(write_call),
-		cq_(cq), responder_(&ctx_), status_(STARTUP)
+		cq_(cq), status_(STARTUP)
 	{
-		req_call_(&ctx_, &req_, &responder_, cq_, cq_, (void*) this);
+		req_call_(&ctx_, &req_, responder_, cq_, cq_, (void*) this);
+		if (nullptr == responder_)
+		{
+			logger_->log(logs::fatal_level,
+				"failed to create server stream caller with non-null writer");
+		}
 		logger_->log(logs::info_level, fmts::sprintf("rpc %p created", this));
 	}
 
@@ -124,7 +156,7 @@ struct AsyncServerStreamCall final : public iServerCall
 			if (false == out_status.ok())
 			{
 				status_ = FINISH;
-				responder_.Finish(out_status, this);
+				responder_->Finish(out_status, this);
 				return;
 			}
 			it_ = ranges_.begin();
@@ -145,7 +177,7 @@ struct AsyncServerStreamCall final : public iServerCall
 				}
 				if (wrote)
 				{
-					responder_.Write(reply, this);
+					responder_->Write(reply, this);
 					return;
 				} // else it_ == ranges_.end()
 			}
@@ -153,7 +185,7 @@ struct AsyncServerStreamCall final : public iServerCall
 			if (it_ == ranges_.end())
 			{
 				status_ = FINISH;
-				responder_.Finish(grpc::Status::OK, this);
+				responder_->Finish(grpc::Status::OK, this);
 			}
 		}
 			break;
@@ -167,7 +199,7 @@ struct AsyncServerStreamCall final : public iServerCall
 	{
 		if (status_ == PROCESS)
 		{
-			responder_.Finish(grpc::Status::CANCELLED, this);
+			responder_->Finish(grpc::Status::CANCELLED, this);
 		}
 		delete this;
 	}
@@ -191,7 +223,7 @@ private:
 
 	grpc::ServerCompletionQueue* cq_;
 
-	grpc::ServerAsyncWriter<RES> responder_;
+	WriterptrT<RES> responder_;
 
 	enum CallStatus { STARTUP, PROCESS, FINISH };
 

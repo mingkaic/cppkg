@@ -425,7 +425,8 @@ TEST(ASYNC, ServerRequest)
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
 
-	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,mock::MockResponse>;
+	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,
+		grpc::ServerAsyncResponseWriter<mock::MockResponse>>;
 	void* last_tag = nullptr;
 	size_t num_calls = 0;
 	bool serve_call = false;
@@ -440,10 +441,14 @@ TEST(ASYNC, ServerRequest)
 		last_tag = tag;
 		++num_calls;
 	},
-	[&serve_call](const mock::MockRequest& req, mock::MockResponse& res)
+	[&serve_call](const mock::MockRequest& req,
+		grpc::ServerAsyncResponseWriter<mock::MockResponse>& writer,
+		egrpc::iServerCall* tag)
 	{
+		mock::MockResponse reply;
 		serve_call = true;
-		return grpc::Status{grpc::OK, "hello"};
+		grpc::Status status{grpc::OK, "hello"};
+		writer.Finish(reply, status, tag);
 	}, cq.get());
 
 	EXPECT_EQ(call, last_tag);
@@ -526,11 +531,16 @@ TEST(ASYNC, ServerStream)
 	[&last_tag, &num_calls, &mock_service](
 		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncWriter<mock::MockResponse>* writer,
+		egrpc::WriterptrT<mock::MockResponse>& writer,
 		grpc::CompletionQueue* cq,
 		grpc::ServerCompletionQueue* ccq, void* tag)
 	{
-		mock_service.RequestMockStreamOut(ctx, req, writer, cq, ccq, tag);
+		auto grpc_writer = std::make_shared<
+			egrpc::GrpcWriter<mock::MockResponse>>(*ctx);
+		writer = grpc_writer;
+
+		mock_service.RequestMockStreamOut(ctx, req,
+			&grpc_writer->responder_, cq, ccq, tag);
 		last_tag = tag;
 		++num_calls;
 	},
@@ -666,13 +676,19 @@ TEST(ASYNC, ServerStreamStartupError)
 		mock::MockResponse,std::vector<size_t>>;
 
 	auto call = new StreamCallT(logger,
-	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
+	[&last_tag, &num_calls, &mock_service](
+		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncWriter<mock::MockResponse>* writer,
+		egrpc::WriterptrT<mock::MockResponse>& writer,
 		grpc::CompletionQueue* cq,
 		grpc::ServerCompletionQueue* ccq, void* tag)
 	{
-		mock_service.RequestMockStreamOut(ctx, req, writer, cq, ccq, tag);
+		auto grpc_writer = std::make_shared<
+			egrpc::GrpcWriter<mock::MockResponse>>(*ctx);
+		writer = grpc_writer;
+
+		mock_service.RequestMockStreamOut(ctx, req,
+			&grpc_writer->responder_, cq, ccq, tag);
 		last_tag = tag;
 		++num_calls;
 	},
