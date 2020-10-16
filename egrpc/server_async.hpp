@@ -28,7 +28,7 @@ template <typename REQ, typename WRITER>
 struct AsyncServerCall final : public iServerCall
 {
 	using RequestF = std::function<void(grpc::ServerContext*,REQ*,
-		WRITER*,grpc::CompletionQueue*,grpc::ServerCompletionQueue*,void*)>;
+		WRITER&,grpc::CompletionQueue*,grpc::ServerCompletionQueue*,void*)>;
 
 	using WriteF = std::function<void(const REQ&,WRITER&,iServerCall*)>;
 
@@ -38,7 +38,7 @@ struct AsyncServerCall final : public iServerCall
 		req_call_(req_call), write_call_(write_call),
 		cq_(cq), responder_(&ctx_), status_(PROCESS)
 	{
-		req_call_(&ctx_, &req_, &responder_, cq_, cq_, (void*) this);
+		req_call_(&ctx_, &req_, responder_, cq_, cq_, (void*) this);
 		logger_->log(logs::info_level, fmts::sprintf("rpc %p created", this));
 	}
 
