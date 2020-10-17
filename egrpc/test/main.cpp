@@ -425,30 +425,30 @@ TEST(ASYNC, ServerRequest)
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
 
-	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,
-		grpc::ServerAsyncResponseWriter<mock::MockResponse>>;
+	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,mock::MockResponse>;
 	void* last_tag = nullptr;
 	size_t num_calls = 0;
 	bool serve_call = false;
 	auto call = new ServerCallT(logger,
 	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncResponseWriter<mock::MockResponse>* writer,
+		egrpc::iResponder<mock::MockResponse>& writer,
 		grpc::CompletionQueue* cq,
 		grpc::ServerCompletionQueue* ccq, void* tag)
 	{
-		mock_service.RequestMockRPC(ctx, req, writer, cq, ccq, tag);
+		auto& grpc_res = static_cast<egrpc::GrpcResponder<
+			mock::MockResponse>&>(writer);
+		mock_service.RequestMockRPC(ctx, req,
+			&grpc_res.responder_, cq, ccq, tag);
 		last_tag = tag;
 		++num_calls;
 	},
-	[&serve_call](const mock::MockRequest& req,
-		grpc::ServerAsyncResponseWriter<mock::MockResponse>& writer,
-		egrpc::iServerCall* tag)
+	[&serve_call](
+		const mock::MockRequest& req,
+		mock::MockResponse& res)
 	{
-		mock::MockResponse reply;
 		serve_call = true;
-		grpc::Status status{grpc::OK, "hello"};
-		writer.Finish(reply, status, tag);
+		return grpc::Status{grpc::OK, "hello"};
 	}, cq.get());
 
 	EXPECT_EQ(call, last_tag);
@@ -531,16 +531,14 @@ TEST(ASYNC, ServerStream)
 	[&last_tag, &num_calls, &mock_service](
 		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		egrpc::WriterptrT<mock::MockResponse>& writer,
+		egrpc::iWriter<mock::MockResponse>& writer,
 		grpc::CompletionQueue* cq,
 		grpc::ServerCompletionQueue* ccq, void* tag)
 	{
-		auto grpc_writer = std::make_shared<
-			egrpc::GrpcWriter<mock::MockResponse>>(*ctx);
-		writer = grpc_writer;
-
+		auto& grpc_res = static_cast<egrpc::GrpcWriter<
+			mock::MockResponse>&>(writer);
 		mock_service.RequestMockStreamOut(ctx, req,
-			&grpc_writer->responder_, cq, ccq, tag);
+			&grpc_res.responder_, cq, ccq, tag);
 		last_tag = tag;
 		++num_calls;
 	},
@@ -679,16 +677,14 @@ TEST(ASYNC, ServerStreamStartupError)
 	[&last_tag, &num_calls, &mock_service](
 		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		egrpc::WriterptrT<mock::MockResponse>& writer,
+		egrpc::iWriter<mock::MockResponse>& writer,
 		grpc::CompletionQueue* cq,
 		grpc::ServerCompletionQueue* ccq, void* tag)
 	{
-		auto grpc_writer = std::make_shared<
-			egrpc::GrpcWriter<mock::MockResponse>>(*ctx);
-		writer = grpc_writer;
-
+		auto& grpc_res = static_cast<egrpc::GrpcWriter<
+			mock::MockResponse>&>(writer);
 		mock_service.RequestMockStreamOut(ctx, req,
-			&grpc_writer->responder_, cq, ccq, tag);
+			&grpc_res.responder_, cq, ccq, tag);
 		last_tag = tag;
 		++num_calls;
 	},
