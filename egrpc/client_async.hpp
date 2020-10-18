@@ -63,15 +63,15 @@ struct AsyncClientHandler final : public iClientHandler
 
 	grpc::Status status_;
 
-private:
-	std::shared_ptr<logs::iLogger> logger_;
-
 	// ctx_ and reader_ need to be kept in memory
 	grpc::ClientContext ctx_;
 
-	REQ request_;
-
 	RES reply_;
+
+private:
+	std::shared_ptr<logs::iLogger> logger_;
+
+	REQ request_;
 
 	size_t nretries_;
 

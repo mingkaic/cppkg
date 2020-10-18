@@ -78,14 +78,15 @@ struct AsyncClientStreamHandler final : public iClientHandler
 
 	grpc::Status status_;
 
+	// ctx_ and reader_ need to be kept in memory
+	grpc::ClientContext ctx_;
+
+	DATA reply_;
+
 private:
 	enum CallStatus { STARTUP, PROCESS, FINISH };
 
 	std::shared_ptr<logs::iLogger> logger_;
-
-	grpc::ClientContext ctx_;
-
-	DATA reply_;
 
 	CallStatus call_status_;
 
