@@ -10,8 +10,53 @@
 
 #include "logs/logs.hpp"
 
+#include "egrpc/icqueue.hpp"
+
 namespace egrpc
 {
+
+struct GrpcCQueue final : public iCQueue
+{
+	bool next (void** ptr, bool* ok) override
+	{
+		return cq_.Next(ptr, ok);
+	}
+
+	void shutdown (void) override
+	{
+		cq_.Shutdown();
+	}
+
+	grpc::CompletionQueue* get_cq (void) override
+	{
+		return &cq_;
+	}
+
+	grpc::CompletionQueue cq_;
+};
+
+struct GrpcServerCQueue final : public iCQueue
+{
+	GrpcServerCQueue (std::unique_ptr<grpc::ServerCompletionQueue>&& cq) :
+		cq_(std::move(cq)) {}
+
+	bool next (void** ptr, bool* ok) override
+	{
+		return cq_->Next(ptr, ok);
+	}
+
+	void shutdown (void) override
+	{
+		cq_->Shutdown();
+	}
+
+	grpc::CompletionQueue* get_cq (void) override
+	{
+		return cq_.get();
+	}
+
+	std::unique_ptr<grpc::ServerCompletionQueue> cq_;
+};
 
 // Detached server calls
 struct iServerCall

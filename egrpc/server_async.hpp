@@ -31,22 +31,22 @@ template <typename REQ, typename RES>
 struct AsyncServerCall final : public iServerCall
 {
 	using RequestF = std::function<void(grpc::ServerContext*,REQ*,
-		iResponder<RES>&,grpc::CompletionQueue*,grpc::ServerCompletionQueue*,void*)>;
+		iResponder<RES>&,iCQueue&,void*)>;
 
 	using WriteF = std::function<grpc::Status(const REQ&,RES&)>;
 
 	AsyncServerCall (std::shared_ptr<logs::iLogger> logger,
-		RequestF req_call, WriteF write_call,
-		grpc::ServerCompletionQueue* cq,
+		RequestF req_call, WriteF write_call, iCQueue& cq,
 		BuildResponderF<RES> make_responder =
 		[](grpc::ServerContext& ctx) -> RespondptrT<RES>
 		{
 			return std::make_unique<GrpcResponder<RES>>(ctx);
 		}) : logger_(logger),
-		cq_(cq), responder_(make_responder(ctx_)), done_(false),
+		cq_(&cq), responder_(make_responder(ctx_)),
+		responder_builder_(make_responder), done_(false),
 		req_call_(req_call), write_call_(write_call)
 	{
-		req_call_(&ctx_, &req_, *responder_, cq_, cq_, (void*) this);
+		req_call_(&ctx_, &req_, *responder_, *cq_, (void*) this);
 		logger_->log(logs::info_level, fmts::sprintf("rpc %p created", this));
 	}
 
@@ -59,9 +59,10 @@ struct AsyncServerCall final : public iServerCall
 		}
 		else
 		{
-			new AsyncServerCall(logger_, req_call_, write_call_, cq_);
+			new AsyncServerCall(logger_, req_call_, write_call_, *cq_, responder_builder_);
 			logger_->log(logs::info_level, fmts::sprintf("rpc %p writing", this));
 			RES reply;
+			done_ = true;
 			auto status = write_call_(req_, reply);
 			if (status.ok())
 			{
@@ -71,7 +72,6 @@ struct AsyncServerCall final : public iServerCall
 			{
 				responder_->finish_with_error(status, this);
 			}
-			done_ = true;
 		}
 	}
 
@@ -85,11 +85,13 @@ private:
 
 	grpc::ServerContext ctx_;
 
-	grpc::ServerCompletionQueue* cq_;
+	iCQueue* cq_;
 
 	REQ req_;
 
 	RespondptrT<RES> responder_;
+
+	BuildResponderF<RES> responder_builder_;
 
 	bool done_ = false;
 

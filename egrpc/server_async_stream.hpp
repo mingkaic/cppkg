@@ -11,19 +11,19 @@ template <typename R>
 struct GrpcWriter final : public iWriter<R>
 {
 	GrpcWriter (grpc::ServerContext& ctx) :
-		responder_(&ctx) {}
+		writer_(&ctx) {}
 
 	void write (const R& res, void* tag) override
 	{
-		responder_.Write(res, tag);
+		writer_.Write(res, tag);
 	}
 
 	void finish (grpc::Status status, void* tag) override
 	{
-		responder_.Finish(status, tag);
+		writer_.Finish(status, tag);
 	}
 
-	grpc::ServerAsyncWriter<R> responder_;
+	grpc::ServerAsyncWriter<R> writer_;
 };
 
 // Async server request stream call
@@ -32,8 +32,7 @@ template <typename REQ, typename RES, typename RANGE,
 struct AsyncServerStreamCall final : public iServerCall
 {
 	using RequestF = std::function<void(grpc::ServerContext*,REQ*,
-		iWriter<RES>&,grpc::CompletionQueue*,
-		grpc::ServerCompletionQueue*,void*)>;
+		iWriter<RES>&,iCQueue&,void*)>;
 
 	using InitF = std::function<grpc::Status(RANGE&,const REQ&)>;
 
@@ -41,17 +40,18 @@ struct AsyncServerStreamCall final : public iServerCall
 
 	AsyncServerStreamCall (std::shared_ptr<logs::iLogger> logger,
 		RequestF req_call, InitF init_call, WriteF write_call,
-		grpc::ServerCompletionQueue* cq,
+		iCQueue& cq,
 		BuildWriterF<RES> make_writer =
 		[](grpc::ServerContext& ctx) -> WriterptrT<RES>
 		{
 			return std::make_unique<GrpcWriter<RES>>(ctx);
 		}) : logger_(logger),
-		cq_(cq), responder_(make_writer(ctx_)), status_(STARTUP),
+		cq_(&cq), writer_(make_writer(ctx_)),
+		writer_builder_(make_writer), status_(STARTUP),
 		req_call_(req_call), init_call_(init_call), write_call_(write_call)
 	{
-		req_call_(&ctx_, &req_, *responder_, cq_, cq_, (void*) this);
-		if (nullptr == responder_)
+		req_call_(&ctx_, &req_, *writer_, *cq_, (void*) this);
+		if (nullptr == writer_)
 		{
 			logger_->log(logs::fatal_level,
 				"failed to create server stream caller with non-null writer");
@@ -66,13 +66,13 @@ struct AsyncServerStreamCall final : public iServerCall
 		case STARTUP:
 		{
 			new AsyncServerStreamCall(
-				logger_, req_call_, init_call_, write_call_, cq_);
+				logger_, req_call_, init_call_, write_call_, *cq_);
 			logger_->log(logs::info_level, fmts::sprintf("rpc %p initializing", this));
 			auto out_status = init_call_(ranges_, req_);
 			if (false == out_status.ok())
 			{
 				status_ = FINISH;
-				responder_->finish(out_status, this);
+				writer_->finish(out_status, this);
 				return;
 			}
 			it_ = ranges_.begin();
@@ -93,7 +93,7 @@ struct AsyncServerStreamCall final : public iServerCall
 				}
 				if (wrote)
 				{
-					responder_->write(reply, this);
+					writer_->write(reply, this);
 					return;
 				} // else it_ == ranges_.end()
 			}
@@ -101,7 +101,7 @@ struct AsyncServerStreamCall final : public iServerCall
 			if (it_ == ranges_.end())
 			{
 				status_ = FINISH;
-				responder_->finish(grpc::Status::OK, this);
+				writer_->finish(grpc::Status::OK, this);
 			}
 		}
 			break;
@@ -115,7 +115,7 @@ struct AsyncServerStreamCall final : public iServerCall
 	{
 		if (status_ == PROCESS)
 		{
-			responder_->finish(grpc::Status::CANCELLED, this);
+			writer_->finish(grpc::Status::CANCELLED, this);
 		}
 		delete this;
 	}
@@ -127,11 +127,13 @@ private:
 
 	grpc::ServerContext ctx_;
 
-	grpc::ServerCompletionQueue* cq_;
+	iCQueue* cq_;
 
 	REQ req_;
 
-	WriterptrT<RES> responder_;
+	WriterptrT<RES> writer_;
+
+	BuildWriterF<RES> writer_builder_;
 
 	RANGE ranges_;
 
