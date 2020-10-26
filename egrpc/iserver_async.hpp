@@ -89,7 +89,7 @@ struct iWriter
 };
 
 template <typename R>
-using RespondptrT = std::shared_ptr<iResponder<R>>;
+using RespondptrT = std::unique_ptr<iResponder<R>>;
 
 template <typename R>
 using WriterptrT = std::unique_ptr<iWriter<R>>;

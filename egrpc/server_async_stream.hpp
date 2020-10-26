@@ -66,7 +66,7 @@ struct AsyncServerStreamCall final : public iServerCall
 		case STARTUP:
 		{
 			new AsyncServerStreamCall(
-				logger_, req_call_, init_call_, write_call_, *cq_);
+				logger_, req_call_, init_call_, write_call_, *cq_, writer_builder_);
 			logger_->log(logs::info_level, fmts::sprintf("rpc %p initializing", this));
 			auto out_status = init_call_(ranges_, req_);
 			if (false == out_status.ok())
