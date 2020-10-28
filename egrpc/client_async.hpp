@@ -10,7 +10,7 @@ namespace egrpc
 template <typename REQ, typename RES>
 struct AsyncClientHandler final : public iClientHandler
 {
-	using ReadptrT = std::unique_ptr<
+	using ReadptrT = std::shared_ptr<
 		grpc::ClientAsyncResponseReaderInterface<RES>>;
 
 	using HandleResF = std::function<void(RES&)>;

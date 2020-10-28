@@ -10,7 +10,7 @@ namespace egrpc
 template <typename DATA>
 struct AsyncClientStreamHandler final : public iClientHandler
 {
-	using ReadptrT = std::unique_ptr<
+	using ReadptrT = std::shared_ptr<
 		grpc::ClientAsyncReaderInterface<DATA>>;
 
 	using HandlerF = std::function<void(DATA&)>;
