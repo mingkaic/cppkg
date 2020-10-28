@@ -70,6 +70,7 @@ cc_test(
     deps = [
         ":egrpc",
         ":test_cc_grpc",
+        "//estd:estd",
         "//exam:exam",
         "@gtest//:gtest",
     ],

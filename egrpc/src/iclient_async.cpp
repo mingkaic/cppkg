@@ -1,6 +1,6 @@
-#include "egrpc/client_async.hpp"
+#include "egrpc/iclient_async.hpp"
 
-#ifdef PKG_EGRPC_CLIENT_ASYNC_HPP
+#ifdef PKG_EGRPC_ICLIENT_ASYNC_HPP
 
 namespace egrpc
 {

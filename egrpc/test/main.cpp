@@ -2,6 +2,8 @@
 
 #include "exam/exam.hpp"
 
+#include "estd/estd.hpp"
+
 #include "egrpc/egrpc.hpp"
 
 #include "egrpc/test/test.grpc.pb.h"
@@ -156,17 +158,17 @@ TEST(ASYNC, ClientStreamSuccess)
 	});
 
 	mock::MockRequest req;
-	grpc::CompletionQueue cq;
+	egrpc::GrpcCQueue cq;
 	grpc::ClientContext ctx;
 	ptr->reader_ = stub->PrepareAsyncMockStreamOut(
-		&ctx, req, &cq);
+		&ctx, req, &cq.cq_);
 	ptr->reader_->StartCall((void*) &ctx);
 
 	EXPECT_EQ(0, num_cb_called);
 
 	void* got_tag;
 	bool ok = true;
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, &ctx);
 	ptr->handle(true);
@@ -176,7 +178,7 @@ TEST(ASYNC, ClientStreamSuccess)
 	auto expect_msg = fmts::sprintf("call %p created... processing", ptr);
 	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -185,7 +187,7 @@ TEST(ASYNC, ClientStreamSuccess)
 	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
 	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -193,7 +195,7 @@ TEST(ASYNC, ClientStreamSuccess)
 	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(false);
@@ -202,7 +204,7 @@ TEST(ASYNC, ClientStreamSuccess)
 	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
 	EXPECT_STREQ(expect_msg3.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -247,17 +249,17 @@ TEST(ASYNC, ClientStreamEarlyStop)
 	});
 
 	mock::MockRequest req;
-	grpc::CompletionQueue cq;
+	egrpc::GrpcCQueue cq;
 	grpc::ClientContext ctx;
 	ptr->reader_ = stub->PrepareAsyncMockStreamOut(
-		&ctx, req, &cq);
+		&ctx, req, &cq.cq_);
 	ptr->reader_->StartCall((void*) &ctx);
 
 	EXPECT_EQ(0, num_cb_called);
 
 	void* got_tag;
 	bool ok = true;
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, &ctx);
 	ptr->handle(false);
@@ -266,7 +268,7 @@ TEST(ASYNC, ClientStreamEarlyStop)
 	auto expect_msg = fmts::sprintf("call %p created... finishing", ptr);
 	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -311,17 +313,17 @@ TEST(ASYNC, ClientStreamFail)
 	});
 
 	mock::MockRequest req;
-	grpc::CompletionQueue cq;
+	egrpc::GrpcCQueue cq;
 	grpc::ClientContext ctx;
 	ptr->reader_ = stub->PrepareAsyncMockStreamOut(
-		&ctx, req, &cq);
+		&ctx, req, &cq.cq_);
 	ptr->reader_->StartCall((void*) &ctx);
 
 	EXPECT_EQ(0, num_cb_called);
 
 	void* got_tag;
 	bool ok = true;
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, &ctx);
 	ptr->handle(true);
@@ -331,7 +333,7 @@ TEST(ASYNC, ClientStreamFail)
 	auto expect_msg = fmts::sprintf("call %p created... processing", ptr);
 	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -340,7 +342,7 @@ TEST(ASYNC, ClientStreamFail)
 	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
 	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -348,7 +350,7 @@ TEST(ASYNC, ClientStreamFail)
 	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(false);
@@ -357,7 +359,7 @@ TEST(ASYNC, ClientStreamFail)
 	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
 	EXPECT_STREQ(expect_msg3.c_str(), logger->latest_msg_.c_str());
 
-	EXPECT_TRUE(cq.Next(&got_tag, &ok));
+	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
@@ -420,7 +422,7 @@ TEST(ASYNC, ServerRequest)
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
 		grpc::InsecureServerCredentials());
-	std::unique_ptr<grpc::ServerCompletionQueue> cq = builder.AddCompletionQueue();
+	egrpc::GrpcServerCQueue cq(builder.AddCompletionQueue());
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
@@ -432,19 +434,25 @@ TEST(ASYNC, ServerRequest)
 	auto call = new ServerCallT(logger,
 	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncResponseWriter<mock::MockResponse>* writer,
-		grpc::CompletionQueue* cq,
-		grpc::ServerCompletionQueue* ccq, void* tag)
+		egrpc::iResponder<mock::MockResponse>& writer,
+		egrpc::iCQueue& cq, void* tag)
 	{
-		mock_service.RequestMockRPC(ctx, req, writer, cq, ccq, tag);
+		auto& grpc_res = static_cast<egrpc::GrpcResponder<
+			mock::MockResponse>&>(writer);
+		auto grpc_cq = cq.get_cq();
+		mock_service.RequestMockRPC(ctx, req,
+			&grpc_res.responder_, grpc_cq, estd::must_cast<
+			grpc::ServerCompletionQueue>(grpc_cq), tag);
 		last_tag = tag;
 		++num_calls;
 	},
-	[&serve_call](const mock::MockRequest& req, mock::MockResponse& res)
+	[&serve_call](
+		const mock::MockRequest& req,
+		mock::MockResponse& res)
 	{
 		serve_call = true;
 		return grpc::Status{grpc::OK, "hello"};
-	}, cq.get());
+	}, cq);
 
 	EXPECT_EQ(call, last_tag);
 	EXPECT_EQ(1, num_calls);
@@ -464,7 +472,7 @@ TEST(ASYNC, ServerRequest)
 
 	void* tag;
 	bool ok = true;
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -478,7 +486,7 @@ TEST(ASYNC, ServerRequest)
 
 	logger->latest_lvl_ = logs::WARN;
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -489,7 +497,7 @@ TEST(ASYNC, ServerRequest)
 
 	server->Shutdown();
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(last_tag, tag);
 	EXPECT_NE(last_tag, call);
@@ -497,7 +505,7 @@ TEST(ASYNC, ServerRequest)
 	EXPECT_NE(nullptr, dynamic_cast<ServerCallT*>(tag_name));
 	tag_name->shutdown();
 
-	cq->Shutdown();
+	cq.shutdown();
 }
 
 
@@ -510,7 +518,7 @@ TEST(ASYNC, ServerStream)
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
 		grpc::InsecureServerCredentials());
-	std::unique_ptr<grpc::ServerCompletionQueue> cq = builder.AddCompletionQueue();
+	egrpc::GrpcServerCQueue cq(builder.AddCompletionQueue());
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
@@ -526,11 +534,15 @@ TEST(ASYNC, ServerStream)
 	[&last_tag, &num_calls, &mock_service](
 		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncWriter<mock::MockResponse>* writer,
-		grpc::CompletionQueue* cq,
-		grpc::ServerCompletionQueue* ccq, void* tag)
+		egrpc::iWriter<mock::MockResponse>& writer,
+		egrpc::iCQueue& cq, void* tag)
 	{
-		mock_service.RequestMockStreamOut(ctx, req, writer, cq, ccq, tag);
+		auto& grpc_res = static_cast<egrpc::GrpcWriter<
+			mock::MockResponse>&>(writer);
+		auto grpc_cq = cq.get_cq();
+		mock_service.RequestMockStreamOut(ctx, req,
+			&grpc_res.writer_, grpc_cq, estd::must_cast<
+			grpc::ServerCompletionQueue>(grpc_cq), tag);
 		last_tag = tag;
 		++num_calls;
 	},
@@ -545,7 +557,7 @@ TEST(ASYNC, ServerStream)
 	{
 		++num_iterators;
 		return (*it % 2);
-	}, cq.get());
+	}, cq);
 
 	EXPECT_EQ(call, last_tag);
 	EXPECT_EQ(1, num_calls);
@@ -582,7 +594,7 @@ TEST(ASYNC, ServerStream)
 
 	void* tag;
 	bool ok = true;
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -597,7 +609,7 @@ TEST(ASYNC, ServerStream)
 
 	logger->latest_lvl_ = logs::WARN;
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -609,7 +621,7 @@ TEST(ASYNC, ServerStream)
 
 	logger->latest_lvl_ = logs::WARN;
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -621,7 +633,7 @@ TEST(ASYNC, ServerStream)
 
 	logger->latest_lvl_ = logs::WARN;
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -632,7 +644,7 @@ TEST(ASYNC, ServerStream)
 
 	server->Shutdown();
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(last_tag, tag);
 	EXPECT_NE(last_tag, call);
@@ -640,7 +652,7 @@ TEST(ASYNC, ServerStream)
 	EXPECT_NE(nullptr, dynamic_cast<StreamCallT*>(tag_name));
 	tag_name->shutdown();
 
-	cq->Shutdown();
+	cq.shutdown();
 }
 
 
@@ -653,7 +665,7 @@ TEST(ASYNC, ServerStreamStartupError)
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
 		grpc::InsecureServerCredentials());
-	std::unique_ptr<grpc::ServerCompletionQueue> cq = builder.AddCompletionQueue();
+	egrpc::GrpcServerCQueue cq(builder.AddCompletionQueue());
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
@@ -666,13 +678,18 @@ TEST(ASYNC, ServerStreamStartupError)
 		mock::MockResponse,std::vector<size_t>>;
 
 	auto call = new StreamCallT(logger,
-	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
+	[&last_tag, &num_calls, &mock_service](
+		grpc::ServerContext* ctx,
 		mock::MockRequest* req,
-		grpc::ServerAsyncWriter<mock::MockResponse>* writer,
-		grpc::CompletionQueue* cq,
-		grpc::ServerCompletionQueue* ccq, void* tag)
+		egrpc::iWriter<mock::MockResponse>& writer,
+		egrpc::iCQueue& cq, void* tag)
 	{
-		mock_service.RequestMockStreamOut(ctx, req, writer, cq, ccq, tag);
+		auto& grpc_res = static_cast<egrpc::GrpcWriter<
+			mock::MockResponse>&>(writer);
+		auto grpc_cq = cq.get_cq();
+		mock_service.RequestMockStreamOut(ctx, req,
+			&grpc_res.writer_, grpc_cq, estd::must_cast<
+			grpc::ServerCompletionQueue>(grpc_cq), tag);
 		last_tag = tag;
 		++num_calls;
 	},
@@ -687,7 +704,7 @@ TEST(ASYNC, ServerStreamStartupError)
 	{
 		++num_iterators;
 		return true;
-	}, cq.get());
+	}, cq);
 
 	EXPECT_EQ(call, last_tag);
 	EXPECT_EQ(1, num_calls);
@@ -720,7 +737,7 @@ TEST(ASYNC, ServerStreamStartupError)
 
 	void* tag;
 	bool ok = true;
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -735,7 +752,7 @@ TEST(ASYNC, ServerStreamStartupError)
 
 	logger->latest_lvl_ = logs::WARN;
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
@@ -749,7 +766,7 @@ TEST(ASYNC, ServerStreamStartupError)
 
 	server->Shutdown();
 
-	EXPECT_TRUE(cq->Next(&tag, &ok));
+	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(last_tag, tag);
 	EXPECT_NE(last_tag, call);
@@ -757,7 +774,7 @@ TEST(ASYNC, ServerStreamStartupError)
 	EXPECT_NE(nullptr, dynamic_cast<StreamCallT*>(tag_name));
 	tag_name->shutdown();
 
-	cq->Shutdown();
+	cq.shutdown();
 }
 
 

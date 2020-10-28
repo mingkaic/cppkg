@@ -1,8 +1,8 @@
-sudo: required
-
+language: minimal
+os: linux
+dist: xenial
 services:
   - docker
-
 jobs:
   include:
     - stage: build docker image
@@ -16,16 +16,12 @@ jobs:
       script:
         - docker run -e CODECOV_TOKEN=${CODECOV_TOKEN}
           --rm $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT}
-
 notifications:
   email: false
-
 branches:
   except:
   - legacy
-
-# safelist
-branches:
+  # safelist
   only:
   - master
   - /experimental(-.*)?/
