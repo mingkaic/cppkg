@@ -4,18 +4,10 @@ project(cppkg C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(FETCHCONTENT_QUIET OFF)
 
-add_subdirectory(boost-cmake)
+add_subdirectory(third_party/cmake_repos/boost-cmake)
 
-include(FetchContent)
-FetchContent_Declare(
-    gRPC
-    GIT_REPOSITORY https://github.com/grpc/grpc
-    GIT_TAG        v1.28.0
-)
-set(FETCHCONTENT_QUIET OFF)
-FetchContent_MakeAvailable(gRPC)
+add_subdirectory(third_party/cmake_repos/grpc EXCLUDE_FROM_ALL)
 
 # diff
 add_library(diff STATIC diff/src/msg.cpp)
