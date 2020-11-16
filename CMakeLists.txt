@@ -56,7 +56,7 @@ target_link_libraries(${FLAG_LIB} PUBLIC ${LOGS_LIB} Boost::filesystem Boost::pr
 set(FMTS_LIB ${PROJECT_NAME}_fmts)
 add_library(${FMTS_LIB} fmts/src/fmts.cpp)
 target_include_directories(${FMTS_LIB} PUBLIC .)
-target_link_libraries(${FMTS_LIB} PUBLIC types)
+target_link_libraries(${FMTS_LIB} PUBLIC ${TYPES_LIB})
 
 # jobs
 set(JOBS_LIB ${PROJECT_NAME}_jobs)
@@ -72,5 +72,5 @@ target_link_libraries(${LOGS_LIB} PUBLIC ${FMTS_LIB})
 
 # types
 set(TYPES_LIB ${PROJECT_NAME}_types)
-add_library(types INTERFACE)
-target_include_directories(types INTERFACE .)
+add_library(${TYPES_LIB} INTERFACE)
+target_include_directories(${TYPES_LIB} INTERFACE .)
