@@ -9,10 +9,14 @@ project(${PROJECT_NAME} C CXX)
 #### third_parties ####
 
 # boost
-add_subdirectory(third_party/cmake_repos/boost-cmake EXCLUDE_FROM_ALL)
+if(NOT Boost_FOUND AND NOT TARGET Boost::boost)
+    add_subdirectory(third_party/cmake_repos/boost-cmake EXCLUDE_FROM_ALL)
+endif()
 
 # grpc
-add_subdirectory(third_party/cmake_repos/grpc EXCLUDE_FROM_ALL)
+if(NOT gRPC_FOUND AND NOT TARGET grpc++)
+    add_subdirectory(third_party/cmake_repos/grpc EXCLUDE_FROM_ALL)
+endif()
 
 #### local libraries ####
 
