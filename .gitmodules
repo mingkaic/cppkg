@@ -1,6 +1,0 @@
-[submodule "boost-cmake"]
-	path = third_party/cmake_repos/boost-cmake
-	url = https://github.com/Orphis/boost-cmake.git
-[submodule "grpc"]
-	path = third_party/cmake_repos/grpc
-	url = https://github.com/grpc/grpc

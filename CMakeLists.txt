@@ -8,15 +8,13 @@ project(${PROJECT_NAME} C CXX)
 
 #### third_parties ####
 
+include(${CMAKE_CURRENT_BINARY_DIR}/conan_paths.cmake OPTIONAL)
+
 # boost
-if(NOT Boost_FOUND AND NOT TARGET Boost::boost)
-    add_subdirectory(third_party/cmake_repos/boost-cmake EXCLUDE_FROM_ALL)
-endif()
+find_package(Boost 1.55 REQUIRED COMPONENTS filesystem program_options)
 
 # grpc
-if(NOT gRPC_FOUND AND NOT TARGET grpc++)
-    add_subdirectory(third_party/cmake_repos/grpc EXCLUDE_FROM_ALL)
-endif()
+find_package(gRPC 1.25 REQUIRED)
 
 #### local libraries ####
 
@@ -53,7 +51,7 @@ target_link_libraries(${ERROR_LIB} PUBLIC ${FMTS_LIB})
 set(EGRPC_LIB ${PROJECT_NAME}_egrpc)
 add_library(${EGRPC_LIB} STATIC egrpc/src/iclient_async.cpp)
 target_include_directories(${EGRPC_LIB} PUBLIC .)
-target_link_libraries(${EGRPC_LIB} PUBLIC ${ERROR_LIB} ${LOGS_LIB} grpc++)
+target_link_libraries(${EGRPC_LIB} PUBLIC ${ERROR_LIB} ${LOGS_LIB} gRPC::grpc++)
 
 # estd
 set(ESTD_LIB ${PROJECT_NAME}_estd)
