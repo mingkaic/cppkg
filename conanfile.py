@@ -1,7 +1,6 @@
 from conans import ConanFile, CMake
 import os
 
-
 class CppkgConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = "boost/1.73.0", "grpc/1.29.1@inexorgame/stable", "gtest/1.10.0"
