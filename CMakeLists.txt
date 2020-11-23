@@ -8,13 +8,14 @@ project(${PROJECT_NAME} C CXX)
 
 #### third_parties ####
 
-include(${CMAKE_CURRENT_BINARY_DIR}/conan_paths.cmake OPTIONAL)
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
 
 # boost
-find_package(Boost 1.55 REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost REQUIRED COMPONENTS filesystem program_options)
 
 # grpc
-find_package(gRPC 1.25 REQUIRED)
+find_package(gRPC CONFIG REQUIRED)
 
 #### local libraries ####
 
@@ -51,7 +52,7 @@ target_link_libraries(${ERROR_LIB} PUBLIC ${FMTS_LIB})
 set(EGRPC_LIB ${PROJECT_NAME}_egrpc)
 add_library(${EGRPC_LIB} STATIC egrpc/src/iclient_async.cpp)
 target_include_directories(${EGRPC_LIB} PUBLIC .)
-target_link_libraries(${EGRPC_LIB} PUBLIC ${ERROR_LIB} ${LOGS_LIB} gRPC::grpc++)
+target_link_libraries(${EGRPC_LIB} PUBLIC ${ERROR_LIB} ${LOGS_LIB} ${CONAN_LIBS_GRPC})
 
 # estd
 set(ESTD_LIB ${PROJECT_NAME}_estd)
@@ -69,7 +70,7 @@ target_link_libraries(${EXAM_LIB} PUBLIC ${FMTS_LIB} ${LOGS_LIB})
 set(FLAG_LIB ${PROJECT_NAME}_flag)
 add_library(${FLAG_LIB} flag/src/flag.cpp)
 target_include_directories(${FLAG_LIB} PUBLIC .)
-target_link_libraries(${FLAG_LIB} PUBLIC ${LOGS_LIB} Boost::filesystem Boost::program_options)
+target_link_libraries(${FLAG_LIB} PUBLIC ${LOGS_LIB} ${CONAN_LIBS_BOOST})
 
 # jobs
 set(JOBS_LIB ${PROJECT_NAME}_jobs)

@@ -1,6 +1,7 @@
 [requires]
 boost/1.73.0
-grpc/1.25.0@inexorgame/stable
+grpc/1.29.1@inexorgame/stable
 
 [generators]
-cmake_paths
+cmake
+cmake_find_package_multi
