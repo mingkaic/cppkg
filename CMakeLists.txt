@@ -12,7 +12,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # boost
-find_package(Boost REQUIRED COMPONENTS filesystem program_options)
+find_package(Boost CONFIG REQUIRED)
 
 # grpc
 find_package(gRPC CONFIG REQUIRED)
