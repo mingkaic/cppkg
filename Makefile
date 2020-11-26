@@ -108,3 +108,22 @@ cover_logs:
 	$(CCOVER) --instrumentation_filter 'logs/*' //logs:test
 	@make clean_test_coverage
 	lcov -a ${TMP_COVFILE} -o logs_coverage.info
+
+.PHONY: conan_remote
+conan_remote:
+	conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
+	conan remote add mingkaic-co "https://api.bintray.com/conan/mingkaic-co/mkc-conan"
+
+build/conanbuildinfo.cmake:
+	conan install -if build .
+
+.PHONY: conan_install
+conan_install: build/conanbuildinfo.cmake
+
+.PHONY: conan_build
+conan_build: build/conanbuildinfo.cmake
+	conan build -bf build .
+
+.PHONY: conan_create
+conan_create:
+	conan create . mingkaic-co/stable
