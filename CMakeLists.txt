@@ -7,6 +7,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 option(PACKAGE_TESTS "Build the tests" ON)
 
+set(cppkg_INSTALL_default ON)
+if(NOT CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+   set(cppkg_INSTALL_default OFF)
+endif()
+set(cppkg_INSTALL ${cppkg_INSTALL_default} CACHE BOOL "Generate installation target")
+set(cppkg_INSTALL_BINDIR "bin" CACHE STRING "Installation directory for executables")
+set(cppkg_INSTALL_LIBDIR "lib" CACHE STRING "Installation directory for libraries")
+set(cppkg_INSTALL_INCLUDEDIR "include" CACHE STRING "Installation directory for headers")
+set(cppkg_INSTALL_CMAKEDIR "lib/cmake/${PACKAGE_NAME}" CACHE STRING "Installation directory for cmake config files")
+
 #### third_parties ####
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -17,73 +27,149 @@ find_package(gRPC CONFIG REQUIRED)
 #### local libraries ####
 
 # types
-set(TYPES_LIB ${PROJECT_NAME}_types)
-add_library(${TYPES_LIB} INTERFACE)
-target_include_directories(${TYPES_LIB} INTERFACE .)
-add_library(${PROJECT_NAME}::types ALIAS ${TYPES_LIB})
+add_library(types INTERFACE)
+target_include_directories(types INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
 
 # fmts
-set(FMTS_LIB ${PROJECT_NAME}_fmts)
-add_library(${FMTS_LIB} fmts/src/fmts.cpp)
-target_include_directories(${FMTS_LIB} PUBLIC .)
-target_link_libraries(${FMTS_LIB} PUBLIC ${TYPES_LIB})
-add_library(${PROJECT_NAME}::fmts ALIAS ${FMTS_LIB})
+add_library(fmts fmts/src/fmts.cpp)
+target_include_directories(fmts PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(fmts PUBLIC types)
 
 # diff
-set(DIFF_LIB ${PROJECT_NAME}_diff)
-add_library(${DIFF_LIB} diff/src/msg.cpp)
-target_include_directories(${DIFF_LIB} PUBLIC .)
-target_link_libraries(${DIFF_LIB} PUBLIC ${FMTS_LIB})
-add_library(${PROJECT_NAME}::diff ALIAS ${DIFF_LIB})
+add_library(diff diff/src/msg.cpp)
+target_include_directories(diff PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(diff PUBLIC fmts)
 
 # logs
-set(LOGS_LIB ${PROJECT_NAME}_logs)
-add_library(${LOGS_LIB} logs/src/logs.cpp)
-target_include_directories(${LOGS_LIB} PUBLIC .)
-target_link_libraries(${LOGS_LIB} PUBLIC ${FMTS_LIB})
-add_library(${PROJECT_NAME}::logs ALIAS ${LOGS_LIB})
+add_library(logs logs/src/logs.cpp)
+target_include_directories(logs PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(logs PUBLIC fmts)
 
 # error
-set(ERROR_LIB ${PROJECT_NAME}_error)
-add_library(${ERROR_LIB} error/src/error.cpp)
-target_include_directories(${ERROR_LIB} PUBLIC .)
-target_link_libraries(${ERROR_LIB} PUBLIC ${FMTS_LIB})
-add_library(${PROJECT_NAME}::error ALIAS ${ERROR_LIB})
+add_library(error error/src/error.cpp)
+target_include_directories(error PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(error PUBLIC fmts)
 
 # egrpc
-set(EGRPC_LIB ${PROJECT_NAME}_egrpc)
-add_library(${EGRPC_LIB} STATIC egrpc/src/iclient_async.cpp)
-target_include_directories(${EGRPC_LIB} PUBLIC .)
-target_link_libraries(${EGRPC_LIB} PUBLIC ${ERROR_LIB} ${LOGS_LIB} gRPC::grpc++ gRPC::grpc++_unsecure)
-add_library(${PROJECT_NAME}::egrpc ALIAS ${EGRPC_LIB})
+add_library(egrpc STATIC egrpc/src/iclient_async.cpp)
+target_include_directories(egrpc PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(egrpc PUBLIC error logs gRPC::grpc++ gRPC::grpc++_unsecure)
 
 # estd
-set(ESTD_LIB ${PROJECT_NAME}_estd)
-add_library(${ESTD_LIB} estd/src/strs.cpp)
-target_include_directories(${ESTD_LIB} PUBLIC .)
-target_link_libraries(${ESTD_LIB} PUBLIC ${LOGS_LIB})
-add_library(${PROJECT_NAME}::estd ALIAS ${ESTD_LIB})
+add_library(estd estd/src/strs.cpp)
+target_include_directories(estd PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(estd PUBLIC logs)
 
 # exam
-set(EXAM_LIB ${PROJECT_NAME}_exam)
-add_library(${EXAM_LIB} exam/src/exam.cpp)
-target_include_directories(${EXAM_LIB} PUBLIC .)
-target_link_libraries(${EXAM_LIB} PUBLIC ${FMTS_LIB} ${LOGS_LIB})
-add_library(${PROJECT_NAME}::exam ALIAS ${EXAM_LIB})
+add_library(exam exam/src/exam.cpp)
+target_include_directories(exam PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(exam PUBLIC fmts logs)
 
 # flag
-set(FLAG_LIB ${PROJECT_NAME}_flag)
-add_library(${FLAG_LIB} flag/src/flag.cpp)
-target_include_directories(${FLAG_LIB} PUBLIC .)
-target_link_libraries(${FLAG_LIB} PUBLIC ${LOGS_LIB} ${CONAN_LIBS_BOOST})
-add_library(${PROJECT_NAME}::flag ALIAS ${FLAG_LIB})
+add_library(flag flag/src/flag.cpp)
+target_include_directories(flag PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(flag PUBLIC logs ${CONAN_LIBS_BOOST})
 
 # jobs
-set(JOBS_LIB ${PROJECT_NAME}_jobs)
-add_library(${JOBS_LIB} INTERFACE)
-target_include_directories(${JOBS_LIB} INTERFACE .)
-target_link_libraries(${JOBS_LIB} INTERFACE ${LOGS_LIB})
-add_library(${PROJECT_NAME}::jobs ALIAS ${JOBS_LIB})
+add_library(jobs INTERFACE)
+target_include_directories(jobs INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
+    $<INSTALL_INTERFACE:.>
+)
+target_link_libraries(jobs INTERFACE logs)
+
+#### install ####
+if(cppkg_INSTALL)
+    foreach(_HDR
+        diff/diff.hpp
+        diff/format.hpp
+        diff/msg.hpp
+        diff/myers_diff.hpp
+        egrpc/client_async.hpp
+        egrpc/client_async_stream.hpp
+        egrpc/egrpc.hpp
+        egrpc/iclient.hpp
+        egrpc/iclient_async.hpp
+        egrpc/icqueue.hpp
+        egrpc/iserver_async.hpp
+        egrpc/server_async.hpp
+        egrpc/server_async_stream.hpp
+        error/error.hpp
+        estd/algorithm.hpp
+        estd/cast.hpp
+        estd/config.hpp
+        estd/contain.hpp
+        estd/estd.hpp
+        estd/hashlist.hpp
+        estd/range.hpp
+        estd/strs.hpp
+        exam/exam.hpp
+        flag/flag.hpp
+        fmts/fmts.hpp
+        jobs/jobs.hpp
+        jobs/managed_job.hpp
+        jobs/scope_guard.hpp
+        jobs/sequence.hpp
+        logs/ilogs.hpp
+        logs/logs.hpp
+        types/strs.hpp
+        types/types.hpp
+    )
+        get_filename_component(_PATH ${_HDR} PATH)
+        install(FILES ${_HDR}
+            DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}"
+        )
+    endforeach()
+
+    set(TargetFile ${PROJECT_NAME}Targets)
+    install(TARGETS
+        diff
+        egrpc
+        error
+        estd
+        exam
+        flag
+        fmts
+        jobs
+        logs
+        types
+        EXPORT ${TargetFile}
+        RUNTIME DESTINATION ${cppkg_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${cppkg_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${cppkg_INSTALL_LIBDIR}
+    )
+    install(EXPORT ${TargetFile}
+        DESTINATION ${cppkg_INSTALL_CMAKEDIR}
+        NAMESPACE ${PROJECT_NAME}::
+    )
+endif()
 
 #### tests ####
 
@@ -92,27 +178,27 @@ if(PACKAGE_TESTS)
 endif()
 
 # fmts
-set(FMTS_TEST ${FMTS_LIB}_test)
+set(FMTS_TEST fmts_test)
 add_executable(${FMTS_TEST} fmts/test/main.cpp)
-target_link_libraries(${FMTS_TEST} ${CONAN_LIBS_GTEST} ${FMTS_LIB})
+target_link_libraries(${FMTS_TEST} ${CONAN_LIBS_GTEST} fmts)
 add_test(NAME ${FMTS_TEST} COMMAND ${FMTS_TEST})
 
 # diff
-set(DIFF_TEST ${DIFF_LIB}_test)
+set(DIFF_TEST diff_test)
 add_executable(${DIFF_TEST} diff/test/main.cpp)
-target_link_libraries(${DIFF_TEST} ${CONAN_LIBS_GTEST} ${DIFF_LIB})
+target_link_libraries(${DIFF_TEST} ${CONAN_LIBS_GTEST} diff)
 add_test(NAME ${DIFF_TEST} COMMAND ${DIFF_TEST})
 
 # logs
-set(LOGS_TEST ${LOGS_LIB}_test)
+set(LOGS_TEST logs_test)
 add_executable(${LOGS_TEST} logs/test/main.cpp)
-target_link_libraries(${LOGS_TEST} ${CONAN_LIBS_GTEST} ${LOGS_LIB})
+target_link_libraries(${LOGS_TEST} ${CONAN_LIBS_GTEST} logs)
 add_test(NAME ${LOGS_TEST} COMMAND ${LOGS_TEST})
 
 # error
-set(ERROR_TEST ${ERROR_LIB}_test)
+set(ERROR_TEST error_test)
 add_executable(${ERROR_TEST} error/test/main.cpp)
-target_link_libraries(${ERROR_TEST} ${CONAN_LIBS_GTEST} ${ERROR_LIB})
+target_link_libraries(${ERROR_TEST} ${CONAN_LIBS_GTEST} error)
 add_test(NAME ${ERROR_TEST} COMMAND ${ERROR_TEST})
 
 # egrpc
@@ -136,13 +222,13 @@ DEPENDS "${EGRPC_TEST_PROTO}")
 add_library(egrpc_test_proto_obj OBJECT ${EGRPC_TEST_PROTO_SRCS} ${EGRPC_TEST_GRPC_SRCS})
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
-set(EGRPC_TEST ${EGRPC_LIB}_test)
+set(EGRPC_TEST egrpc_test)
 add_executable(${EGRPC_TEST} egrpc/test/main.cpp $<TARGET_OBJECTS:egrpc_test_proto_obj>)
-target_link_libraries(${EGRPC_TEST} ${CONAN_LIBS_GTEST} ${EGRPC_LIB} ${ESTD_LIB} ${EXAM_LIB})
+target_link_libraries(${EGRPC_TEST} ${CONAN_LIBS_GTEST} egrpc estd exam)
 add_test(NAME ${EGRPC_TEST} COMMAND ${EGRPC_TEST})
 
 # estd
-set(ESTD_TEST ${ESTD_LIB}_test)
+set(ESTD_TEST estd_test)
 add_executable(${ESTD_TEST}
 estd/test/test_cast.cpp
 estd/test/test_config.cpp
@@ -151,23 +237,23 @@ estd/test/test_hashlist.cpp
 estd/test/test_range.cpp
 estd/test/test_strs.cpp
 estd/test/main.cpp)
-target_link_libraries(${ESTD_TEST} ${CONAN_LIBS_GTEST} ${ESTD_LIB} ${EXAM_LIB})
+target_link_libraries(${ESTD_TEST} ${CONAN_LIBS_GTEST} estd exam)
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 
 # exam
-set(EXAM_TEST ${EXAM_LIB}_test)
+set(EXAM_TEST exam_test)
 add_executable(${EXAM_TEST} exam/test/main.cpp)
-target_link_libraries(${EXAM_TEST} ${CONAN_LIBS_GTEST} ${EXAM_LIB})
+target_link_libraries(${EXAM_TEST} ${CONAN_LIBS_GTEST} exam)
 add_test(NAME ${EXAM_TEST} COMMAND ${EXAM_TEST})
 
 # flag
-set(FLAG_TEST ${FLAG_LIB}_test)
+set(FLAG_TEST flag_test)
 add_executable(${FLAG_TEST} flag/test/main.cpp)
-target_link_libraries(${FLAG_TEST} ${CONAN_LIBS_GTEST} ${FLAG_LIB})
+target_link_libraries(${FLAG_TEST} ${CONAN_LIBS_GTEST} flag)
 add_test(NAME ${FLAG_TEST} COMMAND ${FLAG_TEST})
 
 # jobs
-set(JOBS_TEST ${JOBS_LIB}_test)
+set(JOBS_TEST jobs_test)
 add_executable(${JOBS_TEST} jobs/test/main.cpp)
-target_link_libraries(${JOBS_TEST} ${CONAN_LIBS_GTEST} ${JOBS_LIB})
+target_link_libraries(${JOBS_TEST} ${CONAN_LIBS_GTEST} jobs)
 add_test(NAME ${JOBS_TEST} COMMAND ${JOBS_TEST})
