@@ -16,24 +16,40 @@ class CppkgConan(ConanFile):
         "gtest/1.10.0",
     )
     generators = "cmake", "cmake_find_package_multi"
-    _modules = ["diff", "egrpc", "error", "estd", "exam", "flag", "fmts", "jobs", "logs", "types"]
+
+    options = {
+        "fPIC": [True, False],
+    }
+    default_options = {
+        "fPIC": True,
+    }
+
+    def _configure_cmake(self):
+        cmake = CMake(self)
+        cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
+        cmake.configure()
+        return cmake
+
+    def configure(self):
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+            del self.options.fPIC
+            compiler_version = tools.Version(self.settings.compiler.version)
+            if compiler_version < 14:
+                raise ConanInvalidConfiguration("gRPC can only be built with Visual Studio 2015 or higher.")
 
     def source(self):
-        self.run("git clone {}.git".format(self.url))
+        self.run("git clone {}.git .".format(self.url))
 
     def build(self):
-        cmake = CMake(self)
-        cmake.configure()
+        cmake = self._configure_cmake()
         cmake.build()
 
     def package(self):
-        for module in self._modules:
-            self.copy("*.hpp", dst=os.path.join("include", module), src=module)
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.dylib", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
+        self.copy(pattern="LICENSE.*", dst="licenses", keep_path=False)
+        cmake = self._configure_cmake()
+        cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["{}_{}".format(self.name, module) for module in _modules]
+        self.cpp_info.names["cmake_find_package"] = self.name
+        self.cpp_info.names["cmake_find_package_multi"] = self.name
+        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "exam", "flag", "fmts", "logs"]
