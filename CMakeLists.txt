@@ -143,9 +143,7 @@ if(cppkg_INSTALL)
         types/types.hpp
     )
         get_filename_component(_PATH ${_HDR} PATH)
-        install(FILES ${_HDR}
-            DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}"
-        )
+        install(FILES ${_HDR} DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}")
     endforeach()
 
     set(TargetFile ${PROJECT_NAME}Targets)
