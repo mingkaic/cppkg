@@ -26,83 +26,48 @@ find_package(gRPC CONFIG REQUIRED)
 
 #### local libraries ####
 
-# types
-add_library(types INTERFACE)
-target_include_directories(types INTERFACE
+include_directories(
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
     $<INSTALL_INTERFACE:.>
 )
 
+# types
+add_library(types INTERFACE)
+
 # fmts
 add_library(fmts fmts/src/fmts.cpp)
-target_include_directories(fmts PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(fmts PUBLIC types)
 
 # diff
 add_library(diff diff/src/msg.cpp)
-target_include_directories(diff PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(diff PUBLIC fmts)
 
 # logs
 add_library(logs logs/src/logs.cpp)
-target_include_directories(logs PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(logs PUBLIC fmts)
 
 # error
 add_library(error error/src/error.cpp)
-target_include_directories(error PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(error PUBLIC fmts)
 
 # egrpc
 add_library(egrpc STATIC egrpc/src/iclient_async.cpp)
-target_include_directories(egrpc PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(egrpc PUBLIC error logs gRPC::grpc++ gRPC::grpc++_unsecure)
 
 # estd
 add_library(estd estd/src/strs.cpp)
-target_include_directories(estd PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(estd PUBLIC logs)
 
 # exam
 add_library(exam exam/src/exam.cpp)
-target_include_directories(exam PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(exam PUBLIC fmts logs)
 
 # flag
 add_library(flag flag/src/flag.cpp)
-target_include_directories(flag PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(flag PUBLIC logs ${CONAN_LIBS_BOOST})
 
 # jobs
 add_library(jobs INTERFACE)
-target_include_directories(jobs INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/.>
-    $<INSTALL_INTERFACE:.>
-)
 target_link_libraries(jobs INTERFACE logs)
 
 #### install ####
@@ -228,13 +193,13 @@ add_test(NAME ${EGRPC_TEST} COMMAND ${EGRPC_TEST})
 # estd
 set(ESTD_TEST estd_test)
 add_executable(${ESTD_TEST}
-estd/test/test_cast.cpp
-estd/test/test_config.cpp
-estd/test/test_contain.cpp
-estd/test/test_hashlist.cpp
-estd/test/test_range.cpp
-estd/test/test_strs.cpp
-estd/test/main.cpp)
+    estd/test/test_cast.cpp
+    estd/test/test_config.cpp
+    estd/test/test_contain.cpp
+    estd/test/test_hashlist.cpp
+    estd/test/test_range.cpp
+    estd/test/test_strs.cpp
+    estd/test/main.cpp)
 target_link_libraries(${ESTD_TEST} ${CONAN_LIBS_GTEST} estd exam)
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 

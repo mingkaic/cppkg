@@ -1,9 +1,8 @@
-import os
 from conans import ConanFile, CMake
 
 class CppkgConan(ConanFile):
     name = "cppkg"
-    version = "0.1"
+    version = "0.1.1"
     license = "MIT"
     author = "Ming Kai Chen <mingkaichen2009@gmail.com>"
     url = "https://github.com/mingkaic/cppkg"

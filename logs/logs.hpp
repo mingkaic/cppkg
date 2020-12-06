@@ -133,6 +133,7 @@ struct DefLogger final : public iLogger
 			{
 				case FATAL:
 					fatal(msg);
+					[[fallthrough]];
 				case ERROR:
 					error(msg);
 					break;
@@ -140,7 +141,7 @@ struct DefLogger final : public iLogger
 					warn(msg);
 					break;
 				default:
-					std::cout << msg << '\n';
+					std::cout << location.file_name() << ":" << location.line() << "-" << msg << '\n';
 			}
 		}
 	}
