@@ -26,7 +26,7 @@ struct AsyncClientHandler final : public iClientHandler
 		init_(request_, this);
 	}
 
-	void handle (bool event_status) override
+	void handle (bool) override
 	{
 		if (status_.ok())
 		{
