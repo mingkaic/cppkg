@@ -51,4 +51,4 @@ class CppkgConan(ConanFile):
     def package_info(self):
         self.cpp_info.names["cmake_find_package"] = self.name
         self.cpp_info.names["cmake_find_package_multi"] = self.name
-        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "exam", "flag", "fmts", "logs"]
+        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "flag", "fmts", "logs"]

@@ -39,11 +39,11 @@ struct AsyncClientHandler final : public iClientHandler
 		}
 		else
 		{
-			logger_->log(logs::error_level, fmts::sprintf(
-				"call %p (%d attempts remaining) failed: %s",
-				this, nretries_, status_.error_message().c_str()));
 			if (nretries_ > 0)
 			{
+				logger_->log(logs::error_level, fmts::sprintf(
+					"call %p (%d attempts remaining) failed: %s",
+					this, nretries_, status_.error_message().c_str()));
 				new AsyncClientHandler<REQ,RES>(
 					complete_promise_, logger_, cb_, init_, nretries_ - 1);
 				complete_promise_ = nullptr;

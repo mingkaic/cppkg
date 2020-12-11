@@ -59,8 +59,8 @@ add_library(estd estd/src/strs.cpp)
 target_link_libraries(estd PUBLIC logs)
 
 # exam
-add_library(exam exam/src/exam.cpp)
-target_link_libraries(exam PUBLIC fmts logs)
+add_library(exam INTERFACE)
+target_link_libraries(exam INTERFACE fmts logs ${CONAN_LIBS_GTEST})
 
 # flag
 add_library(flag flag/src/flag.cpp)
@@ -187,7 +187,7 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 set(EGRPC_TEST egrpc_test)
 add_executable(${EGRPC_TEST} egrpc/test/main.cpp $<TARGET_OBJECTS:egrpc_test_proto_obj>)
-target_link_libraries(${EGRPC_TEST} ${CONAN_LIBS_GTEST} egrpc estd exam)
+target_link_libraries(${EGRPC_TEST} egrpc estd exam)
 add_test(NAME ${EGRPC_TEST} COMMAND ${EGRPC_TEST})
 
 # estd
@@ -200,13 +200,13 @@ add_executable(${ESTD_TEST}
     estd/test/test_range.cpp
     estd/test/test_strs.cpp
     estd/test/main.cpp)
-target_link_libraries(${ESTD_TEST} ${CONAN_LIBS_GTEST} estd exam)
+target_link_libraries(${ESTD_TEST} estd exam)
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 
 # exam
 set(EXAM_TEST exam_test)
 add_executable(${EXAM_TEST} exam/test/main.cpp)
-target_link_libraries(${EXAM_TEST} ${CONAN_LIBS_GTEST} exam)
+target_link_libraries(${EXAM_TEST} exam)
 add_test(NAME ${EXAM_TEST} COMMAND ${EXAM_TEST})
 
 # flag

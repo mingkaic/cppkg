@@ -12,6 +12,11 @@
 #include "estd/contain.hpp"
 
 
+using ::testing::_;
+using ::testing::Return;
+using ::testing::Throw;
+
+
 TEST(CONTAIN, Has)
 {
 	types::StrMapT<size_t> stuff = {
@@ -128,6 +133,8 @@ TEST(CONTAIN, TryGet)
 
 TEST(CONTAIN, MustGet)
 {
+	auto& logger = static_cast<exam::MockLogger&>(logs::get_logger());
+
 	types::StrMapT<size_t> stuff = {
 		{"abcdef", 123},
 		{"defghi", 456},
@@ -150,14 +157,18 @@ TEST(CONTAIN, MustGet)
 	EXPECT_EQ(456, estd::must_getf(ustuff, "defghi", ohnos, 5));
 	EXPECT_EQ(789, estd::must_getf(ustuff, "ghijkl", ohnos, 6));
 
-	EXPECT_FATAL(estd::must_getf(stuff, "ghi", ohnos, 7),
-		fmts::sprintf(ohnos, 7).c_str());
-	EXPECT_FATAL(estd::must_getf(stuff, "mno", ohnos, 8),
-		fmts::sprintf(ohnos, 8).c_str());
-	EXPECT_FATAL(estd::must_getf(ustuff, "ghi", ohnos, 9),
-		fmts::sprintf(ohnos, 9).c_str());
-	EXPECT_FATAL(estd::must_getf(ustuff, "mno", ohnos, 0),
-		fmts::sprintf(ohnos, 0).c_str());
+	std::string expect_msg1 = fmts::sprintf(ohnos, 7);
+	std::string expect_msg2 = fmts::sprintf(ohnos, 8);
+	std::string expect_msg3 = fmts::sprintf(ohnos, 9);
+	std::string expect_msg4 = fmts::sprintf(ohnos, 0);
+	EXPECT_CALL(logger, log(logs::FATAL, expect_msg1, _)).Times(1).WillOnce(Throw(exam::TestException(expect_msg1)));
+	EXPECT_CALL(logger, log(logs::FATAL, expect_msg2, _)).Times(1).WillOnce(Throw(exam::TestException(expect_msg2)));
+	EXPECT_CALL(logger, log(logs::FATAL, expect_msg3, _)).Times(1).WillOnce(Throw(exam::TestException(expect_msg3)));
+	EXPECT_CALL(logger, log(logs::FATAL, expect_msg4, _)).Times(1).WillOnce(Throw(exam::TestException(expect_msg4)));
+	EXPECT_FATAL(estd::must_getf(stuff, "ghi", ohnos, 7), expect_msg1.c_str());
+	EXPECT_FATAL(estd::must_getf(stuff, "mno", ohnos, 8), expect_msg2.c_str());
+	EXPECT_FATAL(estd::must_getf(ustuff, "ghi", ohnos, 9), expect_msg3.c_str());
+	EXPECT_FATAL(estd::must_getf(ustuff, "mno", ohnos, 0), expect_msg4.c_str());
 }
 
 

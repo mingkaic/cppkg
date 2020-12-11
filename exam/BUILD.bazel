@@ -4,7 +4,6 @@ filegroup(
     name = "srcs",
     srcs = [
         ":exam_hdrs",
-        ":exam_srcs",
         ":test_srcs",
         "BUILD.bazel",
     ],
@@ -17,11 +16,6 @@ filegroup(
 )
 
 filegroup(
-    name = "exam_srcs",
-    srcs = glob(["src/*.cpp"]),
-)
-
-filegroup(
     name = "test_srcs",
     srcs = glob(["test/*.cpp"]),
 )
@@ -31,11 +25,11 @@ filegroup(
 cc_library(
     name = "exam",
     hdrs = [":exam_hdrs"],
-    srcs = [":exam_srcs"],
     copts = ["-std=c++17"],
     deps = [
         "//logs:logs",
         "//fmts:fmts",
+        "@gtest//:gtest",
     ],
     visibility = ["//visibility:public"],
 )
@@ -48,7 +42,6 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":exam",
-        "@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

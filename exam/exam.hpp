@@ -9,27 +9,13 @@
 #ifndef PKG_EXAM_HPP
 #define PKG_EXAM_HPP
 
-#include "logs/logs.hpp"
+#include "fmts/fmts.hpp"
 
-#include "gmock/gmock.h"
+#include "exam/mock_log.hpp"
+#include "exam/nosupport_log.hpp"
 
 namespace exam
 {
-
-struct MockLogger : public logs::iLogger
-{
-	MOCK_CONST_METHOD0(get_log_level, std::string(void));
-
-	MOCK_METHOD1(set_log_level, void(const std::string& log_level));
-
-	MOCK_CONST_METHOD1(supports_level, bool(size_t));
-
-	MOCK_CONST_METHOD1(supports_level, bool(const std::string&));
-
-	MOCK_METHOD3(log, void(const std::string&,const std::string&,const logs::SrcLocT&));
-
-	MOCK_METHOD3(log, void(size_t,const std::string&,const logs::SrcLocT&));
-};
 
 struct TestException final : public std::exception
 {

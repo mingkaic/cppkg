@@ -11,9 +11,13 @@
 #include "exam/exam.hpp"
 
 
+using ::testing::_;
+using ::testing::Return;
+using ::testing::Throw;
+
+
 int main (int argc, char** argv)
 {
-	logs::set_logger(std::static_pointer_cast<logs::iLogger>(exam::tlogger));
 
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
@@ -132,57 +136,64 @@ TEST(EXAM, ArrHasality)
 
 TEST(EXAM, Logality)
 {
-	logs::get_logger().set_log_level("fatal");
+	auto tlogger = std::make_shared<exam::MockLogger>();
+
+	logs::set_logger(std::static_pointer_cast<logs::iLogger>(tlogger));
+
+	std::string log_level = "fatal";
+	EXPECT_CALL(*tlogger, set_log_level(log_level)).Times(1);
+	logs::get_logger().set_log_level(log_level);
+	EXPECT_CALL(*tlogger, get_log_level()).Times(1).WillOnce(Return("trace"));
 	EXPECT_STREQ("trace", logs::get_logger().get_log_level().c_str());
 
-	auto fatal_action = []
+	auto fatal_action = [tlogger]
 	{
-		logs::fatal("fatal message");
+		std::string fatalmsg = "fatal message";
+		EXPECT_CALL(*tlogger, log(logs::FATAL, fatalmsg, _)).Times(1).WillOnce(Throw(exam::TestException(fatalmsg)));
+		logs::fatal(fatalmsg);
 		FAIL() << "fatal should never have gone this far";
 	};
 
-	auto fatal_action2 = []
+	auto fatal_action2 = [tlogger]
 	{
-		logs::get_logger().log(logs::FATAL, "fatal message2");
+		std::string fatalmsg = "fatal message2";
+		EXPECT_CALL(*tlogger, log(logs::FATAL, fatalmsg, _)).Times(1).WillOnce(Throw(exam::TestException(fatalmsg)));
+		logs::get_logger().log(logs::FATAL, fatalmsg);
 		FAIL() << "fatal should never have gone this far";
 	};
 
-	auto fatal_action3 = []
+	auto fatal_action3 = [tlogger]
 	{
-		logs::get_logger().log(logs::THROW_ERR, "fatal message3");
+		std::string fatalmsg = "fatal message3";
+		EXPECT_CALL(*tlogger, log(logs::FATAL, fatalmsg, _)).Times(1).WillOnce(Throw(exam::TestException(fatalmsg)));
+		logs::get_logger().log(logs::FATAL, fatalmsg);
+		logs::get_logger().log(logs::THROW_ERR, fatalmsg);
 		FAIL() << "fatal should never have gone this far";
 	};
 
 	EXPECT_FATAL(fatal_action(), "fatal message");
 	EXPECT_FATAL(fatal_action2(), "fatal message2");
 	EXPECT_FATAL(fatal_action3(), "fatal message3");
-	EXPECT_ERROR(logs::error("error message"), "error message");
-	EXPECT_WARN(logs::warn("warning message"), "warning message");
-	EXPECT_INFO(logs::info("information message"), "information message");
-	EXPECT_DEBUG(logs::debug("debug message"), "debug message");
-	EXPECT_TRACE(logs::trace("trace message"), "trace message");
+
+	logs::set_logger(nullptr);
 }
 
 
-TEST(EXAM, Log)
+TEST(EXAM, NoSupportLog)
 {
-	exam::TestLogger logger;
-	EXPECT_TRUE(logger.supports_level(logs::INFO));
-	EXPECT_TRUE(logger.supports_level("info"));
+	exam::NoSupportLogger log;
+	log.set_log_level("123");
+	EXPECT_STREQ("", log.get_log_level().c_str());
+	EXPECT_FALSE(log.supports_level(0));
+	EXPECT_FALSE(log.supports_level("123"));
 
-	logger.log(logs::INFO, "hello");
-	EXPECT_EQ(logs::INFO, logger.latest_lvl_);
-	EXPECT_STREQ("hello", logger.latest_msg_.c_str());
-	logger.log("warn", "world");
-	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
-	EXPECT_STREQ("world", logger.latest_msg_.c_str());
+	EXPECT_FALSE(log.called_);
+	log.log(12, "12");
+	EXPECT_TRUE(log.called_);
 
-	logger.error("foo");
-	EXPECT_EQ(logs::ERROR, logger.latest_lvl_);
-	EXPECT_STREQ("foo", logger.latest_msg_.c_str());
-	logger.warn("bar");
-	EXPECT_EQ(logs::WARN, logger.latest_lvl_);
-	EXPECT_STREQ("bar", logger.latest_msg_.c_str());
+	log.called_ = false;
+	log.log("321", "123");
+	EXPECT_TRUE(log.called_);
 }
 
 
