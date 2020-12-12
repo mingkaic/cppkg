@@ -50,12 +50,8 @@ struct AsyncServerStreamCall final : public iServerCall
 		writer_builder_(make_writer), status_(STARTUP),
 		req_call_(req_call), init_call_(init_call), write_call_(write_call)
 	{
+		assert(nullptr != writer_);
 		req_call_(&ctx_, &req_, *writer_, *cq_, (void*) this);
-		if (nullptr == writer_)
-		{
-			logger_->log(logs::fatal_level,
-				"failed to create server stream caller with non-null writer");
-		}
 		logger_->log(logs::info_level, fmts::sprintf("rpc %p created", this));
 	}
 

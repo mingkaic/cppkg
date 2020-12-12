@@ -1,9 +1,8 @@
-import os
 from conans import ConanFile, CMake
 
 class CppkgConan(ConanFile):
     name = "cppkg"
-    version = "0.1"
+    version = "0.1.1"
     license = "MIT"
     author = "Ming Kai Chen <mingkaichen2009@gmail.com>"
     url = "https://github.com/mingkaic/cppkg"
@@ -39,6 +38,7 @@ class CppkgConan(ConanFile):
 
     def source(self):
         self.run("git clone {}.git .".format(self.url))
+        self.run("git checkout developer-cmake")
 
     def build(self):
         cmake = self._configure_cmake()
@@ -52,4 +52,4 @@ class CppkgConan(ConanFile):
     def package_info(self):
         self.cpp_info.names["cmake_find_package"] = self.name
         self.cpp_info.names["cmake_find_package_multi"] = self.name
-        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "exam", "flag", "fmts", "logs"]
+        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "flag", "fmts", "logs"]

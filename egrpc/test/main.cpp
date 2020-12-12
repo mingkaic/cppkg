@@ -1,3 +1,5 @@
+#include <regex>
+
 #include "gtest/gtest.h"
 
 #include "exam/exam.hpp"
@@ -7,6 +9,11 @@
 #include "egrpc/egrpc.hpp"
 
 #include "egrpc/test/test.grpc.pb.h"
+
+
+using ::testing::_;
+using ::testing::SaveArg;
+using ::testing::Return;
 
 
 int main (int argc, char** argv)
@@ -23,10 +30,22 @@ int main (int argc, char** argv)
 #ifndef DISABLE_EGRPC_TEST
 
 
+TEST(GRPC_EXT, GrpcCQueue)
+{
+	egrpc::GrpcCQueue cq;
+	cq.shutdown();
+	auto realq = cq.get_cq();
+	ASSERT_NE(nullptr, realq);
+	void* tag;
+	bool ok;
+	EXPECT_FALSE(realq->Next(&tag, &ok));
+}
+
+
 TEST(ASYNC, ClientRequestSuccess)
 {
 	auto promise = std::make_shared<egrpc::ErrPromiseT>();
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	bool cb_called = false;
 	using MockHandlerT = egrpc::AsyncClientHandler<mock::MockRequest,mock::MockResponse>;
@@ -40,15 +59,14 @@ TEST(ASYNC, ClientRequestSuccess)
 		handler->status_ = grpc::Status(grpc::OK, "ok");
 	}, 3);
 
+	auto expect_msg = fmts::sprintf("call %p completed successfully", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg, _)).Times(1);
+
 	EXPECT_FALSE(cb_called);
 
 	ptr->handle(true);
 
 	EXPECT_TRUE(cb_called);
-
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("call %p completed successfully", ptr);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
 
 	bool promise_cb_called = false;
 	egrpc::wait_for(*promise,
@@ -63,13 +81,22 @@ TEST(ASYNC, ClientRequestSuccess)
 TEST(ASYNC, ClientRequestFail)
 {
 	auto promise = std::make_shared<egrpc::ErrPromiseT>();
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
+	size_t nretries = 3;
+
+	std::string firstmsg;
+	std::string lastmsg;
+	EXPECT_CALL(*logger, log(logs::error_level, _, _)).Times(nretries + 1).
+		WillOnce(SaveArg<1>(&firstmsg)).
+		WillOnce(Return()).
+		WillOnce(Return()).
+		WillOnce(SaveArg<1>(&lastmsg));
 
 	bool cb_called = false;
 	using MockHandlerT = egrpc::AsyncClientHandler<mock::MockRequest,mock::MockResponse>;
 	MockHandlerT* latest_handler = nullptr;
 	size_t num_init = 0;
-	new MockHandlerT(promise, logger,
+	auto first_handler = new MockHandlerT(promise, logger,
 	[&cb_called](mock::MockResponse& res)
 	{
 		cb_called = true;
@@ -80,14 +107,16 @@ TEST(ASYNC, ClientRequestFail)
 		latest_handler = handler;
 		++num_init;
 		handler->handle(true);
-	}, 3);
+	}, nretries);
 
 	EXPECT_FALSE(cb_called);
 	EXPECT_EQ(4, num_init);
 
-	EXPECT_EQ(logs::ERROR, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("call %p failed: error", latest_handler);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
+	auto expect_msg = fmts::sprintf("call %p (3 attempts remaining) failed: error", first_handler);
+	EXPECT_STREQ(expect_msg.c_str(), firstmsg.c_str());
+
+	auto expect_msg2 = fmts::sprintf("call %p failed: error", latest_handler);
+	EXPECT_STREQ(expect_msg2.c_str(), lastmsg.c_str());
 
 	bool promise_cb_called = false;
 	error::ErrptrT got_err = nullptr;
@@ -136,7 +165,7 @@ struct MockServer final : public mock::MockService::Service
 TEST(ASYNC, ClientStreamSuccess)
 {
 	auto promise = std::make_shared<egrpc::ErrPromiseT>();
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	std::string address = "0.0.0.0:12333";
 
@@ -166,51 +195,48 @@ TEST(ASYNC, ClientStreamSuccess)
 
 	EXPECT_EQ(0, num_cb_called);
 
+	auto expect_msg1 = fmts::sprintf("call %p created... processing", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg1, _)).Times(1);
+
 	void* got_tag;
 	bool ok = true;
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, &ctx);
 	ptr->handle(true);
-
 	EXPECT_EQ(0, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("call %p created... processing", ptr);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg2, _)).Times(2);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
 	EXPECT_EQ(1, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
 	EXPECT_EQ(2, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg3, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(false);
 	EXPECT_EQ(2, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
-	EXPECT_STREQ(expect_msg3.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg4 = fmts::sprintf("call %p completed successfully", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg4, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg4 = fmts::sprintf("call %p completed successfully", ptr);
-	EXPECT_STREQ(expect_msg4.c_str(), logger->latest_msg_.c_str());
 
 	bool promise_cb_called = false;
 	egrpc::wait_for(*promise,
@@ -227,7 +253,7 @@ TEST(ASYNC, ClientStreamSuccess)
 TEST(ASYNC, ClientStreamEarlyStop)
 {
 	auto promise = std::make_shared<egrpc::ErrPromiseT>();
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	std::string address = "0.0.0.0:12334";
 
@@ -257,6 +283,9 @@ TEST(ASYNC, ClientStreamEarlyStop)
 
 	EXPECT_EQ(0, num_cb_called);
 
+	auto expect_msg = fmts::sprintf("call %p created... finishing", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg, _)).Times(1);
+
 	void* got_tag;
 	bool ok = true;
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
@@ -264,17 +293,14 @@ TEST(ASYNC, ClientStreamEarlyStop)
 	EXPECT_EQ(got_tag, &ctx);
 	ptr->handle(false);
 	EXPECT_EQ(0, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("call %p created... finishing", ptr);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg2 = fmts::sprintf("call %p completed successfully", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg2, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg2 = fmts::sprintf("call %p completed successfully", ptr);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
 	bool promise_cb_called = false;
 	egrpc::wait_for(*promise,
@@ -291,7 +317,7 @@ TEST(ASYNC, ClientStreamEarlyStop)
 TEST(ASYNC, ClientStreamFail)
 {
 	auto promise = std::make_shared<egrpc::ErrPromiseT>();
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	std::string address = "0.0.0.0:12335";
 
@@ -321,6 +347,9 @@ TEST(ASYNC, ClientStreamFail)
 
 	EXPECT_EQ(0, num_cb_called);
 
+	auto expect_msg = fmts::sprintf("call %p created... processing", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg, _)).Times(1);
+
 	void* got_tag;
 	bool ok = true;
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
@@ -329,43 +358,38 @@ TEST(ASYNC, ClientStreamFail)
 	ptr->handle(true);
 
 	EXPECT_EQ(0, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("call %p created... processing", ptr);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg2, _)).Times(2);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
 	EXPECT_EQ(1, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg2 = fmts::sprintf("call %p received... handling", ptr);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
 	EXPECT_EQ(2, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg3, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_FALSE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(false);
 	EXPECT_EQ(2, num_cb_called);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg3 = fmts::sprintf("call %p received... finishing", ptr);
-	EXPECT_STREQ(expect_msg3.c_str(), logger->latest_msg_.c_str());
+
+	auto expect_msg4 = fmts::sprintf("call %p failed: oh no", ptr);
+	EXPECT_CALL(*logger, log(logs::error_level, expect_msg4, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&got_tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(got_tag, ptr);
 	ptr->handle(true);
-	EXPECT_EQ(logs::ERROR, logger->latest_lvl_);
-	auto expect_msg4 = fmts::sprintf("call %p failed: oh no", ptr);
-	EXPECT_STREQ(expect_msg4.c_str(), logger->latest_msg_.c_str());
 
 	bool promise_cb_called = false;
 	error::ErrptrT got_err = nullptr;
@@ -417,7 +441,7 @@ TEST(ASYNC, ServerRequest)
 {
 	mock::MockService::AsyncService mock_service;
 	std::string address = "0.0.0.0:12345";
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
@@ -426,6 +450,13 @@ TEST(ASYNC, ServerRequest)
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+
+	std::string msg;
+	std::string msg2;
+	EXPECT_CALL(*logger, log(logs::info_level, _, _)).Times(3).
+		WillOnce(SaveArg<1>(&msg)).
+		WillOnce(Return()). // ignore creation message for next handler
+		WillOnce(SaveArg<1>(&msg2));
 
 	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,mock::MockResponse>;
 	void* last_tag = nullptr;
@@ -454,6 +485,9 @@ TEST(ASYNC, ServerRequest)
 		return grpc::Status{grpc::OK, "hello"};
 	}, cq);
 
+	auto expect_msg = fmts::sprintf("rpc %p created", call);
+	EXPECT_STREQ(expect_msg.c_str(), msg.c_str());
+
 	EXPECT_EQ(call, last_tag);
 	EXPECT_EQ(1, num_calls);
 	EXPECT_FALSE(serve_call);
@@ -467,7 +501,8 @@ TEST(ASYNC, ServerRequest)
 		grpc::ClientContext ctx;
 		mock::MockRequest req;
 		mock::MockResponse res;
-		stub->MockRPC(&ctx, req, &res);
+		auto status = stub->MockRPC(&ctx, req, &res);
+		EXPECT_TRUE(status.ok());
 	}).detach();
 
 	void* tag;
@@ -480,20 +515,121 @@ TEST(ASYNC, ServerRequest)
 	ASSERT_NE(call, last_tag);
 	EXPECT_EQ(2, num_calls);
 	EXPECT_TRUE(serve_call);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("rpc %p writing", call);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
 
-	logger->latest_lvl_ = logs::WARN;
+	auto expect_msg2 = fmts::sprintf("rpc %p writing", call);
+	EXPECT_STREQ(expect_msg2.c_str(), msg2.c_str());
+
+	auto expect_msg3 = fmts::sprintf("rpc %p completed", call);
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg3, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
 
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
+	server->Shutdown();
+
+	EXPECT_TRUE(cq.next(&tag, &ok));
+	EXPECT_FALSE(ok);
+	EXPECT_EQ(last_tag, tag);
+	EXPECT_NE(last_tag, call);
+	auto tag_name = static_cast<egrpc::iServerCall*>(last_tag);
+	EXPECT_NE(nullptr, dynamic_cast<ServerCallT*>(tag_name));
+	tag_name->shutdown();
+
+	cq.shutdown();
+}
+
+
+TEST(ASYNC, ServerRequestFailed)
+{
+	mock::MockService::AsyncService mock_service;
+	std::string address = "0.0.0.0:12345";
+	auto logger = std::make_shared<exam::MockLogger>();
+
+	grpc::ServerBuilder builder;
+	builder.AddListeningPort(address,
+		grpc::InsecureServerCredentials());
+	egrpc::GrpcServerCQueue cq(builder.AddCompletionQueue());
+
+	builder.RegisterService(&mock_service);
+	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+
+	std::string msg;
+	std::string msg1;
+	EXPECT_CALL(*logger, log(logs::info_level, _, _)).Times(3).
+		WillOnce(SaveArg<1>(&msg)).
+		WillOnce(Return()). // ignore creation message for next handler
+		WillOnce(SaveArg<1>(&msg1));
+
+	using ServerCallT = egrpc::AsyncServerCall<mock::MockRequest,mock::MockResponse>;
+	void* last_tag = nullptr;
+	size_t num_calls = 0;
+	bool serve_call = false;
+	auto call = new ServerCallT(logger,
+	[&last_tag, &num_calls, &mock_service](grpc::ServerContext* ctx,
+		mock::MockRequest* req,
+		egrpc::iResponder<mock::MockResponse>& writer,
+		egrpc::iCQueue& cq, void* tag)
+	{
+		auto& grpc_res = static_cast<egrpc::GrpcResponder<
+			mock::MockResponse>&>(writer);
+		auto grpc_cq = cq.get_cq();
+		mock_service.RequestMockRPC(ctx, req,
+			&grpc_res.responder_, grpc_cq, estd::must_cast<
+			grpc::ServerCompletionQueue>(grpc_cq), tag);
+		last_tag = tag;
+		++num_calls;
+	},
+	[&serve_call](
+		const mock::MockRequest& req,
+		mock::MockResponse& res)
+	{
+		serve_call = true;
+		return grpc::Status{grpc::NOT_FOUND, "oh nos"};
+	}, cq);
+
+	auto expect_msg = fmts::sprintf("rpc %p created", call);
+	EXPECT_STREQ(expect_msg.c_str(), msg.c_str());
+
+	EXPECT_EQ(call, last_tag);
+	EXPECT_EQ(1, num_calls);
+	EXPECT_FALSE(serve_call);
+
+	std::thread(
+	[address]()
+	{
+		auto stub = mock::MockService::NewStub(grpc::CreateChannel(address,
+			grpc::InsecureChannelCredentials()));
+
+		grpc::ClientContext ctx;
+		mock::MockRequest req;
+		mock::MockResponse res;
+		auto status = stub->MockRPC(&ctx, req, &res);
+		EXPECT_FALSE(status.ok());
+	}).detach();
+
+	void* tag;
+	bool ok = true;
+	EXPECT_TRUE(cq.next(&tag, &ok));
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(tag, call);
+	call->serve();
+
+	auto expect_msg1 = fmts::sprintf("rpc %p writing", call);
+	EXPECT_STREQ(expect_msg1.c_str(), msg1.c_str());
+
+	ASSERT_NE(call, last_tag);
+	EXPECT_EQ(2, num_calls);
+	EXPECT_TRUE(serve_call);
+
 	auto expect_msg2 = fmts::sprintf("rpc %p completed", call);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg2, _)).Times(1);
+
+	EXPECT_TRUE(cq.next(&tag, &ok));
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(tag, call);
+	call->serve();
 
 	server->Shutdown();
 
@@ -513,7 +649,7 @@ TEST(ASYNC, ServerStream)
 {
 	mock::MockService::AsyncService mock_service;
 	std::string address = "0.0.0.0:12346";
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
@@ -522,6 +658,19 @@ TEST(ASYNC, ServerStream)
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+
+	std::string msg;
+	std::string msg1;
+	std::string msg2;
+	std::string msg3;
+	std::string msg4;
+	EXPECT_CALL(*logger, log(logs::info_level, _, _)).Times(6).
+		WillOnce(SaveArg<1>(&msg)).
+		WillOnce(Return()). // ignore creation message for next handler
+		WillOnce(SaveArg<1>(&msg1)).
+		WillOnce(SaveArg<1>(&msg2)).
+		WillOnce(SaveArg<1>(&msg3)).
+		WillOnce(SaveArg<1>(&msg4));
 
 	void* last_tag = nullptr;
 	size_t num_calls = 0;
@@ -563,11 +712,9 @@ TEST(ASYNC, ServerStream)
 	EXPECT_EQ(1, num_calls);
 	EXPECT_FALSE(init_call);
 	EXPECT_EQ(0, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg0 = fmts::sprintf("rpc %p created", call);
-	EXPECT_STREQ(expect_msg0.c_str(), logger->latest_msg_.c_str());
 
-	logger->latest_lvl_ = logs::WARN;
+	auto expect_msg0 = fmts::sprintf("rpc %p created", call);
+	EXPECT_STREQ(expect_msg0.c_str(), msg.c_str());
 
 	std::thread(
 	[address]()
@@ -603,23 +750,23 @@ TEST(ASYNC, ServerStream)
 	EXPECT_EQ(2, num_calls);
 	EXPECT_TRUE(init_call);
 	EXPECT_EQ(1, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	auto expect_msg = fmts::sprintf("rpc %p writing", call);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
+	
+	auto expect_msg1 = fmts::sprintf("rpc %p initializing", call);
+	EXPECT_STREQ(expect_msg1.c_str(), msg1.c_str());
 
-	logger->latest_lvl_ = logs::WARN;
+	auto expect_msg = fmts::sprintf("rpc %p writing", call);
+	EXPECT_STREQ(expect_msg.c_str(), msg2.c_str());
 
 	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
 
+	EXPECT_STREQ(expect_msg.c_str(), msg3.c_str());
+
 	EXPECT_EQ(2, num_calls);
 	EXPECT_EQ(3, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
+	EXPECT_CALL(*logger, log(logs::info_level, expect_msg, _)).Times(1);
 
 	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
@@ -628,19 +775,14 @@ TEST(ASYNC, ServerStream)
 
 	EXPECT_EQ(2, num_calls);
 	EXPECT_EQ(4, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
 
 	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
 	EXPECT_EQ(tag, call);
 	call->serve();
 
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	auto expect_msg2 = fmts::sprintf("rpc %p completed", call);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
+	EXPECT_STREQ(expect_msg2.c_str(), msg4.c_str());
 
 	server->Shutdown();
 
@@ -660,7 +802,7 @@ TEST(ASYNC, ServerStreamStartupError)
 {
 	mock::MockService::AsyncService mock_service;
 	std::string address = "0.0.0.0:12347";
-	auto logger = std::make_shared<exam::TestLogger>();
+	auto logger = std::make_shared<exam::MockLogger>();
 
 	grpc::ServerBuilder builder;
 	builder.AddListeningPort(address,
@@ -669,6 +811,15 @@ TEST(ASYNC, ServerStreamStartupError)
 
 	builder.RegisterService(&mock_service);
 	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+
+	std::string msg;
+	std::string msg1;
+	std::string msg2;
+	EXPECT_CALL(*logger, log(logs::info_level, _, _)).Times(4).
+		WillOnce(SaveArg<1>(&msg)).
+		WillOnce(Return()). // ignore creation message for next handler
+		WillOnce(SaveArg<1>(&msg1)).
+		WillOnce(SaveArg<1>(&msg2));
 
 	void* last_tag = nullptr;
 	size_t num_calls = 0;
@@ -710,11 +861,8 @@ TEST(ASYNC, ServerStreamStartupError)
 	EXPECT_EQ(1, num_calls);
 	EXPECT_FALSE(init_call);
 	EXPECT_EQ(0, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	auto expect_msg0 = fmts::sprintf("rpc %p created", call);
-	EXPECT_STREQ(expect_msg0.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
+	EXPECT_STREQ(expect_msg0.c_str(), msg.c_str());
 
 	std::thread(
 	[address]()
@@ -746,11 +894,8 @@ TEST(ASYNC, ServerStreamStartupError)
 	EXPECT_EQ(2, num_calls);
 	EXPECT_TRUE(init_call);
 	EXPECT_EQ(0, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	auto expect_msg = fmts::sprintf("rpc %p initializing", call);
-	EXPECT_STREQ(expect_msg.c_str(), logger->latest_msg_.c_str());
-
-	logger->latest_lvl_ = logs::WARN;
+	EXPECT_STREQ(expect_msg.c_str(), msg1.c_str());
 
 	EXPECT_TRUE(cq.next(&tag, &ok));
 	EXPECT_TRUE(ok);
@@ -760,9 +905,8 @@ TEST(ASYNC, ServerStreamStartupError)
 	EXPECT_EQ(2, num_calls);
 	EXPECT_TRUE(init_call);
 	EXPECT_EQ(0, num_iterators);
-	EXPECT_EQ(logs::INFO, logger->latest_lvl_);
 	auto expect_msg2 = fmts::sprintf("rpc %p completed", call);
-	EXPECT_STREQ(expect_msg2.c_str(), logger->latest_msg_.c_str());
+	EXPECT_STREQ(expect_msg2.c_str(), msg2.c_str());
 
 	server->Shutdown();
 
@@ -775,6 +919,143 @@ TEST(ASYNC, ServerStreamStartupError)
 	tag_name->shutdown();
 
 	cq.shutdown();
+}
+
+
+TEST(ASYNC, ServerStreamForcedFinish)
+{
+	mock::MockService::AsyncService mock_service;
+	std::string address = "0.0.0.0:12347";
+	auto logger = std::make_shared<exam::MockLogger>();
+
+	grpc::ServerBuilder builder;
+	builder.AddListeningPort(address,
+		grpc::InsecureServerCredentials());
+	egrpc::GrpcServerCQueue cq(builder.AddCompletionQueue());
+
+	builder.RegisterService(&mock_service);
+	std::unique_ptr<grpc::Server> server = builder.BuildAndStart();
+
+	std::string msg;
+	std::string msg1;
+	std::string msg2;
+	std::string creation_msg;
+	EXPECT_CALL(*logger, log(logs::info_level, _, _)).Times(4).
+		WillOnce(SaveArg<1>(&msg)).
+		WillOnce(SaveArg<1>(&creation_msg)). // ignore creation message for next handler
+		WillOnce(SaveArg<1>(&msg1)).
+		WillOnce(SaveArg<1>(&msg2));
+
+	void* last_tag = nullptr;
+	size_t num_calls = 0;
+	bool init_call = false;
+	size_t num_iterators = 0;
+	using StreamCallT = egrpc::AsyncServerStreamCall<mock::MockRequest,
+		mock::MockResponse,std::vector<size_t>>;
+
+	auto call = new StreamCallT(logger,
+	[&last_tag, &num_calls, &mock_service](
+		grpc::ServerContext* ctx,
+		mock::MockRequest* req,
+		egrpc::iWriter<mock::MockResponse>& writer,
+		egrpc::iCQueue& cq, void* tag)
+	{
+		auto& grpc_res = static_cast<egrpc::GrpcWriter<
+			mock::MockResponse>&>(writer);
+		auto grpc_cq = cq.get_cq();
+		mock_service.RequestMockStreamOut(ctx, req,
+			&grpc_res.writer_, grpc_cq, estd::must_cast<
+			grpc::ServerCompletionQueue>(grpc_cq), tag);
+		last_tag = tag;
+		++num_calls;
+	},
+	[&init_call](std::vector<size_t>& vec, const mock::MockRequest& req)
+	{
+		init_call = true;
+		vec = {1, 2, 3, 4};
+		return grpc::Status{grpc::OK, "hello"};
+	},
+	[&num_iterators](const mock::MockRequest& req,
+		std::vector<size_t>::iterator& it, mock::MockResponse& res)
+	{
+		++num_iterators;
+		return true;
+	}, cq);
+
+	EXPECT_EQ(call, last_tag);
+	EXPECT_EQ(1, num_calls);
+	EXPECT_FALSE(init_call);
+	EXPECT_EQ(0, num_iterators);
+	auto expect_msg0 = fmts::sprintf("rpc %p created", call);
+	EXPECT_STREQ(expect_msg0.c_str(), msg.c_str());
+
+	std::condition_variable after_shutdown;
+	std::mutex after_shutdown_m;
+	bool after_shutdown_done = false;
+
+	std::thread(
+	[&]()
+	{
+		auto stub = mock::MockService::NewStub(grpc::CreateChannel(address,
+			grpc::InsecureChannelCredentials()));
+		grpc::ClientContext ctx;
+		ctx.set_deadline(
+			std::chrono::system_clock::now() + std::chrono::minutes(1));
+		mock::MockRequest req;
+		mock::MockResponse res;
+		auto reader = stub->MockStreamOut(&ctx, req);
+
+		// initial section
+		ASSERT_TRUE(reader->Read(&res));
+
+		// process section
+		{
+			std::unique_lock<std::mutex> lk(after_shutdown_m);
+			after_shutdown.wait(lk, [&after_shutdown_done]{ return after_shutdown_done; });
+		}
+
+		EXPECT_FALSE(reader->Read(&res));
+		auto status = reader->Finish();
+		EXPECT_EQ(grpc::CANCELLED, status.error_code());
+	}).detach();
+
+	// initial section
+	void* tag;
+	bool ok = true;
+	EXPECT_TRUE(cq.next(&tag, &ok));
+	EXPECT_TRUE(ok);
+	EXPECT_EQ(tag, call);
+	call->serve();
+
+	ASSERT_NE(call, last_tag);
+	EXPECT_EQ(2, num_calls);
+	EXPECT_TRUE(init_call);
+	EXPECT_EQ(1, num_iterators);
+	auto expect_msg = fmts::sprintf("rpc %p initializing", call);
+	auto expect_msg1 = fmts::sprintf("rpc %p writing", call);
+	EXPECT_STREQ(expect_msg.c_str(), msg1.c_str());
+	EXPECT_STREQ(expect_msg1.c_str(), msg2.c_str());
+
+	// early shutdown section
+	call->shutdown();
+
+	after_shutdown_done = true;
+	after_shutdown.notify_all();
+
+	server->Shutdown();
+
+	std::smatch sm;
+	std::regex_search(creation_msg, sm, std::regex("rpc 0x(.+) created"));
+	std::stringstream ss;
+	ss << std::hex << sm[1];
+	size_t i;
+	ss >> i;
+	void* last_entry = (void*) i;
+	EXPECT_NE(tag, last_entry);
+	StreamCallT* last_handler = dynamic_cast<StreamCallT*>(static_cast<egrpc::iServerCall*>(last_entry));
+	ASSERT_NE(nullptr, last_handler);
+
+	delete last_handler;
 }
 
 
