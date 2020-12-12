@@ -96,6 +96,8 @@ if(cppkg_INSTALL)
         estd/range.hpp
         estd/strs.hpp
         exam/exam.hpp
+        exam/mock_log.hpp
+        exam/nosupport_log.hpp
         flag/flag.hpp
         fmts/fmts.hpp
         jobs/jobs.hpp
