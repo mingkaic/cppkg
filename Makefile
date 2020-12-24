@@ -112,7 +112,7 @@ cover_logs:
 .PHONY: conan_remote
 conan_remote:
 	conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
-	conan remote add mingkaic-co "https://api.bintray.com/conan/mingkaic-co/mkc-conan"
+	conan remote add mingkaic-co "https://gitlab.com/api/v4/projects/23299689/packages/conan"
 
 build/conanbuildinfo.cmake:
 	conan install -if build .
@@ -127,3 +127,7 @@ conan_build: build/conanbuildinfo.cmake
 .PHONY: conan_create
 conan_create:
 	conan create . mingkaic-co/stable
+
+.PHONY: conan_upload
+conan_upload:
+	conan upload cppkg/${VERSION}@mingkaic-co/stable --all --remote mingkaic-co
