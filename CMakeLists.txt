@@ -100,6 +100,7 @@ if(cppkg_INSTALL)
         exam/nosupport_log.hpp
         flag/flag.hpp
         fmts/fmts.hpp
+        fmts/istringable.hpp
         jobs/jobs.hpp
         jobs/managed_job.hpp
         jobs/scope_guard.hpp
