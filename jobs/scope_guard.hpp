@@ -14,27 +14,44 @@
 namespace jobs
 {
 
+using GuardOpF = std::function<void(void)>;
+
 /// Invoke held function upon destruction
 /// Operates as C++ style of Golang's defer
 struct ScopeGuard // todo: replace with a better option
 {
-	ScopeGuard (std::function<void(void)> f) : term_(f) {}
+	ScopeGuard (GuardOpF f) : term_(f) {}
 
 	virtual ~ScopeGuard (void)
 	{
-		term_();
+		if (term_)
+		{
+			term_();
+		}
 	}
 
 	ScopeGuard (const ScopeGuard&) = delete;
 
-	ScopeGuard (ScopeGuard&&) = delete;
+	ScopeGuard (ScopeGuard&& other) :
+		term_(std::move(other.term_)) {}
 
 	ScopeGuard& operator = (const ScopeGuard&) = delete;
 
-	ScopeGuard& operator = (ScopeGuard&&) = delete;
+	ScopeGuard& operator = (ScopeGuard&& other)
+	{
+		if (this != &other)
+		{
+			if (term_)
+			{
+				term_();
+			}
+			term_ = std::move(other.term_);
+		}
+		return *this;
+	}
 
 private:
-	std::function<void(void)> term_;
+	GuardOpF term_;
 };
 
 }
