@@ -11,8 +11,11 @@
 
 #include <algorithm>
 #include <sstream>
+#include <memory>
 
 #include "types/strs.hpp"
+
+#include "fmts/istringable.hpp"
 
 namespace fmts
 {
@@ -61,6 +64,11 @@ struct String final
 
 /// Override fmts::String stream into out stream
 std::ostream& operator << (std::ostream& os, String sstr);
+
+/// Override fmts::iStringable stream into outstream
+std::ostream& operator << (std::ostream& os, const iStringable* sstr);
+
+std::ostream& operator << (std::ostream& os, std::shared_ptr<iStringable> sstr);
 
 /// Stream C-style strings to s
 void to_stream (std::ostream& s, const char* str);

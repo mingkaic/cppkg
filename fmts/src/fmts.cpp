@@ -11,6 +11,18 @@ std::ostream& operator << (std::ostream& os, String sstr)
 	return os;
 }
 
+std::ostream& operator << (std::ostream& os, const iStringable* sstr)
+{
+	os << sstr->to_string();
+	return os;
+}
+
+std::ostream& operator << (std::ostream& os, std::shared_ptr<iStringable> sstr)
+{
+	os << sstr->to_string();
+	return os;
+}
+
 void to_stream (std::ostream& s, const char* str)
 {
 	s << std::string(str);

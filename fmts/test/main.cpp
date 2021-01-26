@@ -5,7 +5,20 @@
 
 #include "gtest/gtest.h"
 
+#include "gmock/gmock.h"
+
 #include "fmts/fmts.hpp"
+
+
+using ::testing::Return;
+
+
+struct MockStringable : public fmts::iStringable
+{
+	virtual ~MockStringable (void) = default;
+
+	MOCK_CONST_METHOD0(to_string, std::string(void));
+};
 
 
 int main (int argc, char** argv)
@@ -16,6 +29,22 @@ int main (int argc, char** argv)
 
 
 #ifndef DISABLE_FMTS_TEST
+
+
+TEST(FMTS, StringableFmt)
+{
+	auto stringable = std::make_shared<MockStringable>();
+
+	EXPECT_CALL(*stringable, to_string()).Times(1).WillOnce(Return("abcdefghijkl"));
+	std::stringstream ss;
+	fmts::to_stream(ss, stringable.get());
+	EXPECT_STREQ("abcdefghijkl", ss.str().c_str());
+	ss.str("");
+
+	EXPECT_CALL(*stringable, to_string()).Times(1).WillOnce(Return("lmnopqrstuv"));
+	fmts::to_stream(ss, stringable);
+	EXPECT_STREQ("lmnopqrstuv", ss.str().c_str());
+}
 
 
 TEST(FMTS, StringFmt)
