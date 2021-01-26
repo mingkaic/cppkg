@@ -47,7 +47,6 @@ class CppkgConan(ConanFile):
 
     def source(self):
         self.run("git clone {}.git .".format(self.url))
-        self.run("git checkout developer-fmts")
 
     def build(self):
         cmake = self._configure_cmake()
