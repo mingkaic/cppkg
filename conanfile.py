@@ -1,8 +1,17 @@
+import os
+import subprocess
+
 from conans import ConanFile, CMake
+
+def get_version():
+    get_vers = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'get_version.sh')
+    sp = subprocess.Popen(get_vers, shell=True, stdout=subprocess.PIPE)
+    version = sp.stdout.read().decode('utf-8')
+    return version.strip()
 
 class CppkgConan(ConanFile):
     name = "cppkg"
-    version = "0.1.2"
+    version = get_version()
     license = "MIT"
     author = "Ming Kai Chen <mingkaichen2009@gmail.com>"
     url = "https://github.com/mingkaic/cppkg"
@@ -38,6 +47,7 @@ class CppkgConan(ConanFile):
 
     def source(self):
         self.run("git clone {}.git .".format(self.url))
+        self.run("git checkout developer-fmts")
 
     def build(self):
         cmake = self._configure_cmake()

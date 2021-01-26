@@ -3,3 +3,4 @@ bazel-*
 
 !.git
 !.bazelrc
+!.bazelignore
