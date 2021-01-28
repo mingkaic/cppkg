@@ -5,21 +5,20 @@ services:
   - docker
 jobs:
   include:
-    - stage: build docker image
+    - stage: build and test through bazel docker image
       script:
         - git checkout ${TRAVIS_BRANCH}
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker build -t $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT} .
         - docker images
         - docker push $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT}
-    - stage: test
-      script:
         - docker run -e CODECOV_TOKEN=${CODECOV_TOKEN}
           --rm $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT}
     - if: branch = master
-      stage: conan_deploy
+      stage: build and deploy through conan docker image
       script:
         - docker build -t $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT} --build-arg CONAN_USR=${CONAN_USR} --build-arg CONAN_PWD=${CONAN_PWD} -f Dockerfile.conan .
+        - docker push $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT}
         - docker run --rm $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT}
 notifications:
   email: false
