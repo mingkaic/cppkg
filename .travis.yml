@@ -17,6 +17,7 @@ jobs:
     - if: branch = master
       stage: build and deploy through conan docker image
       script:
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker build -t $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT} --build-arg CONAN_USR=${CONAN_USR} --build-arg CONAN_PWD=${CONAN_PWD} -f Dockerfile.conan .
         - docker push $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT}
         - docker run --rm $DOCKER_USERNAME/cppkg-cmake:travis-${TRAVIS_COMMIT}
