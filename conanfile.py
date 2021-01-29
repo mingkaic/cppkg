@@ -1,6 +1,3 @@
-import os
-import subprocess
-
 from conans import ConanFile, CMake, tools
 
 def get_version():
