@@ -7,7 +7,6 @@ jobs:
   include:
     - stage: build and test through bazel docker image
       script:
-        - git checkout ${TRAVIS_BRANCH}
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
         - docker build -t $DOCKER_USERNAME/cppkg-test:travis-${TRAVIS_COMMIT} .
         - docker images

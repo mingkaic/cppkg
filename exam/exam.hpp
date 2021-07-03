@@ -47,6 +47,9 @@ struct TestException final : public std::exception
 	GBOOL(et != std::find(ARR.begin(), et, CONTENT)) <<\
 		PREFIX_MSG << " find " << #CONTENT << " in " << #ARR; }
 
+#define EXPECT_STRHAS(SUPER, SUB) EXPECT_THAT(SUPER.c_str(), ::testing::HasSubstr(SUB))
+#define EXPECT_STRHASNOT(SUPER, SUB) EXPECT_THAT(SUPER.c_str(), Not(::testing::HasSubstr(SUB)))
+
 #define ASSERT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_TRUE)
 #define EXPECT_ARREQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, EXPECT_TRUE)
 #define ASSERT_ARRNEQ(ARR, ARR2) _ARRCHECK(ARR, ARR2, ASSERT_FALSE)

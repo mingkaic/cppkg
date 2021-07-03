@@ -164,7 +164,7 @@ TEST_F(LOGS, Debug)
 {
 	logs::debug("debugging message");
 	const char* cmsg = TestLogger::latest_log_msg_.c_str();
-	auto expect = fmts::sprintf("%ddebugging message", logs::DEBUG);
+	auto expect = fmts::sprintf("%ddebugging message", logs::CPPKG_DEBUG);
 	EXPECT_STREQ(expect.c_str(), cmsg);
 }
 
@@ -175,7 +175,7 @@ TEST_F(LOGS, DebugFmt)
 		0.31, 7, "orange");
 	const char* cmsg = TestLogger::latest_log_msg_.c_str();
 	auto expect = fmts::sprintf(
-		"%ddebugging 0.310 message 7 with format orange", logs::DEBUG);
+		"%ddebugging 0.310 message 7 with format orange", logs::CPPKG_DEBUG);
 	EXPECT_STREQ(expect.c_str(), cmsg);
 }
 

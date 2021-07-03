@@ -19,7 +19,14 @@ std::ostream& operator << (std::ostream& os, const iStringable* sstr)
 
 std::ostream& operator << (std::ostream& os, std::shared_ptr<iStringable> sstr)
 {
-	os << sstr->to_string();
+	if (nullptr == sstr.get())
+	{
+		os << "<nil>";
+	}
+	else
+	{
+		os << sstr->to_string();
+	}
 	return os;
 }
 

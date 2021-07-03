@@ -46,7 +46,7 @@ enum LOG_LEVEL
 	ERROR,
 	WARN,
 	INFO,
-	DEBUG,
+	CPPKG_DEBUG,
 	TRACE,
 	NOT_SET,
 };
@@ -58,7 +58,7 @@ static types::StrUMapT<LOG_LEVEL> names2log =
 	{error_level, ERROR},
 	{warn_level, WARN},
 	{info_level, INFO},
-	{debug_level, DEBUG},
+	{debug_level, CPPKG_DEBUG},
 	{trace_level, TRACE},
 };
 
