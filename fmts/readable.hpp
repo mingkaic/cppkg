@@ -181,7 +181,7 @@ void pair_to_stream (std::ostream& s, std::pair<PL,PR> p,
 }
 
 template <typename T>
-std::string human_readable (const T& e)
+std::string readable (const T& e)
 {
 	return Humanize<T>(e).to_string();
 }

@@ -25,14 +25,14 @@ void to_stream (std::ostream& os, const T& e)
 }
 
 template <typename IT>
-[[deprecated("Use Humanize instead")]]
+[[deprecated("Use readable instead")]]
 std::string to_string (IT b, IT e)
 {
 	return Humanize<ContainerT<IT>>(ContainerT<IT>(b, e));
 }
 
 template <typename T>
-[[deprecated("Use Humanize instead")]]
+[[deprecated("Use readable instead")]]
 std::string to_string (const T& e)
 {
 	return Humanize<T>(e);

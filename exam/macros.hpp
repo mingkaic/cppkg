@@ -31,13 +31,13 @@ struct TestException final : public std::exception
 
 #define _ARRCHECK(ARR, ARR2, GBOOL) {\
 	GBOOL(std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
-		"expect list " << fmts::human_readable(ARR) <<\
-		", got " << fmts::human_readable(ARR2) << " instead"; }
+		"expect list " << fmts::readable(ARR) <<\
+		", got " << fmts::readable(ARR2) << " instead"; }
 #define _VECCHECK(VEC, VEC2, GBOOL) {\
 	GBOOL(VEC.size() == VEC2.size() &&\
 		std::equal(VEC.begin(), VEC.end(), VEC2.begin())) <<\
-		"expect list " << fmts::human_readable(VEC) <<\
-		", got " << fmts::human_readable(VEC2) << " instead"; }
+		"expect list " << fmts::readable(VEC) <<\
+		", got " << fmts::readable(VEC2) << " instead"; }
 #define _INSET(SET, CONTENT, GBOOL, PREFIX_MSG) {\
 	GBOOL(SET.end() != SET.find(CONTENT)) <<\
 		PREFIX_MSG << " find " << #CONTENT << " in " << #SET; }
