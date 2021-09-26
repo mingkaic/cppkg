@@ -1,5 +1,5 @@
-#ifndef NUMBERS_DECIMAL_HPP
-#define NUMBERS_DECIMAL_HPP
+#ifndef PKG_NUMBERS_DECIMAL_HPP
+#define PKG_NUMBERS_DECIMAL_HPP
 
 #include <cstdint>
 #include <cassert>
@@ -45,4 +45,4 @@ Fraction reverse (const Fraction& fraction);
 
 }
 
-#endif // NUMBERS_DECIMAL_HPP
+#endif // PKG_NUMBERS_DECIMAL_HPP

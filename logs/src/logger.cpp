@@ -1,6 +1,6 @@
-#include "logs/logs.hpp"
+#include "logs/logger.hpp"
 
-#ifdef PKG_LOGS_HPP
+#ifdef PKG_LOGS_LOGGER_HPP
 
 namespace logs
 {

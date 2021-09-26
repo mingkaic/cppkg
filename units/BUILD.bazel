@@ -3,8 +3,8 @@ licenses(["notice"])
 filegroup(
     name = "srcs",
     srcs = [
-        ":types_hdrs",
-        ":types_srcs",
+        ":units_hdrs",
+        ":units_srcs",
         ":test_srcs",
         "BUILD.bazel",
     ],
@@ -12,12 +12,12 @@ filegroup(
 )
 
 filegroup(
-    name = "types_hdrs",
+    name = "units_hdrs",
     srcs = glob(["*.hpp"]),
 )
 
 filegroup(
-    name = "types_srcs",
+    name = "units_srcs",
     srcs = glob(["src/*.cpp"]),
 )
 
@@ -26,13 +26,16 @@ filegroup(
     srcs = glob(["test/*.cpp"]),
 )
 
-######### LIBRARIES #########
+######### LIBRARY #########
 
 cc_library(
-    name = "types",
-    hdrs = [":types_hdrs"],
-    # srcs = [":types_srcs"],
+    name = "units",
+    hdrs = [":units_hdrs"],
+    srcs = [":units_srcs"],
     copts = ["-std=c++17"],
+    deps = [
+        "//fmts:fmts",
+    ],
     visibility = ["//visibility:public"],
 )
 
@@ -40,11 +43,10 @@ cc_library(
 
 cc_test(
     name = "test",
-    size = "medium",
+    size = "small",
     srcs = [":test_srcs"],
     deps = [
-        ":types",
-        "//exam:exam",
+        ":units",
         "@gtest//:gtest",
     ],
     linkstatic = True,

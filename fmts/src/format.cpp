@@ -1,49 +1,9 @@
-#include "fmts/fmts.hpp"
+#include "fmts/format.hpp"
 
-#ifdef PKG_FMTS_HPP
+#ifdef PKG_FMTS_FORMAT_HPP
 
 namespace fmts
 {
-
-std::ostream& operator << (std::ostream& os, String sstr)
-{
-	os << (std::string) sstr;
-	return os;
-}
-
-std::ostream& operator << (std::ostream& os, const iStringable* sstr)
-{
-	os << sstr->to_string();
-	return os;
-}
-
-std::ostream& operator << (std::ostream& os, std::shared_ptr<iStringable> sstr)
-{
-	if (nullptr == sstr.get())
-	{
-		os << "<nil>";
-	}
-	else
-	{
-		os << sstr->to_string();
-	}
-	return os;
-}
-
-void to_stream (std::ostream& s, const char* str)
-{
-	s << std::string(str);
-}
-
-void to_stream (std::ostream& s, int8_t c)
-{
-	s << (int) c;
-}
-
-void to_stream (std::ostream& s, uint8_t c)
-{
-	s << (unsigned) c;
-}
 
 void ltrim(std::string& s)
 {

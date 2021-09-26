@@ -1,8 +1,8 @@
 #include <boost/filesystem.hpp>
 
-#include "flag/flag.hpp"
+#include "flag/flagset.hpp"
 
-#ifdef PKG_FLAG_HPP
+#ifdef PKG_FLAG_FLAGSET_HPP
 
 namespace flag
 {

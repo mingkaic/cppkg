@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "jobs/managed_job.hpp"
-#include "jobs/scope_guard.hpp"
-#include "jobs/sequence.hpp"
+#include "jobs/jobs.hpp"
 
 
 int main (int argc, char** argv)
