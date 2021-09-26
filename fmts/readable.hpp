@@ -94,6 +94,24 @@ struct Humanize<std::pair<PL,PR>> : public iStreamable
 	std::pair<PL,PR> val_;
 };
 
+template <typename T>
+struct Humanize<T*> : public iStreamable
+{
+	Humanize (T* begin, T* end) : begin_(begin), end_(end) {}
+
+	/// Stream collection using default delim
+	void read (std::ostream& out) const override
+	{
+		out << arr_begin;
+		arr_to_stream(out, begin_, end_);
+		out << arr_end;
+	}
+
+	T* begin_;
+
+	T* end_;
+};
+
 // todo: replace is_array with is_bounded_array
 template <typename T>
 struct Humanize<T, typename std::enable_if<std::is_array<T>::value &&
