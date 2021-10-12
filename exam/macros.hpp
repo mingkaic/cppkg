@@ -36,13 +36,23 @@ struct TestException final : public std::exception
 	std::string msg_;
 };
 
-template <typename T>
+template <typename T, typename std::enable_if<!types::is_complex<T>::value>::type* = nullptr>
 inline T relative_error (const T& l, const T& r)
 {
 	return std::abs(l - r) / (
 		std::max(std::abs(l), std::abs(r)) +
 		std::numeric_limits<T>::epsilon()
 	);
+}
+
+template <typename T>
+inline T relative_error (const std::complex<T>& l, const std::complex<T>& r)
+{
+	std::complex<T> out = std::abs(l - r) / (
+		std::max(std::abs(l), std::abs(r)) +
+		std::numeric_limits<T>::epsilon()
+	);
+	return out.real();
 }
 
 #define _ARRCHECK(ARR, ARR2, GBOOL) {\

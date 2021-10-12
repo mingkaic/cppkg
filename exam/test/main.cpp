@@ -259,13 +259,25 @@ TEST(EXAM, CloseIdempotent)
 	float big = 123451234;
 	float copy = big;
 	float copy2 = big;
-	float notclose = 0.97 * big;
 
 	EXPECT_CLOSE(big, copy *= 0.99);
 	EXPECT_CLOSE(copy *= 0.99, big);
 
 	EXPECT_NOT_CLOSE(big, copy2 *= 0.97);
 	EXPECT_NOT_CLOSE(copy2 *= 0.97, big);
+}
+
+
+TEST(EXAM, ComplexClose)
+{
+	std::complex<float> a(0.6, -1.2);
+	std::complex<float> b(0.59, -1.21);
+	std::complex<float> c(0.7, -1.21);
+
+	EXPECT_CLOSE(a, b);
+	EXPECT_CLOSE(b, a);
+	EXPECT_NOT_CLOSE(a, c);
+	EXPECT_NOT_CLOSE(c, a);
 }
 
 
@@ -293,8 +305,8 @@ TEST(EXAM, RelativeErrorComplex)
 {
 	std::complex<float> a(0.6, -1.2);
 	std::complex<float> b(0.8, -1.8);
-	auto err = exam::relative_error(a, b).real();
-	auto err2 = exam::relative_error(b, a).real();
+	auto err = exam::relative_error(a, b);
+	auto err2 = exam::relative_error(b, a);
 
 	EXPECT_FLOAT_EQ(0.3210806, err);
 	EXPECT_FLOAT_EQ(0.3210806, err2);
