@@ -240,4 +240,65 @@ TEST(EXAM, NoSupportLog)
 }
 
 
+TEST(EXAM, Close)
+{
+	float big = 123451234;
+	float close = 0.99 * big;
+	float notclose = 0.97 * big;
+
+	EXPECT_CLOSE(big, close);
+	EXPECT_CLOSE(close, big);
+
+	EXPECT_NOT_CLOSE(big, notclose);
+	EXPECT_NOT_CLOSE(notclose, big);
+}
+
+
+TEST(EXAM, CloseIdempotent)
+{
+	float big = 123451234;
+	float copy = big;
+	float copy2 = big;
+	float notclose = 0.97 * big;
+
+	EXPECT_CLOSE(big, copy *= 0.99);
+	EXPECT_CLOSE(copy *= 0.99, big);
+
+	EXPECT_NOT_CLOSE(big, copy2 *= 0.97);
+	EXPECT_NOT_CLOSE(copy2 *= 0.97, big);
+}
+
+
+TEST(EXAM, RelativeErrorFloatPos)
+{
+	auto err = exam::relative_error(1.2f, 1.8f);
+	auto err2 = exam::relative_error(1.8f, 1.5f);
+
+	EXPECT_FLOAT_EQ(1.f/3, err);
+	EXPECT_FLOAT_EQ(1.f/6, err2);
+}
+
+
+TEST(EXAM, RelativeErrorFloatNeg)
+{
+	auto err = exam::relative_error(-1.5f, -1.8f);
+	auto err2 = exam::relative_error(-1.8f, -1.2f);
+
+	EXPECT_FLOAT_EQ(1.f/6, err);
+	EXPECT_FLOAT_EQ(1.f/3, err2);
+}
+
+
+TEST(EXAM, RelativeErrorComplex)
+{
+	std::complex<float> a(0.6, -1.2);
+	std::complex<float> b(0.8, -1.8);
+	auto err = exam::relative_error(a, b).real();
+	auto err2 = exam::relative_error(b, a).real();
+
+	EXPECT_FLOAT_EQ(0.3210806, err);
+	EXPECT_FLOAT_EQ(0.3210806, err2);
+}
+
+
 #endif // DISABLE_EXAM_TEST

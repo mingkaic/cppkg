@@ -38,4 +38,11 @@ TEST(ITERATORS, IsStreamable)
 }
 
 
+TEST(MATH, IsComplex)
+{
+	EXPECT_TRUE(types::is_complex<std::complex<float>>::value);
+	EXPECT_FALSE(types::is_complex<float>::value);
+}
+
+
 #endif // DISABLE_TYPES_TEST

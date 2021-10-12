@@ -9,7 +9,14 @@
 #ifndef PKG_EXAM_MACROS_HPP
 #define PKG_EXAM_MACROS_HPP
 
+#include <limits>
+#include <type_traits>
+
+#include "gtest/gtest.h"
+
 #include "fmts/fmts.hpp"
+
+#include "types/types.hpp"
 
 #include "exam/mock_log.hpp"
 #include "exam/nosupport_log.hpp"
@@ -28,6 +35,15 @@ struct TestException final : public std::exception
 
 	std::string msg_;
 };
+
+template <typename T>
+inline T relative_error (const T& l, const T& r)
+{
+	return std::abs(l - r) / (
+		std::max(std::abs(l), std::abs(r)) +
+		std::numeric_limits<T>::epsilon()
+	);
+}
 
 #define _ARRCHECK(ARR, ARR2, GBOOL) {\
 	GBOOL(std::equal(ARR.begin(), ARR.end(), ARR2.begin())) <<\
@@ -72,6 +88,14 @@ struct TestException final : public std::exception
 	"did not expect " << #EVENT << " to succeed"; }\
 	catch (exam::TestException& e) { EXPECT_STREQ(MSG, e.what()); }\
 	catch (std::exception& e) { FAIL() << "unexpected throw " << e.what(); }
+
+#define EXPECT_REL_CLOSE(L, R, ERR) EXPECT_LT(exam::relative_error(L, R), ERR)
+
+#define EXPECT_NOT_REL_CLOSE(L, R, ERR) EXPECT_GE(exam::relative_error(L, R), ERR)
+
+#define EXPECT_CLOSE(L, R) EXPECT_REL_CLOSE(L, R, 0.02)
+
+#define EXPECT_NOT_CLOSE(L, R) EXPECT_NOT_REL_CLOSE(L, R, 0.02)
 
 }
 
