@@ -33,7 +33,10 @@ struct ScopeGuard // todo: replace with a better option
 	ScopeGuard (const ScopeGuard&) = delete;
 
 	ScopeGuard (ScopeGuard&& other) :
-		term_(std::move(other.term_)) {}
+		term_(std::move(other.term_))
+	{
+		other.term_ = GuardOpF(); // explicitly clear other to avoid duplicate term_ calls
+	}
 
 	ScopeGuard& operator = (const ScopeGuard&) = delete;
 

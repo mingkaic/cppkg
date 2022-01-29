@@ -102,6 +102,26 @@ TEST(JOBS, ScopeGuards)
 }
 
 
+TEST(JOBS, ScopeGuardsMove)
+{
+	size_t execution = 0;
+	{
+		jobs::ScopeGuard defer(
+		[&]
+		{
+			++execution;
+		});
+		EXPECT_EQ(0, execution);
+		{
+			jobs::ScopeGuard steal(std::move(defer));
+			EXPECT_EQ(0, execution);
+		}
+		EXPECT_EQ(1, execution);
+	}
+	EXPECT_EQ(1, execution);
+}
+
+
 TEST(JOBS, SequenceOrdering)
 {
 	jobs::Sequence seq;
