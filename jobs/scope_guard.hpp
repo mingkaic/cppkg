@@ -49,6 +49,7 @@ struct ScopeGuard // todo: replace with a better option
 				term_();
 			}
 			term_ = std::move(other.term_);
+			other.term_ = GuardOpF();
 		}
 		return *this;
 	}
