@@ -1,25 +1,42 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine.
-# See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  test-cppkg:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  build-test:
+    working_directory: /cppkg
     docker:
-      - image: mkaichen/bazel_cpp:latest
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      - image: docker:17.05.0-ce-git
     steps:
       - checkout
-      - run: pwd
-      - run: ./scripts/tests.sh
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/cppkg.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/cppkg.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build -t $DOCKER_USERNAME/cppkg-test:circle-$CIRCLE_SHA1 .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/cppkg.tar $DOCKER_USERNAME/cppkg-test:circle-$CIRCLE_SHA1
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/cppkg.tar
+      - run:
+          name: Run test
+          command: |
+            docker run -e CODECOV_TOKEN=$CODECOV_TOKEN --rm $DOCKER_USERNAME/cppkg-test:circle-$CIRCLE_SHA1
 
-# Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   test-cppkg-workflow:
     jobs:
-      - test-cppkg
+      - build-test
