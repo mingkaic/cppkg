@@ -1,6 +1,6 @@
-#include "logs/logs.hpp"
+#include "logs/logger.hpp"
 
-#ifdef PKG_LOGS_HPP
+#ifdef PKG_LOGS_LOGGER_HPP
 
 namespace logs
 {
@@ -53,7 +53,7 @@ void trace (const std::string& msg)
 
 void debug (const std::string& msg)
 {
-	get_logger().log(DEBUG, msg);
+	get_logger().log(CPPKG_DEBUG, msg);
 }
 
 void info (const std::string& msg)

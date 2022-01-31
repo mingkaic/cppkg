@@ -13,3 +13,22 @@ filegroup(
         "BUILD.bazel",
     ],
 )
+
+######### DEVELOPER TOOLS ########
+
+load("@com_grail_bazel_compdb//:aspects.bzl", "compilation_database")
+compilation_database(
+    name = "compdb",
+    targets = [
+		"//diff:diff",
+		"//egrpc:egrpc",
+		"//error:error",
+		"//estd:estd",
+		"//exam:exam",
+		"//flag:flag",
+		"//fmts:fmts",
+		"//jobs:jobs",
+		"//logs:logs",
+		"//types:types",
+    ],
+)

@@ -1,8 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "jobs/managed_job.hpp"
-#include "jobs/scope_guard.hpp"
-#include "jobs/sequence.hpp"
+#include "jobs/jobs.hpp"
 
 
 int main (int argc, char** argv)
@@ -101,6 +99,56 @@ TEST(JOBS, ScopeGuards)
 		EXPECT_FALSE(expect);
 	}
 	EXPECT_TRUE(expect);
+}
+
+
+TEST(JOBS, ScopeGuardsMove)
+{
+	size_t execution = 0;
+	{
+		jobs::ScopeGuard defer(
+		[&]
+		{
+			++execution;
+		});
+		EXPECT_EQ(0, execution);
+		{
+			jobs::ScopeGuard steal(std::move(defer));
+			EXPECT_EQ(0, execution);
+		}
+		EXPECT_EQ(1, execution);
+	}
+	EXPECT_EQ(1, execution);
+}
+
+
+TEST(JOBS, ScopeGuardsMoveAssign)
+{
+	size_t execution = 0;
+	size_t execution2 = 0;
+	{
+		jobs::ScopeGuard defer(
+		[&]
+		{
+			++execution;
+		});
+		EXPECT_EQ(0, execution);
+		{
+			jobs::ScopeGuard defer2(
+			[&]
+			{
+				++execution2;
+			});
+			EXPECT_EQ(0, execution2); // check defer2 is not triggered
+			defer2 = std::move(defer);
+			EXPECT_EQ(0, execution); // check defer2 is triggered
+			EXPECT_EQ(1, execution2);
+		}
+		EXPECT_EQ(1, execution); // check no moved defer1 term is triggered
+		EXPECT_EQ(1, execution2);
+	}
+	EXPECT_EQ(1, execution); // check defer1 execution is not re-triggered
+	EXPECT_EQ(1, execution2);
 }
 
 

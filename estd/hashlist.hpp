@@ -43,6 +43,16 @@ struct HashList final
 		return lst_.end();
 	}
 
+	CstIterT begin (void) const
+	{
+		return lst_.begin();
+	}
+
+	CstIterT end (void) const
+	{
+		return lst_.end();
+	}
+
 	CstIterT cbegin (void) const
 	{
 		return lst_.cbegin();

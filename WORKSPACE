@@ -21,3 +21,12 @@ grpc_deps()
 # c++ dependencies
 load("@rules_proto_grpc//cpp:repositories.bzl", rules_proto_grpc_cpp_repos="cpp_repos")
 rules_proto_grpc_cpp_repos()
+
+# === development ===
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+git_repository(
+    name = "com_grail_bazel_compdb",
+	remote = "https://github.com/grailbio/bazel-compilation-database",
+	tag = "0.4.5",
+)

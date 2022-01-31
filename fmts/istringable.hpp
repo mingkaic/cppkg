@@ -1,19 +1,29 @@
-#ifndef FMTS_ISTRINGABLE_HPP
-#define FMTS_ISTRINGABLE_HPP
+///
+/// istringable.hpp
+/// fmts
+///
+/// Purpose:
+/// Implement iStringable convenience abstract class writing stream from string
+///
 
-#include <string>
+#ifndef PKG_FMTS_ISTRINGABLE_HPP
+#define PKG_FMTS_ISTRINGABLE_HPP
+
+#include "fmts/ireadable.hpp"
 
 namespace fmts
 {
 
-struct iStringable
+struct iStringable : public iReadable
 {
 	virtual ~iStringable (void) = default;
 
-	// Return the string representation of this object
-	virtual std::string to_string (void) const = 0;
+	void read (std::ostream& out) const override
+	{
+		out << this->to_string();
+	}
 };
 
 }
 
-#endif // FMTS_ISTRINGABLE_HPP
+#endif // PKG_FMTS_ISTRINGABLE_HPP

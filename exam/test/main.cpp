@@ -18,7 +18,6 @@ using ::testing::Throw;
 
 int main (int argc, char** argv)
 {
-
 	::testing::InitGoogleTest(&argc, argv);
 	return RUN_ALL_TESTS();
 }
@@ -59,6 +58,50 @@ TEST(EXAM, ArrEquality)
 	EXPECT_ARRNEQ(arr, diff);
 	EXPECT_ARRNEQ(vec, diff);
 	EXPECT_ARRNEQ(lst, diff);
+}
+
+
+TEST(EXAM, VecEquality)
+{
+	std::array<size_t,3> arr = {123, 456, 789};
+	std::vector<size_t> vec = {123, 456, 789};
+	std::list<size_t> lst = {123, 456, 789};
+
+	std::array<size_t,3> arr2 = {123, 456, 789};
+	std::vector<size_t> vec2 = {123, 456, 789};
+	std::list<size_t> lst2 = {123, 456, 789};
+
+	std::list<size_t> diffsize = {123, 456, 789, 1011};
+	std::list<size_t> outoforder = {456, 123, 789};
+	std::vector<size_t> diff = {0, 2, 1, 22};
+
+	ASSERT_VECEQ(arr, arr2);
+	EXPECT_VECEQ(arr, vec2);
+	ASSERT_VECEQ(arr, lst2);
+
+	EXPECT_VECEQ(vec, arr2);
+	ASSERT_VECEQ(vec, vec2);
+	EXPECT_VECEQ(vec, lst2);
+
+	ASSERT_VECEQ(lst, arr2);
+	EXPECT_VECEQ(lst, vec2);
+	ASSERT_VECEQ(lst, lst2);
+
+	ASSERT_VECNEQ(arr, diffsize);
+	ASSERT_VECNEQ(vec, diffsize);
+	ASSERT_VECNEQ(lst, diffsize);
+
+	EXPECT_VECNEQ(arr, diffsize);
+	EXPECT_VECNEQ(vec, diffsize);
+	EXPECT_VECNEQ(lst, diffsize);
+
+	ASSERT_VECNEQ(arr, outoforder);
+	ASSERT_VECNEQ(vec, outoforder);
+	ASSERT_VECNEQ(lst, outoforder);
+
+	EXPECT_VECNEQ(arr, diff);
+	EXPECT_VECNEQ(vec, diff);
+	EXPECT_VECNEQ(lst, diff);
 }
 
 
@@ -194,6 +237,79 @@ TEST(EXAM, NoSupportLog)
 	log.called_ = false;
 	log.log("321", "123");
 	EXPECT_TRUE(log.called_);
+}
+
+
+TEST(EXAM, Close)
+{
+	float big = 123451234;
+	float close = 0.99 * big;
+	float notclose = 0.97 * big;
+
+	EXPECT_CLOSE(big, close);
+	EXPECT_CLOSE(close, big);
+
+	EXPECT_NOT_CLOSE(big, notclose);
+	EXPECT_NOT_CLOSE(notclose, big);
+}
+
+
+TEST(EXAM, CloseIdempotent)
+{
+	float big = 123451234;
+	float copy = big;
+	float copy2 = big;
+
+	EXPECT_CLOSE(big, copy *= 0.99);
+	EXPECT_CLOSE(copy *= 0.99, big);
+
+	EXPECT_NOT_CLOSE(big, copy2 *= 0.97);
+	EXPECT_NOT_CLOSE(copy2 *= 0.97, big);
+}
+
+
+TEST(EXAM, ComplexClose)
+{
+	std::complex<float> a(0.6, -1.2);
+	std::complex<float> b(0.59, -1.21);
+	std::complex<float> c(0.7, -1.21);
+
+	EXPECT_CLOSE(a, b);
+	EXPECT_CLOSE(b, a);
+	EXPECT_NOT_CLOSE(a, c);
+	EXPECT_NOT_CLOSE(c, a);
+}
+
+
+TEST(EXAM, RelativeErrorFloatPos)
+{
+	auto err = exam::relative_error(1.2f, 1.8f);
+	auto err2 = exam::relative_error(1.8f, 1.5f);
+
+	EXPECT_FLOAT_EQ(1.f/3, err);
+	EXPECT_FLOAT_EQ(1.f/6, err2);
+}
+
+
+TEST(EXAM, RelativeErrorFloatNeg)
+{
+	auto err = exam::relative_error(-1.5f, -1.8f);
+	auto err2 = exam::relative_error(-1.8f, -1.2f);
+
+	EXPECT_FLOAT_EQ(1.f/6, err);
+	EXPECT_FLOAT_EQ(1.f/3, err2);
+}
+
+
+TEST(EXAM, RelativeErrorComplex)
+{
+	std::complex<float> a(0.6, -1.2);
+	std::complex<float> b(0.8, -1.8);
+	auto err = exam::relative_error(a, b);
+	auto err2 = exam::relative_error(b, a);
+
+	EXPECT_FLOAT_EQ(0.3210806, err);
+	EXPECT_FLOAT_EQ(0.3210806, err2);
 }
 
 

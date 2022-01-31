@@ -136,3 +136,15 @@ conan_upload:
 
 .PHONY: conan_create_n_upload
 conan_create_n_upload: conan_create conan_upload
+
+#### compile db
+
+EXEC_ROOT := $(shell bazel info execution_root)
+
+COMP_FILE := $(shell bazel info bazel-bin)/compile_commands.json
+
+.PHONY: compdb
+compdb:
+	bazel build //:compdb
+	sed -i.bak "s@__EXEC_ROOT__@${EXEC_ROOT}@" "${COMP_FILE}"
+	ln -s "${COMP_FILE}" compile_commands.json

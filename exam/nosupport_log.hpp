@@ -1,6 +1,6 @@
 
-#ifndef EXAM_NOSUPPORT_HPP
-#define EXAM_NOSUPPORT_HPP
+#ifndef PKG_EXAM_NOSUPPORT_HPP
+#define PKG_EXAM_NOSUPPORT_HPP
 
 #include "logs/logs.hpp"
 
@@ -38,4 +38,4 @@ struct NoSupportLogger final : public logs::iLogger
 
 }
 
-#endif // EXAM_NOSUPPORT_HPP
+#endif // PKG_EXAM_NOSUPPORT_HPP
