@@ -73,7 +73,7 @@ CMakeFiles
 
 # whitelist
 !.gitignore
-!.travis.yml
+!.circleci
 !.dockerignore
 !.gitmodules
 !.astylerc
