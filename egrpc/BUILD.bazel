@@ -43,7 +43,7 @@ cc_library(
     srcs = [":egrpc_srcs"],
     copts = ["-std=c++17"],
     deps = [
-        "//logs:logs",
+        "@com_github_mingkaic_cisab//logs:logs",
         "//error:error",
         "@com_github_grpc_grpc//:grpc++",
     ],
@@ -71,8 +71,7 @@ cc_test(
         ":egrpc",
         ":test_cc_grpc",
         "//estd:estd",
-        "//exam:exam",
-        "@gtest//:gtest",
+        "@com_github_mingkaic_verum//exam:exam",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

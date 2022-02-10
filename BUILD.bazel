@@ -9,7 +9,12 @@ package(
 filegroup(
     name = "srcs",
     srcs = [
+        "//diff:srcs",
+        "//egrpc:srcs",
+        "//error:srcs",
+        "//estd:srcs",
         "//flag:srcs",
+        "//jobs:srcs",
         "BUILD.bazel",
     ],
 )
@@ -24,11 +29,7 @@ compilation_database(
 		"//egrpc:egrpc",
 		"//error:error",
 		"//estd:estd",
-		"//exam:exam",
 		"//flag:flag",
-		"//fmts:fmts",
 		"//jobs:jobs",
-		"//logs:logs",
-		"//types:types",
     ],
 )

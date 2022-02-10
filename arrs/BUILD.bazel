@@ -37,8 +37,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":arrs",
-        "//exam:exam",
-        "@gtest//:gtest",
+        "@com_github_mingkaic_verum//exam:exam",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

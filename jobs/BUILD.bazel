@@ -33,7 +33,7 @@ cc_library(
     hdrs = [":jobs_hdrs"],
     # srcs = [":jobs_srcs"],
     copts = ["-std=c++17"],
-    deps = ["//logs:logs"],
+    deps = ["@com_github_mingkaic_cisab//logs:logs"],
     visibility = ["//visibility:public"],
 )
 
@@ -45,7 +45,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":jobs",
-        "@gtest//:gtest",
+		"@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

@@ -1,5 +1,20 @@
 workspace(name = "com_github_mingkaic_cppkg")
 
+# === development ===
+
+load("//third_party:all.bzl", "test_dependencies")
+test_dependencies()
+
+load("@com_github_mingkaic_verum//third_party:all.bzl", verum_deps="dependencies")
+verum_deps()
+
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+git_repository(
+    name = "com_grail_bazel_compdb",
+	remote = "https://github.com/grailbio/bazel-compilation-database",
+	tag = "0.4.5",
+)
+
 # === load local dependencies ===
 
 load("//third_party:all.bzl", "dependencies")
@@ -21,12 +36,3 @@ grpc_deps()
 # c++ dependencies
 load("@rules_proto_grpc//cpp:repositories.bzl", rules_proto_grpc_cpp_repos="cpp_repos")
 rules_proto_grpc_cpp_repos()
-
-# === development ===
-
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
-git_repository(
-    name = "com_grail_bazel_compdb",
-	remote = "https://github.com/grailbio/bazel-compilation-database",
-	tag = "0.4.5",
-)

@@ -206,12 +206,6 @@ add_executable(${ESTD_TEST}
 target_link_libraries(${ESTD_TEST} estd exam)
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 
-# exam
-set(EXAM_TEST exam_test)
-add_executable(${EXAM_TEST} exam/test/main.cpp)
-target_link_libraries(${EXAM_TEST} exam)
-add_test(NAME ${EXAM_TEST} COMMAND ${EXAM_TEST})
-
 # flag
 set(FLAG_TEST flag_test)
 add_executable(${FLAG_TEST} flag/test/main.cpp)

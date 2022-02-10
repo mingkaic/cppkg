@@ -32,7 +32,7 @@ cc_library(
     name = "numbers",
     hdrs = [":numbers_hdrs"],
     srcs = [":numbers_srcs"],
-	deps = ["//fmts:fmts"],
+	deps = ["@com_github_mingkaic_cisab//fmts:fmts"],
     copts = ["-std=c++17"],
     visibility = ["//visibility:public"],
 )
@@ -45,8 +45,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":numbers",
-        "//exam:exam",
-        "@gtest//:gtest",
+		"@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],
