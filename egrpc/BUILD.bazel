@@ -1,6 +1,6 @@
 licenses(["notice"])
 
-load("@rules_proto_grpc//cpp:defs.bzl", "cpp_grpc_library")
+load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
 filegroup(
     name = "srcs",
@@ -32,7 +32,7 @@ filegroup(
 
 filegroup(
     name = "test_protos",
-    srcs = glob(["test/*.proto"]),
+    srcs = glob(["pbtest/*.proto"]),
 )
 
 ######### LIBRARY #########
@@ -43,8 +43,8 @@ cc_library(
     srcs = [":egrpc_srcs"],
     copts = ["-std=c++17"],
     deps = [
-        "@com_github_mingkaic_cisab//logs:logs",
         "//error:error",
+        "@com_github_mingkaic_cisab//logs:logs",
         "@com_github_grpc_grpc//:grpc++",
     ],
     visibility = ["//visibility:public"],
@@ -53,14 +53,14 @@ cc_library(
 ######### TEST #########
 
 proto_library(
-    name = "test_pb",
+    name = "pbtest_pb",
     srcs = [":test_protos"],
 )
 
-cpp_grpc_library(
-    name = "test_cc_grpc",
-    deps = [":test_pb"],
-    visibility = ["//visibility:public"],
+cc_grpc_library(
+    name = "pbtest_cc_grpc",
+    srcs = [":test_protos"],
+	deps = [],
 )
 
 cc_test(
@@ -69,7 +69,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":egrpc",
-        ":test_cc_grpc",
+        ":pbtest_cc_grpc",
         "//estd:estd",
         "@com_github_mingkaic_verum//exam:exam",
     ],

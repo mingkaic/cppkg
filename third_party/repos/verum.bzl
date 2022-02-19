@@ -4,5 +4,5 @@ def verum_repository():
     git_repository(
         name = "com_github_mingkaic_verum",
         remote = "https://github.com/mingkaic/verum",
-        commit = "67f7ca4f50d588590daf35814038ca3ea7fe27f0",
+        commit = "92350583a5ea8519beeb94a5d73f02b18190ac59",
     )

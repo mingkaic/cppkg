@@ -31,48 +31,47 @@ include_directories(
     $<INSTALL_INTERFACE:.>
 )
 
-# types
-add_library(types INTERFACE)
-
-# fmts
-add_library(fmts fmts/src/fmts.cpp)
-target_link_libraries(fmts PUBLIC types)
+# arrs
+add_library(arrs INTERFACE)
 
 # diff
 add_library(diff diff/src/msg.cpp)
-target_link_libraries(diff PUBLIC fmts)
-
-# logs
-add_library(logs logs/src/logs.cpp)
-target_link_libraries(logs PUBLIC fmts)
-
-# error
-add_library(error error/src/error.cpp)
-target_link_libraries(error PUBLIC fmts)
+target_link_libraries(diff PUBLIC ${CONAN_LIBS_CISAB})
 
 # egrpc
 add_library(egrpc STATIC egrpc/src/iclient_async.cpp)
-target_link_libraries(egrpc PUBLIC error logs gRPC::grpc++ gRPC::grpc++_unsecure)
+target_link_libraries(egrpc PUBLIC error ${CONAN_LIBS_CISAB} gRPC::grpc++ gRPC::grpc++_unsecure)
+
+# error
+add_library(error error/src/error.cpp)
+target_link_libraries(error PUBLIC ${CONAN_LIBS_CISAB})
 
 # estd
 add_library(estd estd/src/strs.cpp)
-target_link_libraries(estd PUBLIC logs)
-
-# exam
-add_library(exam INTERFACE)
-target_link_libraries(exam INTERFACE fmts logs ${CONAN_LIBS_GTEST})
+target_link_libraries(estd PUBLIC ${CONAN_LIBS_CISAB})
 
 # flag
 add_library(flag flag/src/flag.cpp)
-target_link_libraries(flag PUBLIC logs ${CONAN_LIBS_BOOST})
+target_link_libraries(flag PUBLIC ${CONAN_LIBS_CISAB} ${CONAN_LIBS_BOOST})
 
 # jobs
 add_library(jobs INTERFACE)
-target_link_libraries(jobs INTERFACE logs)
+target_link_libraries(jobs INTERFACE ${CONAN_LIBS_CISAB})
+
+# numbers
+add_library(numbers numbers/src/decimal.cpp)
+target_link_libraries(numbers PUBLIC ${CONAN_LIBS_CISAB})
+
+# units
+add_library(units units/src/memory.cpp units/src/time.cpp)
+target_link_libraries(units PUBLIC ${CONAN_LIBS_CISAB})
 
 #### install ####
 if(cppkg_INSTALL)
     foreach(_HDR
+        arrs/arrs.hpp
+        arrs/list.hpp
+        arrs/vecs.hpp
         diff/diff.hpp
         diff/format.hpp
         diff/msg.hpp
@@ -95,20 +94,17 @@ if(cppkg_INSTALL)
         estd/hashlist.hpp
         estd/range.hpp
         estd/strs.hpp
-        exam/exam.hpp
-        exam/mock_log.hpp
-        exam/nosupport_log.hpp
         flag/flag.hpp
-        fmts/fmts.hpp
-        fmts/istringable.hpp
+        flag/flagset.hpp
         jobs/jobs.hpp
         jobs/managed_job.hpp
         jobs/scope_guard.hpp
         jobs/sequence.hpp
-        logs/ilogs.hpp
-        logs/logs.hpp
-        types/strs.hpp
-        types/types.hpp
+        numbers/decimal.hpp
+        numbers/numbers.hpp
+        units/memory.hpp
+        units/time.hpp
+        units/units.hpp
     )
         get_filename_component(_PATH ${_HDR} PATH)
         install(FILES ${_HDR} DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}")
@@ -116,16 +112,15 @@ if(cppkg_INSTALL)
 
     set(TargetFile ${PROJECT_NAME}Targets)
     install(TARGETS
+        arrs
         diff
         egrpc
         error
         estd
-        exam
         flag
-        fmts
         jobs
-        logs
-        types
+        numbers
+        units
         EXPORT ${TargetFile}
         RUNTIME DESTINATION ${cppkg_INSTALL_BINDIR}
         LIBRARY DESTINATION ${cppkg_INSTALL_LIBDIR}
@@ -143,11 +138,11 @@ if(PACKAGE_TESTS)
     enable_testing()
 endif()
 
-# fmts
-set(FMTS_TEST fmts_test)
-add_executable(${FMTS_TEST} fmts/test/main.cpp)
-target_link_libraries(${FMTS_TEST} ${CONAN_LIBS_GTEST} fmts)
-add_test(NAME ${FMTS_TEST} COMMAND ${FMTS_TEST})
+# arrs
+set(ARRS_TEST arrs_test)
+add_executable(${ARRS_TEST} arrs/test/main.cpp)
+target_link_libraries(${ARRS_TEST} ${CONAN_LIBS_VERUM} arrs)
+add_test(NAME ${ARRS_TEST} COMMAND ${ARRS_TEST})
 
 # diff
 set(DIFF_TEST diff_test)
@@ -155,27 +150,15 @@ add_executable(${DIFF_TEST} diff/test/main.cpp)
 target_link_libraries(${DIFF_TEST} ${CONAN_LIBS_GTEST} diff)
 add_test(NAME ${DIFF_TEST} COMMAND ${DIFF_TEST})
 
-# logs
-set(LOGS_TEST logs_test)
-add_executable(${LOGS_TEST} logs/test/main.cpp)
-target_link_libraries(${LOGS_TEST} ${CONAN_LIBS_GTEST} logs)
-add_test(NAME ${LOGS_TEST} COMMAND ${LOGS_TEST})
-
-# error
-set(ERROR_TEST error_test)
-add_executable(${ERROR_TEST} error/test/main.cpp)
-target_link_libraries(${ERROR_TEST} ${CONAN_LIBS_GTEST} error)
-add_test(NAME ${ERROR_TEST} COMMAND ${ERROR_TEST})
-
 # egrpc
 find_program(_PROTOBUF_PROTOC protoc ${CONAN_BIN_DIRS_PROTOBUF} NO_DEFAULT_PATH)
 set(_GRPC_CPP_PLUGIN_EXECUTABLE $<TARGET_FILE:gRPC::grpc_cpp_plugin>)
 
-get_filename_component(EGRPC_TEST_PROTO "${CMAKE_CURRENT_SOURCE_DIR}/egrpc/test/test.proto" ABSOLUTE)
-set(EGRPC_TEST_PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/test/test.pb.cc")
-set(EGRPC_TEST_PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/test/test.pb.h")
-set(EGRPC_TEST_GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/test/test.grpc.pb.cc")
-set(EGRPC_TEST_GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/test/test.grpc.pb.h")
+get_filename_component(EGRPC_TEST_PROTO "${CMAKE_CURRENT_SOURCE_DIR}/egrpc/pbtest/test.proto" ABSOLUTE)
+set(EGRPC_TEST_PROTO_SRCS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/pbtest/test.pb.cc")
+set(EGRPC_TEST_PROTO_HDRS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/pbtest/test.pb.h")
+set(EGRPC_TEST_GRPC_SRCS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/pbtest/test.grpc.pb.cc")
+set(EGRPC_TEST_GRPC_HDRS "${CMAKE_CURRENT_BINARY_DIR}/egrpc/pbtest/test.grpc.pb.h")
 add_custom_command(
 OUTPUT "${EGRPC_TEST_PROTO_SRCS}" "${EGRPC_TEST_PROTO_HDRS}" "${EGRPC_TEST_GRPC_SRCS}" "${EGRPC_TEST_GRPC_HDRS}"
 COMMAND ${_PROTOBUF_PROTOC}
@@ -190,8 +173,14 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 set(EGRPC_TEST egrpc_test)
 add_executable(${EGRPC_TEST} egrpc/test/main.cpp $<TARGET_OBJECTS:egrpc_test_proto_obj>)
-target_link_libraries(${EGRPC_TEST} egrpc estd exam)
+target_link_libraries(${EGRPC_TEST} egrpc estd ${CONAN_LIBS_VERUM})
 add_test(NAME ${EGRPC_TEST} COMMAND ${EGRPC_TEST})
+
+# error
+set(ERROR_TEST error_test)
+add_executable(${ERROR_TEST} error/test/main.cpp)
+target_link_libraries(${ERROR_TEST} ${CONAN_LIBS_GTEST} error)
+add_test(NAME ${ERROR_TEST} COMMAND ${ERROR_TEST})
 
 # estd
 set(ESTD_TEST estd_test)
@@ -203,7 +192,7 @@ add_executable(${ESTD_TEST}
     estd/test/test_range.cpp
     estd/test/test_strs.cpp
     estd/test/main.cpp)
-target_link_libraries(${ESTD_TEST} estd exam)
+target_link_libraries(${ESTD_TEST} estd ${CONAN_LIBS_VERUM})
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 
 # flag
@@ -217,3 +206,15 @@ set(JOBS_TEST jobs_test)
 add_executable(${JOBS_TEST} jobs/test/main.cpp)
 target_link_libraries(${JOBS_TEST} ${CONAN_LIBS_GTEST} jobs)
 add_test(NAME ${JOBS_TEST} COMMAND ${JOBS_TEST})
+
+# numbers
+set(NUMBERS_TEST numbers_test)
+add_executable(${NUMBERS_TEST} numbers/test/main.cpp)
+target_link_libraries(${NUMBERS_TEST} ${CONAN_LIBS_GTEST} numbers)
+add_test(NAME ${NUMBERS_TEST} COMMAND ${NUMBERS_TEST})
+
+# units
+set(UNITS_TEST units_test)
+add_executable(${UNITS_TEST} units/test/main.cpp)
+target_link_libraries(${UNITS_TEST} ${CONAN_LIBS_GTEST} units)
+add_test(NAME ${UNITS_TEST} COMMAND ${UNITS_TEST})

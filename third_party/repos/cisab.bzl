@@ -4,5 +4,5 @@ def cisab_repository():
     git_repository(
         name = "com_github_mingkaic_cisab",
         remote = "https://github.com/mingkaic/cisab",
-        commit = "658411513875dd50161abbc3591a7ae41157c2b4",
+        commit = "b65c5e18e6bc1ca1bdcbb064ab681a15b16b961f",
     )

@@ -18,7 +18,9 @@ class CppkgConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = (
         "boost/1.73.0",
-        "grpc/1.29.1@inexorgame/stable"
+        "cisab/0.1.0@mingkaic-co/stable",
+        "verum/0.1.1@mingkaic-co/stable",
+        "grpc/1.43.0"
     )
     generators = "cmake", "cmake_find_package_multi"
 
@@ -57,4 +59,14 @@ class CppkgConan(ConanFile):
     def package_info(self):
         self.cpp_info.names["cmake_find_package"] = self.name
         self.cpp_info.names["cmake_find_package_multi"] = self.name
-        self.cpp_info.libs = ["diff", "egrpc", "error", "estd", "flag", "numbers"]
+        self.cpp_info.libs = [
+            "arrs",
+            "diff",
+            "egrpc",
+            "error",
+            "estd",
+            "flag",
+            "jobs",
+            "numbers",
+            "units"
+        ]
