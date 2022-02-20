@@ -33,7 +33,7 @@ cc_library(
     hdrs = [":estd_hdrs"],
     srcs = [":estd_srcs"],
     copts = ["-std=c++17"],
-    deps = ["//logs:logs"],
+    deps = ["@com_github_mingkaic_cisab//logs:logs"],
     visibility = ["//visibility:public"],
 )
 
@@ -45,8 +45,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":estd",
-        "//exam:exam",
-        "@gtest//:gtest",
+        "@com_github_mingkaic_verum//exam:exam",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

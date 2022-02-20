@@ -34,7 +34,7 @@ cc_library(
     srcs = [":flag_srcs"],
     copts = ["-std=c++17"],
     deps = [
-        "//logs:logs",
+        "@com_github_mingkaic_cisab//logs:logs",
         "@boost//:filesystem",
         "@boost//:program_options",
     ],
@@ -49,7 +49,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":flag",
-        "@gtest//:gtest",
+		"@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

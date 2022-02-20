@@ -34,7 +34,7 @@ cc_library(
     srcs = [":units_srcs"],
     copts = ["-std=c++17"],
     deps = [
-        "//fmts:fmts",
+        "@com_github_mingkaic_cisab//fmts:fmts",
     ],
     visibility = ["//visibility:public"],
 )
@@ -47,7 +47,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":units",
-        "@gtest//:gtest",
+		"@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

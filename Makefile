@@ -113,7 +113,6 @@ VERSION := $(shell cat VERSION)
 
 .PHONY: conan_remote
 conan_remote:
-	conan remote add inexorgame "https://api.bintray.com/conan/inexorgame/inexor-conan"
 	conan remote add mingkaic-co "https://gitlab.com/api/v4/projects/23299689/packages/conan"
 
 build/conanbuildinfo.cmake:

@@ -33,7 +33,7 @@ cc_library(
     hdrs = [":error_hdrs"],
     srcs = [":error_srcs"],
     copts = ["-std=c++17"],
-    deps = ["//fmts:fmts"],
+    deps = ["@com_github_mingkaic_cisab//fmts:fmts"],
     visibility = ["//visibility:public"],
 )
 
@@ -45,7 +45,7 @@ cc_test(
     srcs = [":test_srcs"],
     deps = [
         ":error",
-        "@gtest//:gtest",
+		"@gtest//:gtest",
     ],
     linkstatic = True,
     copts = ["-std=c++17"],

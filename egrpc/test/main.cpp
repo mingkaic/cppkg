@@ -8,7 +8,7 @@
 
 #include "egrpc/egrpc.hpp"
 
-#include "egrpc/test/test.grpc.pb.h"
+#include "egrpc/pbtest/test.grpc.pb.h"
 
 
 using ::testing::_;
@@ -750,7 +750,7 @@ TEST(ASYNC, ServerStream)
 	EXPECT_EQ(2, num_calls);
 	EXPECT_TRUE(init_call);
 	EXPECT_EQ(1, num_iterators);
-	
+
 	auto expect_msg1 = fmts::sprintf("rpc %p initializing", call);
 	EXPECT_STREQ(expect_msg1.c_str(), msg1.c_str());
 

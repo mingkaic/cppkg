@@ -9,7 +9,7 @@ jobs:
       - setup_remote_docker
       - restore_cache:
           keys:
-            - v1-{{ .Branch }}
+            - v1-test-{{ .Branch }}
           paths:
             - /caches/cppkg.tar
       - run:
@@ -27,16 +27,60 @@ jobs:
             mkdir -p /caches
             docker save -o /caches/cppkg.tar $DOCKER_USERNAME/cppkg-test:circle-$CIRCLE_SHA1
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
+          key: v1-test-{{ .Branch }}-{{ epoch }}
           paths:
             - /caches/cppkg.tar
       - run:
           name: Run test
           command: |
             docker run -e CODECOV_TOKEN=$CODECOV_TOKEN --rm $DOCKER_USERNAME/cppkg-test:circle-$CIRCLE_SHA1
+  build-deploy:
+    working_directory: /cppkg
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-deploy-{{ .Branch }}
+          paths:
+            - /caches/cppkg.tar
+      - run:
+          name: Load Docker image layer cache
+          command: |
+            set +o pipefail
+            docker load -i /caches/cppkg.tar | true
+      - run:
+          name: Build application Docker image
+          command: |
+            docker build -f Dockerfile.conan -t $DOCKER_USERNAME/cppkg-deploy:circle-$CIRCLE_SHA1 --build-arg CONAN_PWD=$CONAN_PWD --build-arg CONAN_USR=$CONAN_USR .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/cppkg.tar $DOCKER_USERNAME/cppkg-deploy:circle-$CIRCLE_SHA1
+      - save_cache:
+          key: v1-deploy-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/cppkg.tar
+      - run:
+          name: Run deployment
+          command: |
+            docker run --rm $DOCKER_USERNAME/cppkg-deploy:circle-$CIRCLE_SHA1
 
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  test-cppkg-workflow:
+  weekly-deploy-update:
+    when:
+    and:
+      - equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+      - equal: [ "weekly build", << pipeline.schedule.name >> ]
+    jobs:
+      - build-test
+      - build-deploy:
+          requires:
+            - build-test
+  merge-test-workflow:
     jobs:
       - build-test
