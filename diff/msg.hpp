@@ -11,6 +11,7 @@
 
 #include <cstring>
 #include <istream>
+#include <limits>
 
 #include "fmts/fmts.hpp"
 
