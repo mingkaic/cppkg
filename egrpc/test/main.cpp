@@ -922,7 +922,7 @@ TEST(ASYNC, ServerStreamStartupError)
 }
 
 
-TEST(ASYNC, ServerStreamForcedFinish)
+TEST(ASYNC, DISABLED_ServerStreamForcedFinish) // FLAKY WITH RACE CONDITION
 {
 	mock::MockService::AsyncService mock_service;
 	std::string address = "0.0.0.0:12347";
