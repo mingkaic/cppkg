@@ -1,0 +1,42 @@
+licenses(["notice"])
+
+filegroup(
+    name = "srcs",
+    srcs = [
+        ":arrs_hdrs",
+        ":test_srcs",
+        "BUILD.bazel",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "arrs_hdrs",
+    srcs = glob(["*.h"]),
+)
+
+filegroup(
+    name = "test_srcs",
+    srcs = glob(["test/*.cc"]),
+)
+
+######### LIBRARIES #########
+
+cc_library(
+    name = "arrs",
+    hdrs = [":arrs_hdrs"],
+    visibility = ["//visibility:public"],
+)
+
+######### TEST #########
+
+cc_test(
+    name = "test",
+    size = "medium",
+    srcs = [":test_srcs"],
+    deps = [
+        ":arrs",
+        "@com_github_mingkaic_verum//verum/exam",
+    ],
+    linkstatic = True,
+)

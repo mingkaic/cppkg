@@ -13,7 +13,7 @@ OUT_COVFILE="$COV_DIR/labelled_coverage.info";
 rm -Rf "$COVERAGE_CTX";
 mkdir -p "$COVERAGE_CTX";
 find $CONTEXT -maxdepth 1 | grep -E -v 'tmp|\.git|bazel-' | tail -n +2 | xargs -i cp -r {} $COVERAGE_CTX;
-find $COVERAGE_CTX | grep -E '\.cpp|\.hpp' | python3 "$THIS_DIR/label_uniquify.py" $COVERAGE_CTX > $CONVERSION_CSV;
+find $COVERAGE_CTX | grep -E '\.cc|\.h' | python3 "$THIS_DIR/label_uniquify.py" $COVERAGE_CTX > $CONVERSION_CSV;
 find $COVERAGE_CTX | grep -E '\.yml' | python3 "$THIS_DIR/yaml_replace.py" $CONVERSION_CSV;
 
 cd "$COVERAGE_CTX";

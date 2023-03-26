@@ -5,6 +5,11 @@ build --jobs=3
 test --jobs=3
 coverage --jobs=3
 
+run --cxxopt=-std=c++17
+build --cxxopt=-std=c++17
+test --cxxopt=-std=c++17
+coverage --cxxopt=-std=c++17
+
 # ------ HARDWARE ------
 
 run:safe --jobs=2

@@ -1,0 +1,50 @@
+licenses(["notice"])
+
+filegroup(
+    name = "srcs",
+    srcs = [
+        ":numbers_hdrs",
+        ":numbers_srcs",
+        ":test_srcs",
+        "BUILD.bazel",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+filegroup(
+    name = "numbers_hdrs",
+    srcs = glob(["*.h"]),
+)
+
+filegroup(
+    name = "numbers_srcs",
+    srcs = glob(["*.cc"]),
+)
+
+filegroup(
+    name = "test_srcs",
+    srcs = glob(["test/*.cc"]),
+)
+
+######### LIBRARIES #########
+
+cc_library(
+    name = "numbers",
+    hdrs = [":numbers_hdrs"],
+    srcs = [":numbers_srcs"],
+	deps = ["@com_github_mingkaic_cisab//cisab/fmts"],
+    visibility = ["//visibility:public"],
+)
+
+######### TEST #########
+
+cc_test(
+    name = "test",
+    size = "medium",
+    srcs = [":test_srcs"],
+    deps = [
+        ":numbers",
+		"@gtest//:gtest",
+    ],
+    linkstatic = True,
+)

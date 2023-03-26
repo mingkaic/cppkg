@@ -35,23 +35,23 @@ include_directories(
 add_library(arrs INTERFACE)
 
 # diff
-add_library(diff diff/src/msg.cpp)
+add_library(diff cppkg/diff/src/msg.cc)
 target_link_libraries(diff PUBLIC ${CONAN_LIBS_CISAB})
 
 # egrpc
-add_library(egrpc STATIC egrpc/src/iclient_async.cpp)
+add_library(egrpc STATIC cppkg/egrpc/src/iclient_async.cc)
 target_link_libraries(egrpc PUBLIC error ${CONAN_LIBS_CISAB} gRPC::grpc++ gRPC::grpc++_unsecure)
 
 # error
-add_library(error error/src/error.cpp)
+add_library(error cppkg/error/src/error.cc)
 target_link_libraries(error PUBLIC ${CONAN_LIBS_CISAB})
 
 # estd
-add_library(estd estd/src/strs.cpp)
+add_library(estd cppkg/estd/src/strs.cc)
 target_link_libraries(estd PUBLIC ${CONAN_LIBS_CISAB})
 
 # flag
-add_library(flag flag/src/flag.cpp)
+add_library(flag cppkg/flag/src/flag.cc)
 target_link_libraries(flag PUBLIC ${CONAN_LIBS_CISAB} ${CONAN_LIBS_BOOST})
 
 # jobs
@@ -59,52 +59,52 @@ add_library(jobs INTERFACE)
 target_link_libraries(jobs INTERFACE ${CONAN_LIBS_CISAB})
 
 # numbers
-add_library(numbers numbers/src/decimal.cpp)
+add_library(numbers cppkg/numbers/src/decimal.cc)
 target_link_libraries(numbers PUBLIC ${CONAN_LIBS_CISAB})
 
 # units
-add_library(units units/src/memory.cpp units/src/time.cpp)
+add_library(units cppkg/units/src/memory.cc cppkg/units/src/time.cc)
 target_link_libraries(units PUBLIC ${CONAN_LIBS_CISAB})
 
 #### install ####
 if(cppkg_INSTALL)
     foreach(_HDR
-        arrs/arrs.hpp
-        arrs/list.hpp
-        arrs/vecs.hpp
-        diff/diff.hpp
-        diff/format.hpp
-        diff/msg.hpp
-        diff/myers_diff.hpp
-        egrpc/client_async.hpp
-        egrpc/client_async_stream.hpp
-        egrpc/egrpc.hpp
-        egrpc/iclient.hpp
-        egrpc/iclient_async.hpp
-        egrpc/icqueue.hpp
-        egrpc/iserver_async.hpp
-        egrpc/server_async.hpp
-        egrpc/server_async_stream.hpp
-        error/error.hpp
-        estd/algorithm.hpp
-        estd/cast.hpp
-        estd/config.hpp
-        estd/contain.hpp
-        estd/estd.hpp
-        estd/hashlist.hpp
-        estd/range.hpp
-        estd/strs.hpp
-        flag/flag.hpp
-        flag/flagset.hpp
-        jobs/jobs.hpp
-        jobs/managed_job.hpp
-        jobs/scope_guard.hpp
-        jobs/sequence.hpp
-        numbers/decimal.hpp
-        numbers/numbers.hpp
-        units/memory.hpp
-        units/time.hpp
-        units/units.hpp
+        cppkg/arrs/arrs.h
+        cppkg/arrs/list.h
+        cppkg/arrs/vecs.h
+        cppkg/diff/diff.h
+        cppkg/diff/format.h
+        cppkg/diff/msg.h
+        cppkg/diff/myers_diff.h
+        cppkg/egrpc/client_async.h
+        cppkg/egrpc/client_async_stream.h
+        cppkg/egrpc/egrpc.h
+        cppkg/egrpc/iclient.h
+        cppkg/egrpc/iclient_async.h
+        cppkg/egrpc/icqueue.h
+        cppkg/egrpc/iserver_async.h
+        cppkg/egrpc/server_async.h
+        cppkg/egrpc/server_async_stream.h
+        cppkg/error/error.h
+        cppkg/estd/algorithm.h
+        cppkg/estd/cast.h
+        cppkg/estd/config.h
+        cppkg/estd/contain.h
+        cppkg/estd/estd.h
+        cppkg/estd/hashlist.h
+        cppkg/estd/range.h
+        cppkg/estd/strs.h
+        cppkg/flag/flag.h
+        cppkg/flag/flagset.h
+        cppkg/jobs/jobs.h
+        cppkg/jobs/managed_job.h
+        cppkg/jobs/scope_guard.h
+        cppkg/jobs/sequence.h
+        cppkg/numbers/decimal.h
+        cppkg/numbers/numbers.h
+        cppkg/units/memory.h
+        cppkg/units/time.h
+        cppkg/units/units.h
     )
         get_filename_component(_PATH ${_HDR} PATH)
         install(FILES ${_HDR} DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}")
@@ -140,13 +140,13 @@ endif()
 
 # arrs
 set(ARRS_TEST arrs_test)
-add_executable(${ARRS_TEST} arrs/test/main.cpp)
+add_executable(${ARRS_TEST} cppkg/arrs/test/main.cc)
 target_link_libraries(${ARRS_TEST} ${CONAN_LIBS_VERUM} arrs)
 add_test(NAME ${ARRS_TEST} COMMAND ${ARRS_TEST})
 
 # diff
 set(DIFF_TEST diff_test)
-add_executable(${DIFF_TEST} diff/test/main.cpp)
+add_executable(${DIFF_TEST} cppkg/diff/test/main.cc)
 target_link_libraries(${DIFF_TEST} ${CONAN_LIBS_GTEST} diff)
 add_test(NAME ${DIFF_TEST} COMMAND ${DIFF_TEST})
 
@@ -172,49 +172,49 @@ add_library(egrpc_test_proto_obj OBJECT ${EGRPC_TEST_PROTO_SRCS} ${EGRPC_TEST_GR
 include_directories("${CMAKE_CURRENT_BINARY_DIR}")
 
 set(EGRPC_TEST egrpc_test)
-add_executable(${EGRPC_TEST} egrpc/test/main.cpp $<TARGET_OBJECTS:egrpc_test_proto_obj>)
+add_executable(${EGRPC_TEST} cppkg/egrpc/test/main.cc $<TARGET_OBJECTS:egrpc_test_proto_obj>)
 target_link_libraries(${EGRPC_TEST} egrpc estd ${CONAN_LIBS_VERUM})
 add_test(NAME ${EGRPC_TEST} COMMAND ${EGRPC_TEST})
 
 # error
 set(ERROR_TEST error_test)
-add_executable(${ERROR_TEST} error/test/main.cpp)
+add_executable(${ERROR_TEST} cppkg/error/test/main.cc)
 target_link_libraries(${ERROR_TEST} ${CONAN_LIBS_GTEST} error)
 add_test(NAME ${ERROR_TEST} COMMAND ${ERROR_TEST})
 
 # estd
 set(ESTD_TEST estd_test)
 add_executable(${ESTD_TEST}
-    estd/test/test_cast.cpp
-    estd/test/test_config.cpp
-    estd/test/test_contain.cpp
-    estd/test/test_hashlist.cpp
-    estd/test/test_range.cpp
-    estd/test/test_strs.cpp
-    estd/test/main.cpp)
+    cppkg/estd/test/test_cast.cc
+    cppkg/estd/test/test_config.cc
+    cppkg/estd/test/test_contain.cc
+    cppkg/estd/test/test_hashlist.cc
+    cppkg/estd/test/test_range.cc
+    cppkg/estd/test/test_strs.cc
+    cppkg/estd/test/main.cc)
 target_link_libraries(${ESTD_TEST} estd ${CONAN_LIBS_VERUM})
 add_test(NAME ${ESTD_TEST} COMMAND ${ESTD_TEST})
 
 # flag
 set(FLAG_TEST flag_test)
-add_executable(${FLAG_TEST} flag/test/main.cpp)
+add_executable(${FLAG_TEST} cppkg/flag/test/main.cc)
 target_link_libraries(${FLAG_TEST} ${CONAN_LIBS_GTEST} flag)
 add_test(NAME ${FLAG_TEST} COMMAND ${FLAG_TEST})
 
 # jobs
 set(JOBS_TEST jobs_test)
-add_executable(${JOBS_TEST} jobs/test/main.cpp)
+add_executable(${JOBS_TEST} cppkg/jobs/test/main.cc)
 target_link_libraries(${JOBS_TEST} ${CONAN_LIBS_GTEST} jobs)
 add_test(NAME ${JOBS_TEST} COMMAND ${JOBS_TEST})
 
 # numbers
 set(NUMBERS_TEST numbers_test)
-add_executable(${NUMBERS_TEST} numbers/test/main.cpp)
+add_executable(${NUMBERS_TEST} cppkg/numbers/test/main.cc)
 target_link_libraries(${NUMBERS_TEST} ${CONAN_LIBS_GTEST} numbers)
 add_test(NAME ${NUMBERS_TEST} COMMAND ${NUMBERS_TEST})
 
 # units
 set(UNITS_TEST units_test)
-add_executable(${UNITS_TEST} units/test/main.cpp)
+add_executable(${UNITS_TEST} cppkg/units/test/main.cc)
 target_link_libraries(${UNITS_TEST} ${CONAN_LIBS_GTEST} units)
 add_test(NAME ${UNITS_TEST} COMMAND ${UNITS_TEST})

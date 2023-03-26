@@ -4,32 +4,17 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-######### GENERAL SOURCE #########
-
-filegroup(
-    name = "srcs",
-    srcs = [
-        "//diff:srcs",
-        "//egrpc:srcs",
-        "//error:srcs",
-        "//estd:srcs",
-        "//flag:srcs",
-        "//jobs:srcs",
-        "BUILD.bazel",
-    ],
-)
-
 ######### DEVELOPER TOOLS ########
 
 load("@com_grail_bazel_compdb//:aspects.bzl", "compilation_database")
 compilation_database(
     name = "compdb",
     targets = [
-		"//diff:diff",
-		"//egrpc:egrpc",
-		"//error:error",
-		"//estd:estd",
-		"//flag:flag",
-		"//jobs:jobs",
+		"//cppkg/diff:diff",
+		"//cppkg/egrpc:egrpc",
+		"//cppkg/error:error",
+		"//cppkg/estd:estd",
+		"//cppkg/flag:flag",
+		"//cppkg/jobs:jobs",
     ],
 )
