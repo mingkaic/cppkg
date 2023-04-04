@@ -35,23 +35,23 @@ include_directories(
 add_library(arrs INTERFACE)
 
 # diff
-add_library(diff cppkg/diff/src/msg.cc)
+add_library(diff cppkg/diff/msg.cc)
 target_link_libraries(diff PUBLIC ${CONAN_LIBS_CISAB})
 
 # egrpc
-add_library(egrpc STATIC cppkg/egrpc/src/iclient_async.cc)
+add_library(egrpc STATIC cppkg/egrpc/iclient_async.cc)
 target_link_libraries(egrpc PUBLIC error ${CONAN_LIBS_CISAB} gRPC::grpc++ gRPC::grpc++_unsecure)
 
 # error
-add_library(error cppkg/error/src/error.cc)
+add_library(error cppkg/error/error.cc)
 target_link_libraries(error PUBLIC ${CONAN_LIBS_CISAB})
 
 # estd
-add_library(estd cppkg/estd/src/strs.cc)
+add_library(estd cppkg/estd/strs.cc)
 target_link_libraries(estd PUBLIC ${CONAN_LIBS_CISAB})
 
 # flag
-add_library(flag cppkg/flag/src/flagset.cc)
+add_library(flag cppkg/flag/flagset.cc)
 target_link_libraries(flag PUBLIC ${CONAN_LIBS_CISAB} ${CONAN_LIBS_BOOST})
 
 # jobs
@@ -59,11 +59,11 @@ add_library(jobs INTERFACE)
 target_link_libraries(jobs INTERFACE ${CONAN_LIBS_CISAB})
 
 # numbers
-add_library(numbers cppkg/numbers/src/decimal.cc)
+add_library(numbers cppkg/numbers/decimal.cc)
 target_link_libraries(numbers PUBLIC ${CONAN_LIBS_CISAB})
 
 # units
-add_library(units cppkg/units/src/memory.cc cppkg/units/src/time.cc)
+add_library(units cppkg/units/memory.cc cppkg/units/time.cc)
 target_link_libraries(units PUBLIC ${CONAN_LIBS_CISAB})
 
 #### install ####
