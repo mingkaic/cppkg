@@ -51,7 +51,7 @@ add_library(estd cppkg/estd/src/strs.cc)
 target_link_libraries(estd PUBLIC ${CONAN_LIBS_CISAB})
 
 # flag
-add_library(flag cppkg/flag/src/flag.cc)
+add_library(flag cppkg/flag/src/flagset.cc)
 target_link_libraries(flag PUBLIC ${CONAN_LIBS_CISAB} ${CONAN_LIBS_BOOST})
 
 # jobs
