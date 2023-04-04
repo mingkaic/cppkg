@@ -17,6 +17,7 @@ class CppkgConan(ConanFile):
     topics = ["conan", "utility"]
     settings = "os", "compiler", "build_type", "arch"
     requires = (
+        "zlib/1.2.13",
         "boost/1.73.0",
         "cisab/0.1.0@mingkaic-co/stable",
         "verum/0.1.1@mingkaic-co/stable",

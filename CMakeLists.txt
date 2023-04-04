@@ -69,16 +69,14 @@ target_link_libraries(units PUBLIC ${CONAN_LIBS_CISAB})
 #### install ####
 if(cppkg_INSTALL)
     foreach(_HDR
-        cppkg/arrs/arrs.h
+        cppkg/arrs/array.h
         cppkg/arrs/list.h
         cppkg/arrs/vecs.h
-        cppkg/diff/diff.h
         cppkg/diff/format.h
         cppkg/diff/msg.h
         cppkg/diff/myers_diff.h
         cppkg/egrpc/client_async.h
         cppkg/egrpc/client_async_stream.h
-        cppkg/egrpc/egrpc.h
         cppkg/egrpc/iclient.h
         cppkg/egrpc/iclient_async.h
         cppkg/egrpc/icqueue.h
@@ -90,21 +88,16 @@ if(cppkg_INSTALL)
         cppkg/estd/cast.h
         cppkg/estd/config.h
         cppkg/estd/contain.h
-        cppkg/estd/estd.h
         cppkg/estd/hashlist.h
         cppkg/estd/range.h
         cppkg/estd/strs.h
-        cppkg/flag/flag.h
         cppkg/flag/flagset.h
-        cppkg/jobs/jobs.h
         cppkg/jobs/managed_job.h
         cppkg/jobs/scope_guard.h
         cppkg/jobs/sequence.h
         cppkg/numbers/decimal.h
-        cppkg/numbers/numbers.h
         cppkg/units/memory.h
         cppkg/units/time.h
-        cppkg/units/units.h
     )
         get_filename_component(_PATH ${_HDR} PATH)
         install(FILES ${_HDR} DESTINATION "${cppkg_INSTALL_INCLUDEDIR}/${_PATH}")
